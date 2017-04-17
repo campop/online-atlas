@@ -7,6 +7,9 @@ var fertilityatlas = (function ($) {
 	
 	'use strict';
 	
+	// Internal class properties
+	var _map = null;
+	
 	// Settings
 	var _settings = {
 		
@@ -28,13 +31,14 @@ var fertilityatlas = (function ($) {
 			});
 			
 			// Create the map
-			var map = L.map('map').setView([_settings.defaultLatitude, _settings.defaultLongitude], _settings.defaultZoom);
+			_map = L.map('map').setView([_settings.defaultLatitude, _settings.defaultLongitude], _settings.defaultZoom);
 			
 			// Add tile layer
 			var mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 				maxZoom: 19,
 				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-			}).addTo(map);
+			});
+			mapnik.addTo(_map);
 			
 			// Define the data
 			var url = 'data/1911.geojson';	// Data created using: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../1911.geojson RSD_1911_MLS.shp
@@ -58,7 +62,7 @@ var fertilityatlas = (function ($) {
 						layer.bindPopup(popupContent);
 						
 					}
-				}).addTo(map);
+				}).addTo(_map);
 			});
 		}
 		
