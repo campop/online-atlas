@@ -80,8 +80,20 @@ var fertilityatlas = (function ($) {
 			'RAW_4549': 'Females aged 45-49',
 			'EBS_4549': 'Females aged 45-49 (smoothed)',
 			'RAW_TFR': 'Total fertility rate',
-			'EBS_TFR': 'Total fertility rate (smoothed)',
-		}
+			'EBS_TFR': 'Total fertility rate (smoothed)'
+		},
+		
+		// Map geometry styling; colour scales can be created at http://www.colorbrewer.org/
+		colourField: 'EBS_TFR',
+		colourStops: [
+			[5.5, '#d73027'],
+			[5, '#fc8d59'],
+			[4.5, '#fee08b'],
+			[4, '#ffffbf'],
+			[3, '#d9ef8b'],
+			[2, '#91cf60'],
+			[0, '#1a9850']
+		]
 	};
 	
 	
@@ -182,6 +194,7 @@ var fertilityatlas = (function ($) {
 			$.each (_settings.datasets, function (key, dataset) {
 				layers.push (new L.GeoJSON.AJAX (dataset.source, {
 					onEachFeature: fertilityatlas.popup,
+					style: fertilityatlas.setStyle,
 					time: dataset.name	// The time property specified here is used to label the slider
 				}));
 			});
@@ -194,6 +207,34 @@ var fertilityatlas = (function ($) {
 			});
 			_map.addControl(sliderControl);
 			sliderControl.startSlider();
+		},
+		
+		
+		// Function to set the feature style
+		setStyle: function (feature)
+		{
+			// Base the colour on the specified colour field
+			return {
+				fillColor: fertilityatlas.getColour (feature.properties[_settings.colourField]),
+				weight: 1,
+			};
+		},
+		
+		
+		// Assign colour from lookup table
+		getColour: function (value)
+		{
+			// Loop through each colour until found
+			var colourStop;
+			for (var i = 0; i < _settings.colourStops.length; i++) {	// NB $.each doesn't seem to work - it doesn't seem to reset the array pointer for each iteration
+				colourStop = _settings.colourStops[i];
+				if (value >= colourStop[0]) {
+					return colourStop[1];
+				}
+			}
+			
+			// Fallback to final colour in the list
+			return colourStop[1];
 		},
 		
 		
