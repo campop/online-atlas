@@ -76,20 +76,8 @@ var fertilityatlas = (function ($) {
 			// Set the dataset
 			var dataset = 'year1891';
 			
-			// Define the data
-			var url = _settings.data[dataset].source;
-			
-			// Load GeoJSON and add to the map
-			$.getJSON(url, function(data) {
-				var popupHtml;
-				var geojsonLayer = L.geoJson(data, {
-					onEachFeature: function(feature, layer) {
-						popupHtml = fertilityatlas.popupHtml (feature, dataset);
-						layer.bindPopup(popupHtml);
-						
-					}
-				}).addTo(_map);
-			});
+			// Add the data to the map
+			fertilityatlas.addData (dataset);
 		},
 		
 		
@@ -139,6 +127,26 @@ var fertilityatlas = (function ($) {
 					_map.fitBounds([ [bbox[1], bbox[0]], [bbox[3], bbox[2]] ]);
 					event.preventDefault();
 				}
+			});
+		},
+		
+		
+		// Function to load the data to the map
+		addData: function (dataset)
+		{
+			// Define the URL
+			var url = _settings.data[dataset].source;
+			
+			// Load GeoJSON and add to the map
+			$.getJSON(url, function(data) {
+				var popupHtml;
+				var geojsonLayer = L.geoJson(data, {
+					onEachFeature: function(feature, layer) {
+						popupHtml = fertilityatlas.popupHtml (feature, dataset);
+						layer.bindPopup(popupHtml);
+						
+					}
+				}).addTo(_map);
 			});
 		},
 		
