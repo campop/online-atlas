@@ -36,7 +36,24 @@ var fertilityatlas = (function ($) {
 				
 			// Load GeoJSON and add to the map
 			$.getJSON(url, function(data) {
-				var geojsonLayer = L.geoJson(data).addTo(map);
+				var geojsonLayer = L.geoJson(data, {
+					onEachFeature: function(feature, layer) {
+						
+						// Create table of properties for popup
+						var popupContent = '<table>';
+						$.each (feature.properties, function (key, value) {
+							if (typeof value == 'string') {
+								value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+							}
+							popupContent += '<tr><td>' + key + ':</td><td><strong>' + value + '</strong></td></tr>';
+						});
+						popupContent += '</table>';
+						
+						// Create popup
+						layer.bindPopup(popupContent);
+						
+					}
+				}).addTo(map);
 			});
 		}
 		
