@@ -18,7 +18,7 @@ var fertilityatlas = (function ($) {
 		defaultLongitude: -2,
 		defaultZoom: 7,
 		
-		// Tileserver URL
+		// Tileservers
 		tileUrls: {
 			'mapnik': [
 				'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',	// E.g. http://a.tile.openstreetmap.org/16/32752/21788.png
@@ -35,7 +35,15 @@ var fertilityatlas = (function ($) {
 		// Geocoder
 		geocoderApiBaseUrl: 'https://api.cyclestreets.net/v2/geocoder',
 		geocoderApiKey: 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
-		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924'
+		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924',
+		
+		// Data; created using: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../data/1911.geojson RSD_1911_MLS.shp
+		data: {
+			year1911: {
+				name: '1911',
+				source: 'data/1911.geojson'
+			}
+		}
 	};
 	
 	
@@ -54,7 +62,7 @@ var fertilityatlas = (function ($) {
 			fertilityatlas.createMap ();
 			
 			// Define the data
-			var url = 'data/1911.geojson';	// Data created using: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../1911.geojson RSD_1911_MLS.shp
+			var url = _settings.data.year1911.source;
 			
 			// Load GeoJSON and add to the map
 			$.getJSON(url, function(data) {
@@ -62,7 +70,8 @@ var fertilityatlas = (function ($) {
 					onEachFeature: function(feature, layer) {
 						
 						// Create table of properties for popup
-						var popupContent = '<table>';
+						var popupContent  = '<p><strong>Data for this area in ' + _settings.data.year1911.name + ':</strong></p>';
+						popupContent += '<table>';
 						$.each (feature.properties, function (key, value) {
 							if (typeof value == 'string') {
 								value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
