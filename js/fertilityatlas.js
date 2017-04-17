@@ -66,22 +66,11 @@ var fertilityatlas = (function ($) {
 			
 			// Load GeoJSON and add to the map
 			$.getJSON(url, function(data) {
+				var popupHtml;
 				var geojsonLayer = L.geoJson(data, {
 					onEachFeature: function(feature, layer) {
-						
-						// Create table of properties for popup
-						var popupContent  = '<p><strong>Data for this area in ' + _settings.data.year1911.name + ':</strong></p>';
-						popupContent += '<table>';
-						$.each (feature.properties, function (key, value) {
-							if (typeof value == 'string') {
-								value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-							}
-							popupContent += '<tr><td>' + key + ':</td><td><strong>' + value + '</strong></td></tr>';
-						});
-						popupContent += '</table>';
-						
-						// Create popup
-						layer.bindPopup(popupContent);
+						popupHtml = fertilityatlas.popupHtml (feature, 'year1911');
+						layer.bindPopup(popupHtml);
 						
 					}
 				}).addTo(_map);
@@ -136,6 +125,27 @@ var fertilityatlas = (function ($) {
 					event.preventDefault();
 				}
 			});
+		},
+		
+		
+		// Function to define popup content
+		popupHtml: function (feature, dataset)
+		{
+			// Start with title
+			var html  = '<p><strong>Data for this area in ' + _settings.data[dataset].name + ':</strong></p>';
+			
+			// Add table
+			html += '<table>';
+			$.each (feature.properties, function (key, value) {
+				if (typeof value == 'string') {
+					value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+				}
+				html += '<tr><td>' + key + ':</td><td><strong>' + value + '</strong></td></tr>';
+			});
+			html += '</table>';
+			
+			// Return the HTML
+			return html;
 		}
 		
 	}
