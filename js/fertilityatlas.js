@@ -37,8 +37,20 @@ var fertilityatlas = (function ($) {
 		geocoderApiKey: 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
 		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924',
 		
-		// Data; created using: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../data/1911.geojson RSD_1911_MLS.shp
+		// Data; created using e.g.: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../data/1911.geojson RSD_1911_MLS.shp
 		data: {
+			year1881: {
+				name: '1881',
+				source: 'data/1881.geojson'
+			},
+			year1891: {
+				name: '1891',
+				source: 'data/1891.geojson'
+			},
+			year1901: {
+				name: '1901',
+				source: 'data/1901.geojson'
+			},
 			year1911: {
 				name: '1911',
 				source: 'data/1911.geojson'
@@ -62,7 +74,7 @@ var fertilityatlas = (function ($) {
 			fertilityatlas.createMap ();
 			
 			// Set the dataset
-			var dataset = 'year1911';
+			var dataset = 'year1891';
 			
 			// Define the data
 			var url = _settings.data[dataset].source;
