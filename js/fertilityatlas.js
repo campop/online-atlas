@@ -53,6 +53,7 @@ var fertilityatlas = (function ($) {
 			// Add the tile layers
 			var tileLayers = [];		// Background tile layers
 			var baseLayers = {};		// Labels
+			var baseLayersById = {};	// Layers, by id
 			var layer;
 			var name;
 			$.each (_settings.tileUrls, function (tileLayerId, tileLayerAttributes) {
@@ -60,6 +61,7 @@ var fertilityatlas = (function ($) {
 				tileLayers.push (layer);
 				name = tileLayerAttributes[2];
 				baseLayers[name] = layer;
+				baseLayersById[tileLayerId] = layer;
 			});
 			
 			// Create the map
@@ -74,6 +76,9 @@ var fertilityatlas = (function ($) {
 			
 			// Add geocoder control
 			fertilityatlas.geocoder ();
+			
+			// Add hash support
+			new L.Hash (_map, baseLayersById);
 			
 			// Define the data
 			var url = 'data/1911.geojson';	// Data created using: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../1911.geojson RSD_1911_MLS.shp
