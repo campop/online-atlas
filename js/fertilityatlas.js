@@ -73,11 +73,12 @@ var fertilityatlas = (function ($) {
 			// Create the map
 			fertilityatlas.createMap ();
 			
-			// Set the dataset
-			var dataset = 'year1891';
-			
 			// Add the data to the map
-			fertilityatlas.addData (dataset);
+			//var dataset = 'year1891';
+			//fertilityatlas.addData (dataset);
+			
+			// Add the data to the map as switchable layers
+			fertilityatlas.addSwitchableLayers ();
 		},
 		
 		
@@ -128,6 +129,29 @@ var fertilityatlas = (function ($) {
 					event.preventDefault();
 				}
 			});
+		},
+		
+		
+		// Function to add the data to the map as switchable layers; see: https://github.com/dwilhelm89/LeafletSlider
+		addSwitchableLayers: function ()
+		{
+			// Create each layer
+			var layers = [];
+			$.each (_settings.datasets, function (key, dataset) {
+				layers.push (new L.GeoJSON.AJAX (dataset.source, {
+					onEachFeature: fertilityatlas.popup,
+					time: dataset.name	// The time property specified here is used to label the slider
+				}));
+			});
+			
+			// Assemble and add the layers as a slider control; see example at: http://fiddle.jshell.net/nathansnider/260hffor/
+			var layerGroup = L.layerGroup(layers);
+			var sliderControl = L.control.sliderControl({
+				layer: layerGroup,
+				follow: true
+			});
+			_map.addControl(sliderControl);
+			sliderControl.startSlider();
 		},
 		
 		
