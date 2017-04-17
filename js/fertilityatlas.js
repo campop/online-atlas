@@ -50,6 +50,39 @@ var fertilityatlas = (function ($) {
 				_settings[key] = value;
 			});
 			
+			// Create the map
+			fertilityatlas.createMap ();
+			
+			// Define the data
+			var url = 'data/1911.geojson';	// Data created using: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../1911.geojson RSD_1911_MLS.shp
+			
+			// Load GeoJSON and add to the map
+			$.getJSON(url, function(data) {
+				var geojsonLayer = L.geoJson(data, {
+					onEachFeature: function(feature, layer) {
+						
+						// Create table of properties for popup
+						var popupContent = '<table>';
+						$.each (feature.properties, function (key, value) {
+							if (typeof value == 'string') {
+								value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+							}
+							popupContent += '<tr><td>' + key + ':</td><td><strong>' + value + '</strong></td></tr>';
+						});
+						popupContent += '</table>';
+						
+						// Create popup
+						layer.bindPopup(popupContent);
+						
+					}
+				}).addTo(_map);
+			});
+		},
+		
+		
+		// Function to create the map
+		createMap: function ()
+		{
 			// Add the tile layers
 			var tileLayers = [];		// Background tile layers
 			var baseLayers = {};		// Labels
@@ -79,31 +112,6 @@ var fertilityatlas = (function ($) {
 			
 			// Add hash support
 			new L.Hash (_map, baseLayersById);
-			
-			// Define the data
-			var url = 'data/1911.geojson';	// Data created using: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../1911.geojson RSD_1911_MLS.shp
-				
-			// Load GeoJSON and add to the map
-			$.getJSON(url, function(data) {
-				var geojsonLayer = L.geoJson(data, {
-					onEachFeature: function(feature, layer) {
-						
-						// Create table of properties for popup
-						var popupContent = '<table>';
-						$.each (feature.properties, function (key, value) {
-							if (typeof value == 'string') {
-								value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-							}
-							popupContent += '<tr><td>' + key + ':</td><td><strong>' + value + '</strong></td></tr>';
-						});
-						popupContent += '</table>';
-						
-						// Create popup
-						layer.bindPopup(popupContent);
-						
-					}
-				}).addTo(_map);
-			});
 		},
 		
 		
