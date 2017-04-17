@@ -1,0 +1,5 @@
+var config = {};
+
+// CycleStreets Geocoder API base URL (not slash-terminated) and key
+config.cyclestreetsApiKey = 'YOUR_API_KEY';		// Obtain at https://www.cyclestreets.net/api/apply/
+

@@ -7,7 +7,7 @@ var fertilityatlas = (function ($) {
 	
 	'use strict';
 	
-	// Internal class properties
+	// Settings
 	var _settings = {
 		
 		defaultLatitude: 53,
@@ -20,8 +20,13 @@ var fertilityatlas = (function ($) {
 	return {
 		
 		// Main function
-		initialise: function ()
+		initialise: function (config)
 		{
+			// Obtain the configuration and add to settings
+			$.each (config, function (key, value) {
+				_settings[key] = value;
+			});
+			
 			// Create the map
 			var map = L.map('map').setView([_settings.defaultLatitude, _settings.defaultLongitude], _settings.defaultZoom);
 			
