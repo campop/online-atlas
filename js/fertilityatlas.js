@@ -158,6 +158,22 @@ var fertilityatlas = (function ($) {
 		},
 		
 		
+		// Function to load the data to the map
+		addData: function (dataset)
+		{
+			// Define the URL
+			var url = _settings.datasets[dataset].source;
+			
+			// Load GeoJSON and add to the map
+			$.getJSON(url, function(data) {
+				var popupHtml;
+				var geojsonLayer = L.geoJson(data, {
+					onEachFeature: fertilityatlas.popup
+				}).addTo(_map);
+			});
+		},
+		
+		
 		// Function to add the data to the map as switchable layers; see: https://github.com/dwilhelm89/LeafletSlider
 		addSwitchableLayers: function ()
 		{
@@ -178,22 +194,6 @@ var fertilityatlas = (function ($) {
 			});
 			_map.addControl(sliderControl);
 			sliderControl.startSlider();
-		},
-		
-		
-		// Function to load the data to the map
-		addData: function (dataset)
-		{
-			// Define the URL
-			var url = _settings.datasets[dataset].source;
-			
-			// Load GeoJSON and add to the map
-			$.getJSON(url, function(data) {
-				var popupHtml;
-				var geojsonLayer = L.geoJson(data, {
-					onEachFeature: fertilityatlas.popup
-				}).addTo(_map);
-			});
 		},
 		
 		
