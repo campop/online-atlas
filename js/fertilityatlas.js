@@ -18,6 +18,20 @@ var fertilityatlas = (function ($) {
 		defaultLongitude: -2,
 		defaultZoom: 7,
 		
+		// Tileserver URL
+		tileUrls: {
+			'mapnik': [
+				'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',	// E.g. http://a.tile.openstreetmap.org/16/32752/21788.png
+				{maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'},
+				'OpenStreetMap style'
+			],
+			'osopendata': [
+				'https://{s}.os.openstreetmap.org/sv/{z}/{x}/{y}.png',	// E.g. http://a.os.openstreetmap.org/sv/18/128676/81699.png
+				{maxZoom: 19, attribution: 'Contains Ordnance Survey data &copy; Crown copyright and database right 2010'},
+				'OS Open Data'
+			]
+		},
+		
 		// Geocoder
 		geocoderApiBaseUrl: 'https://api.cyclestreets.net/v2/geocoder',
 		geocoderApiKey: 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
@@ -36,15 +50,27 @@ var fertilityatlas = (function ($) {
 				_settings[key] = value;
 			});
 			
-			// Create the map
-			_map = L.map('map').setView([_settings.defaultLatitude, _settings.defaultLongitude], _settings.defaultZoom);
-			
-			// Add tile layer
-			var mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				maxZoom: 19,
-				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+			// Add the tile layers
+			var tileLayers = [];		// Background tile layers
+			var baseLayers = {};		// Labels
+			var layer;
+			var name;
+			$.each (_settings.tileUrls, function (tileLayerId, tileLayerAttributes) {
+				layer = L.tileLayer(tileLayerAttributes[0], tileLayerAttributes[1]);
+				tileLayers.push (layer);
+				name = tileLayerAttributes[2];
+				baseLayers[name] = layer;
 			});
-			mapnik.addTo(_map);
+			
+			// Create the map
+			_map = L.map('map', {
+				center: [_settings.defaultLatitude, _settings.defaultLongitude],
+				zoom: _settings.defaultZoom,
+				layers: tileLayers[0]	// Documentation suggests tileLayers is all that is needed, but that shows all together
+			});
+			
+			// Add the base (background) layer switcher
+			L.control.layers(baseLayers, null).addTo(_map);
 			
 			// Add geocoder control
 			fertilityatlas.geocoder ();
