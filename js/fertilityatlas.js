@@ -61,15 +61,18 @@ var fertilityatlas = (function ($) {
 			// Create the map
 			fertilityatlas.createMap ();
 			
+			// Set the dataset
+			var dataset = 'year1911';
+			
 			// Define the data
-			var url = _settings.data.year1911.source;
+			var url = _settings.data[dataset].source;
 			
 			// Load GeoJSON and add to the map
 			$.getJSON(url, function(data) {
 				var popupHtml;
 				var geojsonLayer = L.geoJson(data, {
 					onEachFeature: function(feature, layer) {
-						popupHtml = fertilityatlas.popupHtml (feature, 'year1911');
+						popupHtml = fertilityatlas.popupHtml (feature, dataset);
 						layer.bindPopup(popupHtml);
 						
 					}
