@@ -55,6 +55,32 @@ var fertilityatlas = (function ($) {
 				name: '1911',
 				source: 'data/1911.geojson'
 			}
+		},
+		
+		// Fields and their labels
+		fields: {
+			// IDs
+			'CEN_1881': '#',
+			'CEN_1891': '#',
+			'CEN_1901': '#',
+			'CEN_1911': '#',
+			// Fields
+			'RAW_1519': 'Females aged 15-19',
+			'EBS_1519': 'Females aged 15-19 (smoothed)',
+			'RAW_2024': 'Females aged 20-24',
+			'EBS_2024': 'Females aged 20-24 (smoothed)',
+			'RAW_2529': 'Females aged 25-29',
+			'EBS_2529': 'Females aged 25-29 (smoothed)',
+			'RAW_3034': 'Females aged 30-34',
+			'EBS_3034': 'Females aged 30-34 (smoothed)',
+			'RAW_3539': 'Females aged 35-39',
+			'EBS_3539': 'Females aged 35-39 (smoothed)',
+			'RAW_4044': 'Females aged 40-44',
+			'EBS_4044': 'Females aged 40-44 (smoothed)',
+			'RAW_4549': 'Females aged 45-49',
+			'EBS_4549': 'Females aged 45-49 (smoothed)',
+			'RAW_TFR': 'Total fertility rate',
+			'EBS_TFR': 'Total fertility rate (smoothed)',
 		}
 	};
 	
@@ -183,7 +209,7 @@ var fertilityatlas = (function ($) {
 		popupHtml: function (feature /*, dataset */)
 		{
 			// Start with the title
-			var html = '<p><strong>Data for this area' + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
+			var html = '<p><strong>Fertility rates for this area' + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
 			
 			// Add table
 			html += '<table class="lines compressed">';
@@ -191,7 +217,7 @@ var fertilityatlas = (function ($) {
 				if (typeof value == 'string') {
 					value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 				}
-				html += '<tr><td>' + key + ':</td><td><strong>' + value + '</strong></td></tr>';
+				html += '<tr><td>' + _settings.fields[key] + ':</td><td><strong>' + value + '</strong></td></tr>';
 			});
 			html += '</table>';
 			
