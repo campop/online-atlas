@@ -14,3 +14,9 @@
 .ui-autocomplete li a span {color: gray; font-size: 0.81em;}
 .ui-autocomplete li a.ui-state-active {cursor: pointer; background-color: #f7f7f7;}
 
+/* Data in popup */
+table#chart tr:first-child td {padding-bottom: 1em;}
+table#chart tr:first-child td:first-child {text-align: right;}
+table#chart tr.RAW_TFR td {padding-top: 1em;}
+table#chart tr.RAW_TFR td, table#chart tr.EBS_TFR td {color: #603;}
+

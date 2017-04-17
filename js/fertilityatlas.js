@@ -212,12 +212,12 @@ var fertilityatlas = (function ($) {
 			var html = '<p><strong>Fertility rates for this area' + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
 			
 			// Add table
-			html += '<table class="lines compressed">';
+			html += '<table id="chart" class="lines compressed">';
 			$.each (feature.properties, function (key, value) {
 				if (typeof value == 'string') {
 					value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 				}
-				html += '<tr><td>' + _settings.fields[key] + ':</td><td><strong>' + value + '</strong></td></tr>';
+				html += '<tr class="' + key + '"><td>' + _settings.fields[key] + ':</td><td><strong>' + value + '</strong></td></tr>';
 			});
 			html += '</table>';
 			
