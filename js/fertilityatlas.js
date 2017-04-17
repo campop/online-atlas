@@ -186,7 +186,7 @@ var fertilityatlas = (function ($) {
 			var html = '<p><strong>Data for this area' + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
 			
 			// Add table
-			html += '<table>';
+			html += '<table class="lines compressed">';
 			$.each (feature.properties, function (key, value) {
 				if (typeof value == 'string') {
 					value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
