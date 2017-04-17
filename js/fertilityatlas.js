@@ -1,7 +1,7 @@
 // Fertility atlas application code
 
 /*jslint browser: true, white: true, single: true, for: true */
-/*global alert, console, window, $, jQuery, L */
+/*global alert, console, window, $, jQuery, L, autocomplete */
 
 var fertilityatlas = (function ($) {
 	
@@ -13,9 +13,15 @@ var fertilityatlas = (function ($) {
 	// Settings
 	var _settings = {
 		
+		// Default map view
 		defaultLatitude: 53,
 		defaultLongitude: -2,
-		defaultZoom: 7
+		defaultZoom: 7,
+		
+		// Geocoder
+		geocoderApiBaseUrl: 'https://api.cyclestreets.net/v2/geocoder',
+		geocoderApiKey: 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
+		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924'
 	};
 	
 	
@@ -40,6 +46,9 @@ var fertilityatlas = (function ($) {
 			});
 			mapnik.addTo(_map);
 			
+			// Add geocoder control
+			fertilityatlas.geocoder ();
+			
 			// Define the data
 			var url = 'data/1911.geojson';	// Data created using: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../1911.geojson RSD_1911_MLS.shp
 				
@@ -63,6 +72,21 @@ var fertilityatlas = (function ($) {
 						
 					}
 				}).addTo(_map);
+			});
+		},
+		
+		
+		// Wrapper function to add a geocoder control
+		geocoder: function ()
+		{
+			// Attach the autocomplete library behaviour to the location control
+			autocomplete.addTo ('#geocoder input', {
+				sourceUrl: _settings.geocoderApiBaseUrl + '?key=' + _settings.geocoderApiKey + '&bounded=1&bbox=' + _settings.autocompleteBbox,
+				select: function (event, ui) {
+					var bbox = ui.item.feature.properties.bbox.split(',');
+					_map.fitBounds([ [bbox[1], bbox[0]], [bbox[3], bbox[2]] ]);
+					event.preventDefault();
+				}
 			});
 		}
 		
