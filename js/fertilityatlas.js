@@ -141,21 +141,25 @@ var fertilityatlas = (function ($) {
 			$.getJSON(url, function(data) {
 				var popupHtml;
 				var geojsonLayer = L.geoJson(data, {
-					onEachFeature: function(feature, layer) {
-						popupHtml = fertilityatlas.popupHtml (feature, dataset);
-						layer.bindPopup(popupHtml);
-						
-					}
+					onEachFeature: fertilityatlas.popup
 				}).addTo(_map);
 			});
 		},
 		
 		
+		// Popup wrapper
+		popup: function (feature, layer)
+		{
+			var popupHtml = fertilityatlas.popupHtml (feature /*, dataset */);
+			layer.bindPopup(popupHtml);
+		},
+		
+		
 		// Function to define popup content
-		popupHtml: function (feature, dataset)
+		popupHtml: function (feature /*, dataset */)
 		{
 			// Start with the title
-			var html  = '<p><strong>Data for this area in ' + _settings.datasets[dataset].name + ':</strong></p>';
+			var html = '<p><strong>Data for this area' + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
 			
 			// Add table
 			html += '<table>';
