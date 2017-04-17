@@ -38,7 +38,7 @@ var fertilityatlas = (function ($) {
 		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924',
 		
 		// Data; created using e.g.: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../data/1911.geojson RSD_1911_MLS.shp
-		data: {
+		datasets: {
 			year1881: {
 				name: '1881',
 				source: 'data/1881.geojson'
@@ -135,7 +135,7 @@ var fertilityatlas = (function ($) {
 		addData: function (dataset)
 		{
 			// Define the URL
-			var url = _settings.data[dataset].source;
+			var url = _settings.datasets[dataset].source;
 			
 			// Load GeoJSON and add to the map
 			$.getJSON(url, function(data) {
@@ -154,8 +154,8 @@ var fertilityatlas = (function ($) {
 		// Function to define popup content
 		popupHtml: function (feature, dataset)
 		{
-			// Start with title
-			var html  = '<p><strong>Data for this area in ' + _settings.data[dataset].name + ':</strong></p>';
+			// Start with the title
+			var html  = '<p><strong>Data for this area in ' + _settings.datasets[dataset].name + ':</strong></p>';
 			
 			// Add table
 			html += '<table>';
