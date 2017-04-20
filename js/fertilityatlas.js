@@ -227,6 +227,7 @@ var fertilityatlas = (function ($) {
 			return {
 				fillColor: fertilityatlas.getColour (feature.properties[_settings.colourField]),
 				weight: 1,
+				fillOpacity: 0.7
 			};
 		},
 		
