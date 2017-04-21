@@ -84,7 +84,13 @@ var fertilityatlas = (function ($) {
 			'CEN_1891': '#',
 			'CEN_1901': '#',
 			'CEN_1911': '#',
-			// Fields
+			// Areas
+			'SUBDIST': 'Sub-district',
+			'REGDIST': 'Registration district',
+			'REGCNTY': 'County',
+			'DIVISION': 'Division',
+			'COUNTRY': 'Country',
+			// Data fields
 			'RAW_1519': 'Females aged 15-19',
 			'EBS_1519': 'Females aged 15-19 (smoothed)',
 			'RAW_2024': 'Females aged 20-24',
@@ -271,7 +277,7 @@ var fertilityatlas = (function ($) {
 		popupHtml: function (feature /*, dataset */)
 		{
 			// Start with the title
-			var html = '<p><strong>Fertility rates for this area' + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
+			var html = '<p><strong>Fertility rates for ' + feature.properties['SUBDIST'] + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
 			
 			// Add table
 			html += '<table id="chart" class="lines compressed">';
