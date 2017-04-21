@@ -269,7 +269,7 @@ var fertilityatlas = (function ($) {
 		popup: function (feature, layer)
 		{
 			var popupHtml = fertilityatlas.popupHtml (feature /*, dataset */);
-			layer.bindPopup(popupHtml);
+			layer.bindPopup(popupHtml, {autoPan: false});
 		},
 		
 		
