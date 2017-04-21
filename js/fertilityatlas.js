@@ -49,6 +49,14 @@ var fertilityatlas = (function ($) {
 		
 		// Data; created using e.g.: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../data/1911.geojson RSD_1911_MLS.shp
 		datasets: {
+			year1851: {
+				name: '1851',
+				source: 'data/1851.geojson'
+			},
+			year1861: {
+				name: '1861',
+				source: 'data/1861.geojson'
+			},
 			year1881: {
 				name: '1881',
 				source: 'data/1881.geojson'
@@ -70,6 +78,8 @@ var fertilityatlas = (function ($) {
 		// Fields and their labels
 		fields: {
 			// IDs
+			'CEN_1851': '#',
+			'CEN_1861': '#',
 			'CEN_1881': '#',
 			'CEN_1891': '#',
 			'CEN_1901': '#',
