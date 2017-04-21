@@ -1,6 +1,6 @@
 <?php
 
-# Class to create the Atlas of Victorian Fertility
+# Class to create the online atlas
 
 require_once ('frontControllerApplication.php');
 class fertilityAtlas extends frontControllerApplication
@@ -61,7 +61,6 @@ class fertilityAtlas extends frontControllerApplication
 			<script type="text/javascript" src="js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			<script type="text/javascript" src="js/lib/LeafletSlider/leaflet.SliderControl.min.js"></script>
 			
-			<link rel="stylesheet" href="css/fertilityatlas.css" />
 			<script type="text/javascript" src=".config.js"></script>
 			<script type="text/javascript" src="js/fertilityatlas.js"></script>
 			<script type="text/javascript">
