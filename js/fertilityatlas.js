@@ -277,7 +277,7 @@ var fertilityatlas = (function ($) {
 		popupHtml: function (feature /*, dataset */)
 		{
 			// Start with the title
-			var html = '<p><strong>Fertility rates for ' + feature.properties['SUBDIST'] + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
+			var html = '<p><strong>Fertility rates for ' + feature.properties['SUBDIST'] + ', ' + feature.properties['REGDIST'] + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
 			
 			// Add table
 			html += '<table id="chart" class="lines compressed">';
