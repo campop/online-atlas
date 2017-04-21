@@ -11,6 +11,7 @@ class fertilityAtlas extends frontControllerApplication
 		# Specify available arguments as defaults or as NULL (to represent a required argument)
 		$defaults = array (
 			'applicationName' => 'Atlas of Victorian Fertility',
+			'div' => 'fertilityatlas',
 			'useDatabase' => false,
 		);
 		
@@ -45,8 +46,6 @@ class fertilityAtlas extends frontControllerApplication
 		# Start the HTML
 		$html = '
 			
-			<p><em>Project under development.</em></p>
-			
 			<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 			<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css">
@@ -69,15 +68,16 @@ class fertilityAtlas extends frontControllerApplication
 				});
 			</script>
 			
-			<div id="fertilityatlas">
-				
+			
+			<p><em>Project under development.</em></p>
+			
+			<div id="mapcontainer">
 				
 				<div id="geocoder">
 					<input type="text" name="location" autocomplete="off" placeholder="Search locations and move map" tabindex="1" />
 				</div>
 				
 				<div id="map"></div>
-				
 				
 			</div>
 		';
