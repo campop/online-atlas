@@ -13,6 +13,7 @@ class fertilityAtlas extends frontControllerApplication
 			'applicationName' => 'Atlas of Victorian Fertility',
 			'div' => 'fertilityatlas',
 			'useDatabase' => false,
+			'geocoderApiKey' => NULL,
 		);
 		
 		# Return the defaults
@@ -65,12 +66,17 @@ class fertilityAtlas extends frontControllerApplication
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/LeafletSlider/leaflet.SliderControl.min.js"></script>
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/.config.js"></script>
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/fertilityatlas.js"></script>
 			<script type="text/javascript">
+				
+				var config = {
+					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\'
+				}
+				
 				$(function() {
 					fertilityatlas.initialise (config);
 				});
+				
 			</script>
 			
 			
