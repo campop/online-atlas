@@ -1,0 +1,18 @@
+# Apache httpd.conf extract providing URL routing and other directives
+
+#   Example usage in httpd.conf:
+#   
+#   # Atlas of Victorian Fertility
+#   Include /path/to/fertility-atlas/.httpd.conf.extract.txt
+#   Use MacroFertilityAtlas "/public-url/fertilityatlas" "/path/to/fertility-atlas/:/path/to/php/libraries/"
+
+
+<Macro MacroFertilityAtlas $applicationBaseUrl $includePath>
+	
+	<Location $applicationBaseUrl>
+		php_value include_path "$includePath"
+	</Location>
+	
+	Use MacroFrontControllerApplication "$applicationBaseUrl/" "Atlas of Victorian Fertility"
+	
+</Macro>

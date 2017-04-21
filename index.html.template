@@ -1,0 +1,12 @@
+<?php
+
+# Settings
+$settings = array (
+	
+);
+
+# Load and run the class
+require_once ('fertility-atlas/fertilityAtlas.php');
+new fertilityAtlas ($settings);
+
+?>
