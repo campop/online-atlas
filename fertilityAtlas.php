@@ -25,6 +25,11 @@ class fertilityAtlas extends frontControllerApplication
 	{
 		# Specify additional actions
 		$actions = array (
+			'about' => array (
+				'description' => 'About the Atlas of Victorian Fertility',
+				'url' => 'about/',
+				'tab' => 'About',
+			),
 		);
 		
 		# Return the actions
@@ -87,10 +92,12 @@ class fertilityAtlas extends frontControllerApplication
 	}
 	
 	
-	# Function to ...
-	private function someFunction ()
+	# About page
+	public function about ()
 	{
-		
+		# Load and show the HTML
+		$html = file_get_contents ($this->applicationRoot . '/about.html');
+		echo $html;
 	}
 	
 }

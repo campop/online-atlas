@@ -15,4 +15,8 @@
 	
 	Use MacroFrontControllerApplication "$applicationBaseUrl/" "Atlas of Victorian Fertility"
 	
+	# Application directives
+	RewriteRule ^$applicationBaseUrl/(about)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
+	RewriteRule ^$applicationBaseUrl/(about)$ $applicationBaseUrl/$1/ [R]
+	
 </Macro>
