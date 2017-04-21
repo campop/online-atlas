@@ -53,15 +53,15 @@ class fertilityAtlas extends frontControllerApplication
 			<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
 			<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 			
-			<script type="text/javascript" src="js/lib/geocoder/geocoder.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/geocoder/geocoder.js"></script>
 			
-			<script type="text/javascript" src="js/lib/leaflet-fullHash/leaflet-fullHash.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-fullHash/leaflet-fullHash.js"></script>
 			
-			<script type="text/javascript" src="js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
-			<script type="text/javascript" src="js/lib/LeafletSlider/leaflet.SliderControl.min.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/LeafletSlider/leaflet.SliderControl.min.js"></script>
 			
-			<script type="text/javascript" src=".config.js"></script>
-			<script type="text/javascript" src="js/fertilityatlas.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/.config.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/fertilityatlas.js"></script>
 			<script type="text/javascript">
 				$(function() {
 					fertilityatlas.initialise (config);
