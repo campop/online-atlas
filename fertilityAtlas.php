@@ -26,10 +26,16 @@ class fertilityAtlas extends frontControllerApplication
 	{
 		# Specify additional actions
 		$actions = array (
+			'home' => array (
+				'description' => false,
+				'url' => '',
+				'tab' => 'Map of Victorian Fertility',
+				'icon' => 'map',
+			),
 			'about' => array (
 				'description' => 'About the Atlas of Victorian Fertility',
 				'url' => 'about/',
-				'tab' => 'About',
+				'tab' => 'About the Atlas',
 			),
 		);
 		
