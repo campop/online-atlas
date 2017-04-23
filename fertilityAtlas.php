@@ -15,6 +15,8 @@ class fertilityAtlas extends frontControllerApplication
 			'useDatabase' => false,
 			'geocoderApiKey' => NULL,
 			'administrators' => NULL,
+			// 'importsSectionsMode' => true,
+			'datasets' => array (1851, 1861, 1881, 1891, 1901, 1911),
 		);
 		
 		# Return the defaults
@@ -37,6 +39,13 @@ class fertilityAtlas extends frontControllerApplication
 				'description' => 'About the Atlas of Victorian Fertility',
 				'url' => 'about/',
 				'tab' => 'About the Atlas',
+			),
+			'import' => array (
+				'description' => 'Import',
+				'url' => 'import/',
+				'tab' => 'Import',
+				'icon' => 'database_refresh',
+				'administrator' => true,
 			),
 		);
 		
@@ -118,6 +127,78 @@ class fertilityAtlas extends frontControllerApplication
 		echo $html;
 	}
 	
+	
+	# Function to import the data files, clearing any existing import
+	public function import ()
+	{
+		# Define the import types
+		$importTypes = array (
+			'full' => 'Full import'
+		);
+		
+		# Import files
+		$importFiles = array ();
+		foreach ($this->settings['datasets'] as $dataset) {
+			$importFiles[] = $dataset;
+		}
+		
+		# Define the introduction HTML
+		$fileCreationInstructionsHtml  = "\n\t" . '<p>Create the shapefile, and zip up the contents of the folder.</p>';
+		
+		# Run the import UI
+		$this->importUi ($importFiles, $importTypes, $fileCreationInstructionsHtml, 'zip');
+		
+		# Show errors file if present
+		$html = '';
+		if (is_file ($this->errorsFile)) {
+			$html .= "\n<hr />";
+			$html .= "\n<h3>Errors from import:</h3>";
+			$html .= file_get_contents ($this->errorsFile);
+		}
+		
+		# Show the HTML
+		echo $html;
+	}
+	
+	
+	# Function to do the actual import
+	public function doImport ($exportFiles, $importType, &$html)
+	{
+		# Start the HTML
+		$html = '';
+		
+		# Loop through each file
+		foreach ($exportFiles as $year => $file) {
+			
+			# Remove existing data file if present
+			$geojson = "{$this->applicationRoot}/data/{$year}.geojson";
+			if (is_file ($geojson)) {
+				unlink ($geojson);
+			}
+			
+			# Unzip the shapefile
+			$path = pathinfo ($file);
+			$tempDir = "{$this->applicationRoot}/exports/{$path['filename']}/";
+			$command = "unzip {$file} -d {$tempDir}";		// http://stackoverflow.com/questions/8107886/create-folder-for-zip-file-and-extract-to-it
+			exec ($command, $output);
+			// application::dumpData ($output);
+			
+			# Convert to GeoJSON
+			$currentDirectory = getcwd ();
+			chdir ($tempDir);
+			$command = "ogr2ogr -f GeoJSON -lco COORDINATE_PRECISION=4 -t_srs EPSG:4326 {$geojson} *.shp";
+			exec ($command, $output);
+			// application::dumpData ($output);
+			chdir ($currentDirectory);	// Change back
+			
+			# Remove the shapefile files and containing directory
+			array_map ('unlink', glob ("{$tempDir}/*.*"));	// http://php.net/unlink#109971
+			rmdir ($tempDir);
+		}
+		
+		# Return success
+		return true;
+	}
 }
 
 ?>
