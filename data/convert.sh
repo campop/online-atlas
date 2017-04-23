@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+
+# Script to convert the original shapefile datasets to GeoJSON
+
+
 releasedate=170421
 
 years=(
@@ -19,6 +23,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 for year in ${years[@]} ; do
 	rm -f "${DIR}/${year}.geojson"
 	cd "${DIR}/_originals/${releasedate}/TFR_${year}/"
-	ogr2ogr -f GeoJSON -t_srs EPSG:4326 "${DIR}/${year}.geojson" *.shp
+	ogr2ogr -f GeoJSON -lco COORDINATE_PRECISION=4 -t_srs EPSG:4326 "${DIR}/${year}.geojson" *.shp
 	cd "${DIR}/"
 done
