@@ -3,6 +3,7 @@
 # Settings
 $settings = array (
 	'geocoderApiKey' => 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
+	'administrators' => array (),			// List of admin usernames
 );
 
 # Load and run the class
