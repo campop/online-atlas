@@ -14,6 +14,7 @@ class fertilityAtlas extends frontControllerApplication
 			'div' => 'fertilityatlas',
 			'useDatabase' => false,
 			'geocoderApiKey' => NULL,
+			'administrators' => NULL,
 		);
 		
 		# Return the defaults
