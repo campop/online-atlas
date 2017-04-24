@@ -179,6 +179,9 @@ var fertilityatlas = (function ($) {
 			// Add hash support
 			new L.Hash (_map, baseLayersById);
 			
+			// Add full screen control
+			_map.addControl(new L.Control.Fullscreen({pseudoFullscreen: true}));
+			
 			// Add geolocation control
 			L.control.locate().addTo(_map);
 		},
