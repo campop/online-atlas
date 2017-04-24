@@ -160,19 +160,8 @@ class fertilityAtlas extends frontControllerApplication
 		# Define the introduction HTML
 		$fileCreationInstructionsHtml  = "\n\t" . '<p>Create the shapefile, and zip up the contents of the folder.</p>';
 		
-		# Run the import UI
+		# Run the import UI (which will output HTML)
 		$this->importUi ($importFiles, $importTypes, $fileCreationInstructionsHtml, 'zip');
-		
-		# Show errors file if present
-		$html = '';
-		if (is_file ($this->errorsFile)) {
-			$html .= "\n<hr />";
-			$html .= "\n<h3>Errors from import:</h3>";
-			$html .= file_get_contents ($this->errorsFile);
-		}
-		
-		# Show the HTML
-		echo $html;
 	}
 	
 	
