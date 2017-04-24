@@ -12,9 +12,14 @@ class fertilityAtlas extends frontControllerApplication
 		$defaults = array (
 			'applicationName' => 'Atlas of Victorian Fertility',
 			'div' => 'fertilityatlas',
-			'useDatabase' => false,
+			'hostname' => 'localhost',
+			'database' => 'fertilityatlas',
+			'username' => 'fertilityatlas',
+			'password' => NULL,
+			'table' => 'fertilityatlas',
+			'databaseStrictWhere' => true,
+			'administrators' => true,
 			'geocoderApiKey' => NULL,
-			'administrators' => NULL,
 			// 'importsSectionsMode' => true,
 			'datasets' => array (1851, 1861, 1881, 1891, 1901, 1911),
 		);
@@ -58,6 +63,12 @@ class fertilityAtlas extends frontControllerApplication
 	public function databaseStructure ()
 	{
 		return "
+			CREATE TABLE administrators (
+			  username varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Username',
+			  active enum('','Yes','No') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Yes' COMMENT 'Currently active?',
+			  privilege enum('Administrator','Restricted administrator') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Administrator' COMMENT 'Administrator level',
+			  PRIMARY KEY (username)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='System administrators';
 		";
 	}
 	
