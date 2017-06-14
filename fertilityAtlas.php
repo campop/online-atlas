@@ -10,7 +10,7 @@ class fertilityAtlas extends frontControllerApplication
 	{
 		# Specify available arguments as defaults or as NULL (to represent a required argument)
 		$defaults = array (
-			'applicationName' => 'Atlas of Victorian Fertility',
+			'applicationName' => 'Atlas of Victorian and Edwardian Population',
 			'div' => 'fertilityatlas',
 			'hostname' => 'localhost',
 			'database' => 'fertilityatlas',
