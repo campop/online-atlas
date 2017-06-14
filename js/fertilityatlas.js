@@ -124,6 +124,7 @@ var fertilityatlas = (function ($) {
 	
 	
 	
+	// Functions
 	return {
 		
 		// Main function
