@@ -21,7 +21,8 @@ class fertilityAtlas extends frontControllerApplication
 			'administrators' => true,
 			'geocoderApiKey' => NULL,
 			// 'importsSectionsMode' => true,
-			'datasets' => array (1851, 1861, 1881, 1891, 1901, 1911),
+			'datasetGroups' => array ('FERTILITY_%s', 'RSD_%s_TYPE'),
+			'datasetYears' => array (1851, 1861, 1881, 1891, 1901, 1911),
 		);
 		
 		# Return the defaults
@@ -165,7 +166,7 @@ class fertilityAtlas extends frontControllerApplication
 		$fields = $this->databaseConnection->getHeadings ($this->settings['database'], $this->settings['table']);
 		
 		# Add each year
-		foreach ($this->settings['datasets'] as $dataset) {
+		foreach ($this->settings['datasetYears'] as $dataset) {
 			$fields['CEN_' . $dataset] = '#';
 		}
 		
@@ -193,8 +194,10 @@ class fertilityAtlas extends frontControllerApplication
 		
 		# Create the list of import files
 		$importFiles = array ();
-		foreach ($this->settings['datasets'] as $dataset) {
-			$importFiles[] = sprintf ('FERTILITY_%s', $dataset);
+		foreach ($this->settings['datasetGroups'] as $datasetGroup) {
+			foreach ($this->settings['datasetYears'] as $dataset) {
+				$importFiles[] = sprintf ($datasetGroup, $dataset);
+			}
 		}
 		
 		# Define the introduction HTML
@@ -218,12 +221,16 @@ class fertilityAtlas extends frontControllerApplication
 		$i = 0;
 		foreach ($exportFiles as $dataset => $file) {
 			
+			# Skip type files
+			$isTypeFile = (!substr_count ($dataset, 'FERTILITY'));
+			
 			# Extract the year
 			preg_match ('/([0-9]{4})/', $dataset, $matches);
 			$year = $matches[1];
 			
 			# Remove existing data file if present
-			$geojson = "{$this->applicationRoot}/data/{$year}.geojson";
+			$filename = ($isTypeFile ? $filename : $year);
+			$geojson = "{$this->applicationRoot}/data/{$filename}.geojson";
 			if (is_file ($geojson)) {
 				unlink ($geojson);
 			}
@@ -252,7 +259,9 @@ class fertilityAtlas extends frontControllerApplication
 			$i++;
 			
 			# Import the GeoJSON contents into the database
-			$this->importGeojson ($geojson, $year, $truncate);
+			if (!$isTypeFile) {
+				$this->importGeojson ($geojson, $dataset, $year, $truncate);
+			}
 		}
 		
 		# Return success
@@ -261,7 +270,7 @@ class fertilityAtlas extends frontControllerApplication
 	
 	
 	# Function to import contents of a GeoJSON file into the database
-	private function importGeojson ($geojsonFilename, $year, $truncate)
+	private function importGeojson ($geojsonFilename, $dataset, $year, $truncate)
 	{
 		# Truncate the table for the first file; requires the DROP privilege
 		if ($truncate) {
