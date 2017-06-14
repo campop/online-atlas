@@ -80,16 +80,39 @@ var fertilityatlas = (function ($) {
 		
 		// Map geometry styling; colour scales can be created at http://www.colorbrewer.org/
 		colourField: 'EBS_TFR',
-		colourStops: [
-			[9999, 'red'],
-			[5, '#ed7552'],
-			[4.5, '#ed7552'],
-			[4, '#fab884'],
-			[3.5, '#ffffbf'],
-			[3, '#c0ccbe'],
-			[2.5, '#849eb9'],
-			[0, '#4575b5']
-		]
+		colourStops: {
+			'IMR': [
+				[9999, 'red'],
+				[180, '#ed7552'],
+				[160, '#ed7552'],
+				[140, '#fab884'],
+				[120, '#ffffbf'],
+				[100, '#c0ccbe'],
+				[80, '#849eb9'],
+				[0, '#4575b5']
+			],
+			'TFR': [
+				[9999, 'red'],
+				[5, '#ed7552'],
+				[4.5, '#ed7552'],
+				[4, '#fab884'],
+				[3.5, '#ffffbf'],
+				[3, '#c0ccbe'],
+				[2.5, '#849eb9'],
+				[0, '#4575b5']
+			],
+			'TMFR': [
+				[9999, 'red'],
+				[8.5, '#ed7552'],
+				[8, '#ed7552'],
+				[7, '#fab884'],
+				[6, '#ffffbf'],
+				[5, '#c0ccbe'],
+				[4.5, '#849eb9'],
+				[0, '#4575b5']
+			]
+			
+		}
 	};
 	
 	
@@ -230,8 +253,8 @@ var fertilityatlas = (function ($) {
 		{
 			// Loop through each colour until found
 			var colourStop;
-			for (var i = 0; i < _settings.colourStops.length; i++) {	// NB $.each doesn't seem to work - it doesn't seem to reset the array pointer for each iteration
-				colourStop = _settings.colourStops[i];
+			for (var i = 0; i < _settings.colourStops['TFR'].length; i++) {	// NB $.each doesn't seem to work - it doesn't seem to reset the array pointer for each iteration
+				colourStop = _settings.colourStops['TFR'][i];
 				if (value >= colourStop[0]) {
 					return colourStop[1];
 				}
