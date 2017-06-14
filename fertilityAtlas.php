@@ -191,10 +191,10 @@ class fertilityAtlas extends frontControllerApplication
 			'full' => 'Full import'
 		);
 		
-		# Import files
+		# Create the list of import files
 		$importFiles = array ();
 		foreach ($this->settings['datasets'] as $dataset) {
-			$importFiles[] = $dataset;
+			$importFiles[] = sprintf ('FERTILITY_%s', $dataset);
 		}
 		
 		# Define the introduction HTML
@@ -216,7 +216,11 @@ class fertilityAtlas extends frontControllerApplication
 		
 		# Loop through each file
 		$i = 0;
-		foreach ($exportFiles as $year => $file) {
+		foreach ($exportFiles as $dataset => $file) {
+			
+			# Extract the year
+			preg_match ('/([0-9]{4})/', $dataset, $matches);
+			$year = $matches[1];
 			
 			# Remove existing data file if present
 			$geojson = "{$this->applicationRoot}/data/{$year}.geojson";

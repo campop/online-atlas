@@ -111,7 +111,6 @@ var fertilityatlas = (function ($) {
 				[4.5, '#849eb9'],
 				[0, '#4575b5']
 			]
-			
 		}
 	};
 	
