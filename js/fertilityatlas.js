@@ -91,22 +91,14 @@ var fertilityatlas = (function ($) {
 			'DIVISION': 'Division',
 			'COUNTRY': 'Country',
 			// Data fields
-			'RAW_1519': 'Females aged 15-19',
-			'EBS_1519': 'Females aged 15-19 (smoothed)',
-			'RAW_2024': 'Females aged 20-24',
-			'EBS_2024': 'Females aged 20-24 (smoothed)',
-			'RAW_2529': 'Females aged 25-29',
-			'EBS_2529': 'Females aged 25-29 (smoothed)',
-			'RAW_3034': 'Females aged 30-34',
-			'EBS_3034': 'Females aged 30-34 (smoothed)',
-			'RAW_3539': 'Females aged 35-39',
-			'EBS_3539': 'Females aged 35-39 (smoothed)',
-			'RAW_4044': 'Females aged 40-44',
-			'EBS_4044': 'Females aged 40-44 (smoothed)',
-			'RAW_4549': 'Females aged 45-49',
-			'EBS_4549': 'Females aged 45-49 (smoothed)',
-			'RAW_TFR': 'Total fertility rate',
-			'EBS_TFR': 'Total fertility rate (smoothed)'
+			'RAW_TFR': 'Total Fertility Rate, 20-49',
+			'EBS_TFR': 'Total Fertility Rate, 20-49 (smoothed)',
+			'RAW_TMFR_A': 'Total Marital Fertility Rate - all married women 20-49',
+			'EBS_TMFR_A': 'Total Marital Fertility Rate - all married women 20-49 (smoothed)',
+			'RAW_TMFR_E': 'Total Marital Fertility Rate - ever married women 20-49',
+			'EBS_TMFR_E': 'Total Marital Fertility Rate - ever married women 20-49 (smoothed)',
+			'RAW_TMFR_M': 'Total Marital Fertility Rate - married women, spouse present 20-49',
+			'EBS_TMFR_M': 'Total Marital Fertility Rate - married women, spouse present 20-49 (smoothed)'
 		},
 		
 		// Map geometry styling; colour scales can be created at http://www.colorbrewer.org/
