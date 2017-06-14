@@ -81,12 +81,13 @@ var fertilityatlas = (function ($) {
 		// Map geometry styling; colour scales can be created at http://www.colorbrewer.org/
 		colourField: 'EBS_TFR',
 		colourStops: [
-			[999, '#d62f27'],
-			[8, '#ed7552'],
-			[7, '#fab884'],
-			[6, '#ffffbf'],
-			[5, '#c0ccbe'],
-			[4, '#849eb9'],
+			[9999, 'red'],
+			[5, '#ed7552'],
+			[4.5, '#ed7552'],
+			[4, '#fab884'],
+			[3.5, '#ffffbf'],
+			[3, '#c0ccbe'],
+			[2.5, '#849eb9'],
 			[0, '#4575b5']
 		]
 	};
