@@ -81,7 +81,7 @@ var fertilityatlas = (function ($) {
 		// Map geometry styling; colour scales can be created at http://www.colorbrewer.org/
 		colourField: 'EBS_TFR',
 		colourStops: {
-			'IMR': [
+			'IMR': [	// Infant mortality rate
 				[9999, 'red'],
 				[180, '#ed7552'],
 				[160, '#ed7552'],
@@ -91,7 +91,7 @@ var fertilityatlas = (function ($) {
 				[80, '#849eb9'],
 				[0, '#4575b5']
 			],
-			'TFR': [
+			'TFR': [	// Total fertility rate
 				[9999, 'red'],
 				[5, '#ed7552'],
 				[4.5, '#ed7552'],
@@ -101,7 +101,7 @@ var fertilityatlas = (function ($) {
 				[2.5, '#849eb9'],
 				[0, '#4575b5']
 			],
-			'TMFR': [
+			'TMFR': [	// Total marital fertility rate
 				[9999, 'red'],
 				[8.5, '#ed7552'],
 				[8, '#ed7552'],
