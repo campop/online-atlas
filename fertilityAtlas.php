@@ -37,7 +37,7 @@ class fertilityAtlas extends frontControllerApplication
 			'home' => array (
 				'description' => false,
 				'url' => '',
-				'tab' => 'Map of Victorian Fertility',
+				'tab' => $this->settings['applicationName'],
 				'icon' => 'map',
 			),
 			'about' => array (
