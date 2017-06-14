@@ -76,30 +76,7 @@ var fertilityatlas = (function ($) {
 		},
 		
 		// Fields and their labels
-		fields: {
-			// IDs
-			'CEN_1851': '#',
-			'CEN_1861': '#',
-			'CEN_1881': '#',
-			'CEN_1891': '#',
-			'CEN_1901': '#',
-			'CEN_1911': '#',
-			// Areas
-			'SUBDIST': 'Sub-district',
-			'REGDIST': 'Registration district',
-			'REGCNTY': 'County',
-			'DIVISION': 'Division',
-			'COUNTRY': 'Country',
-			// Data fields
-			'RAW_TFR': 'Total Fertility Rate, 20-49',
-			'EBS_TFR': 'Total Fertility Rate, 20-49 (smoothed)',
-			'RAW_TMFR_A': 'Total Marital Fertility Rate - all married women 20-49',
-			'EBS_TMFR_A': 'Total Marital Fertility Rate - all married women 20-49 (smoothed)',
-			'RAW_TMFR_E': 'Total Marital Fertility Rate - ever married women 20-49',
-			'EBS_TMFR_E': 'Total Marital Fertility Rate - ever married women 20-49 (smoothed)',
-			'RAW_TMFR_M': 'Total Marital Fertility Rate - married women, spouse present 20-49',
-			'EBS_TMFR_M': 'Total Marital Fertility Rate - married women, spouse present 20-49 (smoothed)'
-		},
+		fields: {},		// Will be supplied from the database
 		
 		// Map geometry styling; colour scales can be created at http://www.colorbrewer.org/
 		colourField: 'EBS_TFR',

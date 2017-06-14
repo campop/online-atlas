@@ -96,6 +96,9 @@ class fertilityAtlas extends frontControllerApplication
 	# Welcome screen
 	public function home ()
 	{
+		# Get the dataset fields and their labels
+		$fields = $this->getFieldHeadings ();
+		
 		# Start the HTML
 		$html = '
 			
@@ -126,7 +129,8 @@ class fertilityAtlas extends frontControllerApplication
 			<script type="text/javascript">
 				
 				var config = {
-					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\'
+					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
+					fields: ' . json_encode ($fields, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . '
 				}
 				
 				$(function() {
@@ -151,6 +155,22 @@ class fertilityAtlas extends frontControllerApplication
 		
 		# Show the HTML
 		echo $html;
+	}
+	
+	
+	# Function to get the fields used by the popups
+	private function getFieldHeadings ()
+	{
+		# Get the dataset fields
+		$fields = $this->databaseConnection->getHeadings ($this->settings['database'], $this->settings['table']);
+		
+		# Add each year
+		foreach ($this->settings['datasets'] as $dataset) {
+			$fields['CEN_' . $dataset] = '#';
+		}
+		
+		# Return the fields
+		return $fields;
 	}
 	
 	
