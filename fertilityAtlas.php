@@ -331,8 +331,38 @@ class fertilityAtlas extends frontControllerApplication
 	# API call to retrieve data
 	public function apiCall_locations ()
 	{
-		// TODO
-		return array ('key' => 'value');
+		# Obtain the supplied BBOX (W,S,E,N)
+		$bbox = (isSet ($_GET['bbox']) && (substr_count ($_GET['bbox'], ',') == 3) && preg_match ('/^([-.,0-9]+)$/', $_GET['bbox']) ? explode (',', $_GET['bbox'], 4) : false);
+		if (!$bbox) {
+			return array ('error' => 'A valid BBOX must be supplied.');
+		}
+		
+		# Construct the BBOX WKT string
+		$bboxGeom = "Polygon(({$bbox[0]} {$bbox[1]},{$bbox[1]} {$bbox[2]},{$bbox[2]} {$bbox[3]},{$bbox[3]} {$bbox[0]},{$bbox[0]} {$bbox[1]}))";
+		
+		# Obtain the data
+		$query = "
+			SELECT
+			*,
+			ST_AsText(geometry) AS geometry
+			FROM {$this->settings['database']}.data
+			WHERE MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
+			LIMIT 100
+		;";
+		$data = $this->databaseConnection->getData ($query);
+		
+		# Convert to GeoJSON
+		require_once ('geojsonRenderer.class.php');
+		$geojsonRenderer = new geojsonRenderer ();
+		foreach ($data as $id => $location) {
+			$properties = $location;
+			unset ($properties['geometry']);
+			$geojsonRenderer->geometryWKT ($location['geometry'], $properties);
+		}
+		$data = $geojsonRenderer->getData ();
+		
+		# Return the data
+		return $data;
 	}
 }
 
