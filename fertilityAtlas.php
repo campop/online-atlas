@@ -22,6 +22,7 @@ class fertilityAtlas extends frontControllerApplication
 			'geocoderApiKey' => NULL,
 			// 'importsSectionsMode' => true,
 			'datasets' => array (1851, 1861, 1881, 1891, 1901, 1911),
+			'apiUsername' => true,
 		);
 		
 		# Return the defaults
@@ -324,6 +325,14 @@ class fertilityAtlas extends frontControllerApplication
 			echo "\n<p class=\"warning\">ERROR:</p>";
 			application::dumpData ($this->databaseConnection->error ());
 		}
+	}
+	
+	
+	# API call to retrieve data
+	public function apiCall_locations ()
+	{
+		// TODO
+		return array ('key' => 'value');
 	}
 }
 
