@@ -18,6 +18,7 @@ class fertilityAtlas extends frontControllerApplication
 			'password' => NULL,
 			'table' => 'data',
 			'databaseStrictWhere' => true,
+			'nativeTypes' => true,
 			'administrators' => true,
 			'geocoderApiKey' => NULL,
 			// 'importsSectionsMode' => true,
@@ -350,6 +351,17 @@ class fertilityAtlas extends frontControllerApplication
 			LIMIT 100
 		;";
 		$data = $this->databaseConnection->getData ($query);
+		
+		# Determine fields that are DECIMAL so that trailing zeros are removed
+		#!# Ideally this should be handled natively by the database library
+		$fields = $this->databaseConnection->getFields ($this->settings['database'], 'data');
+		foreach ($fields as $field => $attributes) {
+			if (substr_count (strtolower ($attributes['Type']), 'decimal')) {
+				foreach ($data as $index => $record) {
+					$data[$index][$field] = $data[$index][$field] + 0;
+				}
+			}
+		}
 		
 		# Convert to GeoJSON
 		require_once ('geojsonRenderer.class.php');
