@@ -339,7 +339,7 @@ class fertilityAtlas extends frontControllerApplication
 		}
 		
 		# Construct the BBOX WKT string
-		$bboxGeom = "Polygon(({$bbox[0]} {$bbox[1]},{$bbox[1]} {$bbox[2]},{$bbox[2]} {$bbox[3]},{$bbox[3]} {$bbox[0]},{$bbox[0]} {$bbox[1]}))";
+		$bboxGeom = "Polygon(({$bbox[0]} {$bbox[1]},{$bbox[2]} {$bbox[1]},{$bbox[2]} {$bbox[3]},{$bbox[0]} {$bbox[3]},{$bbox[0]} {$bbox[1]}))";
 		
 		# Obtain the data
 		$query = "
