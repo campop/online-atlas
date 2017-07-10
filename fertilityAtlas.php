@@ -23,6 +23,7 @@ class fertilityAtlas extends frontControllerApplication
 			'geocoderApiKey' => NULL,
 			// 'importsSectionsMode' => true,
 			'datasets' => array (1851, 1861, 1881, 1891, 1901, 1911),
+			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down
 			'apiUsername' => true,
 		);
 		
@@ -338,6 +339,13 @@ class fertilityAtlas extends frontControllerApplication
 			return array ('error' => 'A valid BBOX must be supplied.');
 		}
 		
+		# Obtain the supplied zoom
+		$zoom = (isSet ($_GET['zoom']) && ctype_digit ($_GET['zoom']) ? $_GET['zoom'] : false);
+		if (!$zoom) {
+			return array ('error' => 'A valid zoom must be supplied.');
+		}
+		$zoomedOut = ($zoom <= $this->settings['zoomedOut']);
+		
 		# Construct the BBOX WKT string
 		$bboxGeom = "Polygon(({$bbox[0]} {$bbox[1]},{$bbox[2]} {$bbox[1]},{$bbox[2]} {$bbox[3]},{$bbox[0]} {$bbox[3]},{$bbox[0]} {$bbox[1]}))";
 		
@@ -345,11 +353,12 @@ class fertilityAtlas extends frontControllerApplication
 		$query = "
 			SELECT
 			-- *,
-			year, CEN, COUNTRY, DIVISION, TMFR, TFR,
+			" . ($zoomedOut ? '' : 'year, CEN, COUNTRY, DIVISION, TMFR, ') . " TFR,
 			ST_AsText(geometry) AS geometry
 			FROM {$this->settings['database']}.data
 			WHERE MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
-			LIMIT 100
+			AND year = 1851
+			LIMIT " . ($zoomedOut ? '1000' : '250') . "
 		;";
 		$data = $this->databaseConnection->getData ($query);
 		

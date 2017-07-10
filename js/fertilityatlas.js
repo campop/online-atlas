@@ -254,8 +254,9 @@ var fertilityatlas = (function ($) {
 			// Start API data parameters
 			var apiData = {};
 			
-			// Supply the bbox
+			// Supply the bbox and zoom
 			apiData.bbox = _map.getBounds().toBBoxString();
+			apiData.zoom = _map.getZoom();
 			
 			// Fetch data
 			$.ajax({
