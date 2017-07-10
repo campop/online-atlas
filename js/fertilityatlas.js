@@ -290,9 +290,7 @@ var fertilityatlas = (function ($) {
 		showCurrentData: function (data)
 		{
 			// If this layer already exists, remove it so that it can be redrawn
-			if (_layer) {
-				_map.removeLayer (_layer);
-			}
+			fertilityatlas.removeLayer ();
 			
 			// Define the data layer
 			_layer = L.geoJson(data, {
@@ -310,6 +308,16 @@ var fertilityatlas = (function ($) {
 		browserSupportsCors: function ()
 		{
 			return ('withCredentials' in new XMLHttpRequest ());
+		},
+		
+		
+		// Function to remove the data layer
+		removeLayer: function ()
+		{
+			// Remove the layer, checking first to ensure it exists
+			if (_layer) {
+				_map.removeLayer (_layer);
+			}
 		},
 		
 		
