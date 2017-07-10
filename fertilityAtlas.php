@@ -344,7 +344,8 @@ class fertilityAtlas extends frontControllerApplication
 		# Obtain the data
 		$query = "
 			SELECT
-			*,
+			-- *,
+			year, CEN, COUNTRY, DIVISION, TMFR, TFR,
 			ST_AsText(geometry) AS geometry
 			FROM {$this->settings['database']}.data
 			WHERE MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
@@ -358,7 +359,9 @@ class fertilityAtlas extends frontControllerApplication
 		foreach ($fields as $field => $attributes) {
 			if (substr_count (strtolower ($attributes['Type']), 'decimal')) {
 				foreach ($data as $index => $record) {
-					$data[$index][$field] = $data[$index][$field] + 0;
+					if (isSet ($data[$index][$field])) {
+						$data[$index][$field] = $data[$index][$field] + 0;
+					}
 				}
 			}
 		}
