@@ -152,6 +152,7 @@ class fertilityAtlas extends frontControllerApplication
 				
 				var config = {
 					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
+					zoomedOut: ' . $this->settings['zoomedOut'] . ',
 					fields: ' . json_encode ($fields, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . '
 				}
 				

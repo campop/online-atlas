@@ -11,6 +11,7 @@ var fertilityatlas = (function ($) {
 	var _baseUrl;
 	var _map = null;
 	var _layer = null;
+	var _zoomedOut = null;
 	
 	// Settings
 	var _settings = {
@@ -254,9 +255,13 @@ var fertilityatlas = (function ($) {
 			// Start API data parameters
 			var apiData = {};
 			
+			// Get the current zoom and determine if the map is zoomed out
+			var currentZoom = _map.getZoom();
+			_zoomedOut = (currentZoom <= _settings.zoomedOut);
+			
 			// Supply the bbox and zoom
 			apiData.bbox = _map.getBounds().toBBoxString();
-			apiData.zoom = _map.getZoom();
+			apiData.zoom = currentZoom;
 			
 			// Fetch data
 			$.ajax({
@@ -312,11 +317,14 @@ var fertilityatlas = (function ($) {
 		setStyle: function (feature)
 		{
 			// Base the colour on the specified colour field
-			return {
+			var style = {
 				fillColor: fertilityatlas.getColour (feature.properties[_settings.colourField]),
-				weight: 1,
+				weight: (_zoomedOut ? 0 : 1),
 				fillOpacity: 0.7
 			};
+			
+			// Return the style
+			return style;
 		},
 		
 		
