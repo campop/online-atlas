@@ -366,7 +366,7 @@ class fertilityAtlas extends frontControllerApplication
 		$query = "
 			SELECT
 			-- *,
-			" . ($zoomedOut ? '' : 'year, CEN, COUNTRY, DIVISION, TMFR, ') . " TFR,
+			" . ($zoomedOut ? '' : 'year, SUBDIST, REGDIST, TMFR, ') . " TFR,
 			ST_AsText(geometry) AS geometry
 			FROM {$this->settings['database']}.data
 			WHERE MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
