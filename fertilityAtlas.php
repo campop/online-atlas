@@ -353,6 +353,12 @@ class fertilityAtlas extends frontControllerApplication
 		}
 		$zoomedOut = ($zoom <= $this->settings['zoomedOut']);
 		
+		# Obtain the supplied year
+		$year = (isSet ($_GET['year']) && ctype_digit ($_GET['year']) ? $_GET['year'] : false);
+		if (!$year) {
+			return array ('error' => 'A valid year must be supplied.');
+		}
+		
 		# Construct the BBOX WKT string
 		$bboxGeom = "Polygon(({$bbox[0]} {$bbox[1]},{$bbox[2]} {$bbox[1]},{$bbox[2]} {$bbox[3]},{$bbox[0]} {$bbox[3]},{$bbox[0]} {$bbox[1]}))";
 		
@@ -364,7 +370,7 @@ class fertilityAtlas extends frontControllerApplication
 			ST_AsText(geometry) AS geometry
 			FROM {$this->settings['database']}.data
 			WHERE MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
-			AND year = 1851
+			AND year = {$year}
 			LIMIT " . ($zoomedOut ? '1000' : '250') . "
 		;";
 		$data = $this->databaseConnection->getData ($query);

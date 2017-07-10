@@ -263,6 +263,9 @@ var fertilityatlas = (function ($) {
 			apiData.bbox = _map.getBounds().toBBoxString();
 			apiData.zoom = currentZoom;
 			
+			// Supply the year
+			apiData.year = 1851;
+			
 			// Fetch data
 			$.ajax({
 				url: _baseUrl + '/api/locations',
