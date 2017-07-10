@@ -155,7 +155,7 @@ class fertilityAtlas extends frontControllerApplication
 				}
 				
 				$(function() {
-					fertilityatlas.initialise (config);
+					fertilityatlas.initialise (config, \'' . $this->baseUrl . '\');
 				});
 				
 			</script>

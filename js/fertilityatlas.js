@@ -8,6 +8,7 @@ var fertilityatlas = (function ($) {
 	'use strict';
 	
 	// Internal class properties
+	var _baseUrl;
 	var _map = null;
 	
 	// Settings
@@ -120,12 +121,15 @@ var fertilityatlas = (function ($) {
 	return {
 		
 		// Main function
-		initialise: function (config)
+		initialise: function (config, baseUrl)
 		{
 			// Obtain the configuration and add to settings
 			$.each (config, function (key, value) {
 				_settings[key] = value;
 			});
+			
+			// Obtain the base URL
+			_baseUrl = baseUrl;
 			
 			// Create the map
 			fertilityatlas.createMap ();
