@@ -367,6 +367,10 @@ var fertilityatlas = (function ($) {
 		// Popup wrapper
 		popup: function (feature, layer)
 		{
+			// Disable popups if zoomed out
+			if (_zoomedOut) {return;}
+			
+			// Create the popup
 			var popupHtml = fertilityatlas.popupHtml (feature /*, dataset */);
 			layer.bindPopup(popupHtml, {autoPan: false});
 		},
