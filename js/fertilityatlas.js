@@ -1,7 +1,7 @@
 // Fertility atlas application code
 
 /*jslint browser: true, white: true, single: true, for: true */
-/*global alert, console, window, $, jQuery, L, autocomplete */
+/*global alert, console, window, $, jQuery, L, autocomplete, vex */
 
 var fertilityatlas = (function ($) {
 	
