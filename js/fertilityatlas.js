@@ -279,6 +279,14 @@ var fertilityatlas = (function ($) {
 				},
 				success: function (data, textStatus, jqXHR) {
 					
+					// Show API-level error if one occured
+					// #!# This is done here because the API still returns Status code 200
+					if (data.error) {
+						fertilityatlas.removeLayer ();
+						vex.dialog.alert ('Error: ' + data.error);
+						return {};
+					}
+					
 					// Show the data successfully
 					fertilityatlas.showCurrentData(data);
 				}
