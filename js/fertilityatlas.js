@@ -10,6 +10,7 @@ var fertilityatlas = (function ($) {
 	// Internal class properties
 	var _baseUrl;
 	var _map = null;
+	var _layer = null;
 	
 	// Settings
 	var _settings = {
@@ -139,7 +140,15 @@ var fertilityatlas = (function ($) {
 			//fertilityatlas.addData (dataset);
 			
 			// Add the data to the map as switchable layers
-			fertilityatlas.addSwitchableLayers ();
+			//fertilityatlas.addSwitchableLayers ();
+			
+			// Add the data via AJAX requests
+			fertilityatlas.getData ();
+			
+			// Register to refresh data on map move
+			_map.on ('moveend', function (e) {
+				fertilityatlas.getData ();
+			});
 		},
 		
 		
@@ -236,6 +245,65 @@ var fertilityatlas = (function ($) {
 			});
 			_map.addControl(sliderControl);
 			sliderControl.startSlider();
+		},
+		
+		
+		// Function to add data to the map via an AJAX API call
+		getData: function ()
+		{
+			// Start API data parameters
+			var apiData = {};
+			
+			// Supply the bbox
+			apiData.bbox = _map.getBounds().toBBoxString();
+			
+			// Fetch data
+			$.ajax({
+				url: _baseUrl + '/api/locations',
+				dataType: (fertilityatlas.browserSupportsCors () ? 'json' : 'jsonp'),		// Fall back to JSON-P for IE9
+				crossDomain: true,	// Needed for IE<=9; see: https://stackoverflow.com/a/12644252/180733
+				data: apiData,
+				error: function (jqXHR, error, exception) {
+					
+					// Show error, unless deliberately aborted
+					if (jqXHR.statusText != 'abort') {
+						var data = $.parseJSON(jqXHR.responseText);
+						alert ('Error: ' + data.error);
+					}
+				},
+				success: function (data, textStatus, jqXHR) {
+					
+					// Show the data successfully
+					fertilityatlas.showCurrentData(data);
+				}
+			});
+		},
+		
+		
+		// Function to show the data for a layer
+		showCurrentData: function (data)
+		{
+			// If this layer already exists, remove it so that it can be redrawn
+			if (_layer) {
+				_map.removeLayer (_layer);
+			}
+			
+			// Define the data layer
+			_layer = L.geoJson(data, {
+				onEachFeature: fertilityatlas.popup,
+				style: fertilityatlas.setStyle
+			});
+			
+			// Add to the map
+			_layer.addTo(_map);
+			
+		},
+		
+		
+		// Helper function to enable fallback to JSON-P for older browsers like IE9; see: https://stackoverflow.com/a/1641582
+		browserSupportsCors: function ()
+		{
+			return ('withCredentials' in new XMLHttpRequest ());
 		},
 		
 		
