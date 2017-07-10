@@ -79,7 +79,7 @@ var fertilityatlas = (function ($) {
 		fields: {},		// Will be supplied from the database
 		
 		// Map geometry styling; colour scales can be created at http://www.colorbrewer.org/
-		colourField: 'EBS_TFR',
+		colourField: 'TFR',
 		colourStops: {
 			'IMR': [	// Infant mortality rate
 				[9999, 'red'],
