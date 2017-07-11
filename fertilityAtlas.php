@@ -398,6 +398,44 @@ class fertilityAtlas extends frontControllerApplication
 		}
 		$data = $geojsonRenderer->getData ();
 		
+		# Simplify the lines to reduce data volume
+		if ($zoomedOut) {
+			$data = $this->simplifyLines ($data);
+		}
+		
+		# Return the data
+		return $data;
+	}
+	
+	
+	# Function to simplify lines; this is a wrapper to the Douglas-Peucker algorithm library
+	#!# Migrate to ST_Simplify available in MySQL 5.7: https://dev.mysql.com/doc/refman/5.7/en/spatial-convenience-functions.html#function_st-simplify
+	private function simplifyLines ($data, $thresholdMetres = 1000)
+	{
+		# Load the library
+		require_once ('lib/simplifyLineHelper.class.php');
+		$simplifyLine = new simplifyLine ();
+		
+		# Simplify each feature
+		foreach ($data['features'] as $featureIndex => $feature) {
+			switch ($feature['geometry']['type']) {
+					
+				case 'Polygon':
+					foreach ($feature['geometry']['coordinates'] as $coordinateSetIndex => $coordinates) {
+						$data['features'][$featureIndex]['geometry']['coordinates'][$coordinateSetIndex] = $simplifyLine->straighten ($coordinates, $thresholdMetres);
+					}
+					break;
+					
+				case 'MultiPolygon':
+					foreach ($feature['geometry']['coordinates'] as $polygonIndex => $polygons) {
+						foreach ($polygons as $coordinateSetIndex => $coordinates) {
+							$data['features'][$featureIndex]['geometry']['coordinates'][$polygonIndex][$coordinateSetIndex] = $simplifyLine->straighten ($coordinates, $thresholdMetres);
+						}
+					}
+					break;
+			}
+		}
+		
 		# Return the data
 		return $data;
 	}
