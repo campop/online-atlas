@@ -9,7 +9,7 @@
 
 <Macro MacroFertilityAtlas $applicationBaseUrl $includePath $repoPath>
 	
-	<Location $applicationBaseUrl>
+	<Location $applicationBaseUrl/>
 		php_value include_path "$includePath"
 	</Location>
 	
