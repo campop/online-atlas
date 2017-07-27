@@ -20,7 +20,7 @@ Dependencies
 * [application.php application support library](http://download.geog.cam.ac.uk/projects/application/)
 * [frontControllerApplication.php front controller application implementation library](http://download.geog.cam.ac.uk/projects/frontcontrollerapplication/)
 * [ultimateForm.php form library](http://download.geog.cam.ac.uk/projects/ultimateform/)
-* [FamFamFam Silk Icons set](http://www.famfamfam.com/lab/icons/silk/)
+* [Smarty](https://www.smarty.net/)
 
 
 Author

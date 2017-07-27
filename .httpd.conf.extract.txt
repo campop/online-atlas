@@ -4,7 +4,7 @@
 #   
 #   # Atlas of Victorian and Edwardian Population
 #   Include /path/to/populationspast/.httpd.conf.extract.txt
-#   Use MacroPopulationspast "/public-url/populationspast" "/path/to/populationspast/:/path/to/php/libraries/" "/path/to/populationspast"
+#   Use MacroPopulationspast "/public-url/populationspast" "/path/to/populationspast/:/path/to/smarty/:/path/to/php/libraries/" "/path/to/populationspast"
 
 
 <Macro MacroPopulationspast $applicationBaseUrl $includePath $repoPath>

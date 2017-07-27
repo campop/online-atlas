@@ -11,7 +11,6 @@ class populationspast extends frontControllerApplication
 		# Specify available arguments as defaults or as NULL (to represent a required argument)
 		$defaults = array (
 			'applicationName' => 'Atlas of Victorian and Edwardian Population',
-			'div' => 'populationspast',
 			'hostname' => 'localhost',
 			'database' => 'populationspast',
 			'username' => 'populationspast',
@@ -25,9 +24,10 @@ class populationspast extends frontControllerApplication
 			'datasets' => array (1851, 1861, 1881, 1891, 1901, 1911),
 			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down
 			'apiUsername' => true,
-			'headerLocation' => $this->applicationRoot . '/style/header.html',
-			'footerLocation' => $this->applicationRoot . '/style/footer.html',
-			'guiLocationAbsolute' => true,
+			'useTemplating' => true,
+			'disableTabs' => true,
+			'h1' => '',
+			'div' => false,
 		);
 		
 		# Return the defaults
@@ -118,6 +118,25 @@ class populationspast extends frontControllerApplication
 	}
 	
 	
+	# Additional processing
+	public function main ()
+	{
+		# Set the body class
+		$this->template['action'] = $this->action;
+		
+		# Set the SSO block
+		$this->template['sso'] = pureContent::ssoLinks ('Raven');
+		
+		# Set the admin
+		$this->template['userIsAdministrator'] = $this->userIsAdministrator;
+		
+		# Set the default title
+		$this->template['title'] = $this->settings['applicationName'];
+		
+	}
+	
+	
+	
 	# Welcome screen
 	public function home ()
 	{
@@ -185,6 +204,10 @@ class populationspast extends frontControllerApplication
 			</div>
 		';
 		
+		# Templatise
+		$this->template['contentHtml'] = $html;
+		$html = $this->templatise ();
+		
 		# Show the HTML
 		echo $html;
 	}
@@ -211,6 +234,12 @@ class populationspast extends frontControllerApplication
 	{
 		# Load and show the HTML
 		$html = file_get_contents ($this->applicationRoot . '/about.html');
+		
+		# Templatise
+		$this->template['contentHtml'] = $html;
+		$html = $this->templatise ();
+		
+		# Show the HTML
 		echo $html;
 	}
 	

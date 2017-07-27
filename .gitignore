@@ -1,1 +1,5 @@
-.config.js
+/.config.js
+/tmp/*
+!/tmp/templates_tpl/
+/tmp/templates_tpl/*
+!/tmp/templates_tpl/README.txt
