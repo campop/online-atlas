@@ -2,12 +2,12 @@
 
 #   Example usage in httpd.conf:
 #   
-#   # Atlas of Victorian Fertility
-#   Include /path/to/fertility-atlas/.httpd.conf.extract.txt
-#   Use MacroFertilityAtlas "/public-url/fertilityatlas" "/path/to/fertility-atlas/:/path/to/php/libraries/" "/path/to/fertility-atlas"
+#   # Atlas of Victorian and Edwardian Population
+#   Include /path/to/populationspast/.httpd.conf.extract.txt
+#   Use MacroPopulationspast "/public-url/populationspast" "/path/to/populationspast/:/path/to/php/libraries/" "/path/to/populationspast"
 
 
-<Macro MacroFertilityAtlas $applicationBaseUrl $includePath $repoPath>
+<Macro MacroPopulationspast $applicationBaseUrl $includePath $repoPath>
 	
 	<Location $applicationBaseUrl/>
 		php_value include_path "$includePath"
@@ -18,7 +18,7 @@
 	Alias $applicationBaseUrl/images/ $repoPath/images/
 	Alias $applicationBaseUrl/js/ $repoPath/js/
 	
-	Use MacroFrontControllerApplication "$applicationBaseUrl/" "Atlas of Victorian Fertility"
+	Use MacroFrontControllerApplication "$applicationBaseUrl/" "Atlas of Victorian and Edwardian Population"
 	
 	# Application directives
 	RewriteRule ^$applicationBaseUrl/(about|import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]

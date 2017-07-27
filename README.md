@@ -1,4 +1,4 @@
-# Atlas of Victorian Fertility
+# Atlas of Victorian and Edwardian Population
 
 This is a PHP application which implements an online atlas of data from CAMPOP.
 
@@ -31,7 +31,6 @@ Martin Lucas-Smith, Department of Geography, University of Cambridge, 2017.
 
 License
 -------
-
 
 - Code license: GPL2
 - Data license: To be determined

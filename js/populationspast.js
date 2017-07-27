@@ -1,9 +1,9 @@
-// Fertility atlas application code
+// Populationspast application code
 
 /*jslint browser: true, white: true, single: true, for: true */
 /*global alert, console, window, $, jQuery, L, autocomplete, vex */
 
-var fertilityatlas = (function ($) {
+var populationspast = (function ($) {
 	
 	'use strict';
 	
@@ -134,21 +134,21 @@ var fertilityatlas = (function ($) {
 			_baseUrl = baseUrl;
 			
 			// Create the map
-			fertilityatlas.createMap ();
+			populationspast.createMap ();
 			
 			// Add the data to the map
 			//var dataset = 'year1891';
-			//fertilityatlas.addData (dataset);
+			//populationspast.addData (dataset);
 			
 			// Add the data to the map as switchable layers
-			//fertilityatlas.addSwitchableLayers ();
+			//populationspast.addSwitchableLayers ();
 			
 			// Add the data via AJAX requests
-			fertilityatlas.getData ();
+			populationspast.getData ();
 			
 			// Register to refresh data on map move
 			_map.on ('moveend', function (e) {
-				fertilityatlas.getData ();
+				populationspast.getData ();
 			});
 		},
 		
@@ -181,7 +181,7 @@ var fertilityatlas = (function ($) {
 			L.control.layers(baseLayers, null).addTo(_map);
 			
 			// Add geocoder control
-			fertilityatlas.geocoder ();
+			populationspast.geocoder ();
 			
 			// Add hash support
 			new L.Hash (_map, baseLayersById);
@@ -219,7 +219,7 @@ var fertilityatlas = (function ($) {
 			$.getJSON(url, function(data) {
 				var popupHtml;
 				var geojsonLayer = L.geoJson(data, {
-					onEachFeature: fertilityatlas.popup
+					onEachFeature: populationspast.popup
 				}).addTo(_map);
 			});
 		},
@@ -232,8 +232,8 @@ var fertilityatlas = (function ($) {
 			var layers = [];
 			$.each (_settings.datasets, function (key, dataset) {
 				layers.push (new L.GeoJSON.AJAX (dataset.source, {
-					onEachFeature: fertilityatlas.popup,
-					style: fertilityatlas.setStyle,
+					onEachFeature: populationspast.popup,
+					style: populationspast.setStyle,
 					time: dataset.name	// The time property specified here is used to label the slider
 				}));
 			});
@@ -269,7 +269,7 @@ var fertilityatlas = (function ($) {
 			// Fetch data
 			$.ajax({
 				url: _baseUrl + '/api/locations',
-				dataType: (fertilityatlas.browserSupportsCors () ? 'json' : 'jsonp'),		// Fall back to JSON-P for IE9
+				dataType: (populationspast.browserSupportsCors () ? 'json' : 'jsonp'),		// Fall back to JSON-P for IE9
 				crossDomain: true,	// Needed for IE<=9; see: https://stackoverflow.com/a/12644252/180733
 				data: apiData,
 				error: function (jqXHR, error, exception) {
@@ -285,13 +285,13 @@ var fertilityatlas = (function ($) {
 					// Show API-level error if one occured
 					// #!# This is done here because the API still returns Status code 200
 					if (data.error) {
-						fertilityatlas.removeLayer ();
+						populationspast.removeLayer ();
 						vex.dialog.alert ('Error: ' + data.error);
 						return {};
 					}
 					
 					// Show the data successfully
-					fertilityatlas.showCurrentData(data);
+					populationspast.showCurrentData(data);
 				}
 			});
 		},
@@ -301,12 +301,12 @@ var fertilityatlas = (function ($) {
 		showCurrentData: function (data)
 		{
 			// If this layer already exists, remove it so that it can be redrawn
-			fertilityatlas.removeLayer ();
+			populationspast.removeLayer ();
 			
 			// Define the data layer
 			_layer = L.geoJson(data, {
-				onEachFeature: fertilityatlas.popup,
-				style: fertilityatlas.setStyle
+				onEachFeature: populationspast.popup,
+				style: populationspast.setStyle
 			});
 			
 			// Add to the map
@@ -337,7 +337,7 @@ var fertilityatlas = (function ($) {
 		{
 			// Base the colour on the specified colour field
 			var style = {
-				fillColor: fertilityatlas.getColour (feature.properties[_settings.colourField]),
+				fillColor: populationspast.getColour (feature.properties[_settings.colourField]),
 				weight: (_zoomedOut ? 0 : 1),
 				fillOpacity: 0.7
 			};
@@ -371,7 +371,7 @@ var fertilityatlas = (function ($) {
 			if (_zoomedOut) {return;}
 			
 			// Create the popup
-			var popupHtml = fertilityatlas.popupHtml (feature /*, dataset */);
+			var popupHtml = populationspast.popupHtml (feature /*, dataset */);
 			layer.bindPopup(popupHtml, {autoPan: false});
 		},
 		

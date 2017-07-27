@@ -3,7 +3,7 @@
 # Class to create the online atlas
 
 require_once ('frontControllerApplication.php');
-class fertilityAtlas extends frontControllerApplication
+class populationspast extends frontControllerApplication
 {
 	# Function to assign defaults additional to the general application defaults
 	public function defaults ()
@@ -11,10 +11,10 @@ class fertilityAtlas extends frontControllerApplication
 		# Specify available arguments as defaults or as NULL (to represent a required argument)
 		$defaults = array (
 			'applicationName' => 'Atlas of Victorian and Edwardian Population',
-			'div' => 'fertilityatlas',
+			'div' => 'populationspast',
 			'hostname' => 'localhost',
-			'database' => 'fertilityatlas',
-			'username' => 'fertilityatlas',
+			'database' => 'populationspast',
+			'username' => 'populationspast',
 			'password' => NULL,
 			'table' => 'data',
 			'databaseStrictWhere' => true,
@@ -153,7 +153,7 @@ class fertilityAtlas extends frontControllerApplication
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/LeafletSlider/leaflet.SliderControl.min.js"></script>
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/fertilityatlas.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/populationspast.js"></script>
 			<script type="text/javascript">
 				
 				var config = {
@@ -163,7 +163,7 @@ class fertilityAtlas extends frontControllerApplication
 				}
 				
 				$(function() {
-					fertilityatlas.initialise (config, \'' . $this->baseUrl . '\');
+					populationspast.initialise (config, \'' . $this->baseUrl . '\');
 				});
 				
 			</script>

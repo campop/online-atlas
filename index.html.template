@@ -8,7 +8,7 @@ $settings = array (
 );
 
 # Load and run the class
-require_once ('fertility-atlas/fertilityAtlas.php');
-new fertilityAtlas ($settings);
+require_once ('populationspast/populationspast.php');
+new populationspast ($settings);
 
 ?>
