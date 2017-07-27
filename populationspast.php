@@ -25,6 +25,9 @@ class populationspast extends frontControllerApplication
 			'datasets' => array (1851, 1861, 1881, 1891, 1901, 1911),
 			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down
 			'apiUsername' => true,
+			'headerLocation' => $this->applicationRoot . '/style/header.html',
+			'footerLocation' => $this->applicationRoot . '/style/footer.html',
+			'guiLocationAbsolute' => true,
 		);
 		
 		# Return the defaults

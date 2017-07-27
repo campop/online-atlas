@@ -17,6 +17,7 @@
 	Alias $applicationBaseUrl/data/ $repoPath/data/
 	Alias $applicationBaseUrl/images/ $repoPath/images/
 	Alias $applicationBaseUrl/js/ $repoPath/js/
+	Alias $applicationBaseUrl/style/ $repoPath/style/
 	
 	Use MacroFrontControllerApplication "$applicationBaseUrl/" "Atlas of Victorian and Edwardian Population"
 	
