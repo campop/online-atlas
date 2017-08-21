@@ -6,6 +6,7 @@ require_once ('frontControllerApplication.php');
 class populationspast extends frontControllerApplication
 {
 	# Fields
+	private $defaultField = 'TMFR';
 	private $fields = array (
 		
 		// General fields
@@ -301,7 +302,9 @@ class populationspast extends frontControllerApplication
 		$dropListHtml  = "\n<div class=\"field\">";
 		foreach ($this->fields as $id => $field) {
 			if (isSet ($field['general']) && $field['general']) {continue;}		// Skip general fields, like year
-			$dropListHtml .= "\n<input type=\"radio\" name=\"field\" value=\"" . htmlspecialchars ($id) . '" id="field_' . htmlspecialchars ($id) . '" /><label for="field_' . htmlspecialchars ($id) . '" title="' . htmlspecialchars ($field['description']) . '"> ' . htmlspecialchars ($field['label']) . '</label><br />';
+			$dropListHtml .= "\n\t<input type=\"radio\" name=\"field\" value=\"" . htmlspecialchars ($id) . '" id="field_' . htmlspecialchars ($id) . '"' . ($id == $this->defaultField ? ' checked="checked"' : '') . ' />';
+			$dropListHtml .= "\n\t\t" . '<label for="field_' . htmlspecialchars ($id) . '" title="' . htmlspecialchars ($field['description']) . '"> ' . htmlspecialchars ($field['label']) . '</label>';
+			$dropListHtml .= "\n\t\t" . '<br />';
 		}
 		$dropListHtml .= "\n</div>";
 		
