@@ -367,10 +367,10 @@ class populationspast extends frontControllerApplication
 						
 						<form id="field">
 							
-							<p>Year:</p>
+							<h3>Year:</h3>
 							' . htmlspecialchars (min ($this->settings['datasets'])) . ' <input id="year" type="range" list="years" min="0" max="' . (count ($this->settings['datasets']) - 1) . '" step="1" /> ' . htmlspecialchars (max ($this->settings['datasets'])) . '
 							
-							<p>Show:</p>
+							<h3>Show:</h3>
 							' . $dropListHtml . '
 							
 						</form>
