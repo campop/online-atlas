@@ -22,6 +22,9 @@ nav {color: white;}
 nav a {color: white; text-decoration: none;}
 nav #controls {padding: 30px 10px 30px 15px;}
 
+/* Controls */
+#controls #year {width: 200px; margin-bottom: 30px;}
+
 /* Popup styling */
 #map .leaflet-popup {min-width: 500px;}
 table#chart {table-layout: fixed; width: 350px;}

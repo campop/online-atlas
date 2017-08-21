@@ -194,12 +194,13 @@ var populationspast = (function ($) {
 			apiData.bbox = _map.getBounds().toBBoxString();
 			apiData.zoom = _currentZoom;
 			
-			// Supply the year
-			apiData.year = 1851;
-			
 			// Set the field, based on the radiobutton value
-			_field = $("form#field input[type='radio']:checked").val();
+			_field = $('form#field input[type="radio"]:checked').val();
 			apiData.field = _field;
+			
+			// Set the year, based on the slider value
+			var yearIndex = $('form input#year').val();
+			apiData.year = _settings.datasets[yearIndex];
 			
 			// Fetch data
 			$.ajax({
