@@ -186,6 +186,16 @@ var populationspast = (function ($) {
 				_zoomedOut = (_currentZoom <= _settings.zoomedOut);
 			});
 			
+			// Set mouse cursor based on zoom status
+			$('#map').css('cursor', (_zoomedOut ? 'zoom-in' : 'auto'));
+			
+			// Zoom in on single click if zoomed out
+			 _map.on ('click', function (e) {
+				if (_zoomedOut) {
+					_map.setZoomAround (e.latlng, (_settings.zoomedOut + 1));
+				}
+			});
+			
 			// Add the base (background) layer switcher
 			L.control.layers(baseLayers, null).addTo(_map);
 			
@@ -311,7 +321,8 @@ var populationspast = (function ($) {
 			// Define the data layer
 			_layer = L.geoJson(data, {
 				onEachFeature: populationspast.popup,
-				style: populationspast.setStyle
+				style: populationspast.setStyle,
+				interactive: (!_zoomedOut),
 			});
 			
 			// Add to the map
