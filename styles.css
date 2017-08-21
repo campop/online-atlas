@@ -20,7 +20,7 @@ nav {position: absolute; right: 0; width: 310px; height: 100%; z-index: 1000; ba
 .leaflet-control-layers, .leaflet-control-attribution {right: 310px;}
 nav {color: white;}
 nav a {color: white; text-decoration: none;}
-nav #controls {padding: 40px 10px 30px 15px;}
+nav #controls {padding: 30px 10px 30px 15px;}
 
 /* Popup styling */
 #map .leaflet-popup {min-width: 500px;}
