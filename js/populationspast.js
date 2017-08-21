@@ -103,8 +103,8 @@ var populationspast = (function ($) {
 				populationspast.getData ();
 			});
 			
-			// Register to refresh data on radio button selection
-			$('form#field input').on('change', function() {
+			// Register to refresh data on any form field change
+			$('form#field :input').on('change', function() {
 				populationspast.getData ();
 			});
 		},

@@ -299,14 +299,13 @@ class populationspast extends frontControllerApplication
 	public function home ()
 	{
 		# Create a drop-down list of selectable fields
-		$dropListHtml  = "\n<form id=\"field\">";
+		$dropListHtml = '';
 		foreach ($this->fields as $id => $field) {
 			if (isSet ($field['general']) && $field['general']) {continue;}		// Skip general fields, like year
 			$dropListHtml .= "\n\t<input type=\"radio\" name=\"field\" value=\"" . htmlspecialchars ($id) . '" id="field_' . htmlspecialchars ($id) . '"' . ($id == $this->defaultField ? ' checked="checked"' : '') . ' />';
 			$dropListHtml .= "\n\t\t" . '<label for="field_' . htmlspecialchars ($id) . '" title="' . htmlspecialchars ($field['description']) . '"> ' . htmlspecialchars ($field['label']) . '</label>';
 			$dropListHtml .= "\n\t\t" . '<br />';
 		}
-		$dropListHtml .= "\n</form>";
 		
 		# Start the HTML
 		$html = '
@@ -365,8 +364,13 @@ class populationspast extends frontControllerApplication
 				
 				<nav>
 					<div id="controls">
-						<p>Show:</p>
-						' . $dropListHtml . '
+						
+						<form id="field">
+							
+							<p>Show:</p>
+							' . $dropListHtml . '
+							
+						</form>
 					</div>
 				</nav>
 				
