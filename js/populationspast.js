@@ -388,7 +388,7 @@ var populationspast = (function ($) {
 				if (typeof value == 'string') {
 					value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 				}
-				html += '<tr class="' + key + '"><td>' + _settings.fields[key] + ':</td><td><strong>' + value + '</strong></td></tr>';
+				html += '<tr class="' + key + '"><td>' + _settings.fields[key].label + ':</td><td><strong>' + value + '</strong></td></tr>';
 			});
 			html += '</table>';
 			

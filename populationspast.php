@@ -5,8 +5,161 @@
 require_once ('frontControllerApplication.php');
 class populationspast extends frontControllerApplication
 {
-	# Class properties
-	private $generalFields = array ('id', 'year', 'CEN', 'COUNTRY', 'DIVISION', 'REGCNTY', 'REGDIST', 'SUBDIST', 'TYPE', 'geometry', 'CEN_1851', 'CEN_1861', 'CEN_1881', 'CEN_1891', 'CEN_1901', 'CEN_1911');
+	# Fields
+	private $fields = array (
+		
+		// General fields
+		'year' => array (
+			'label' => 'Year',
+			'description' => 'Year',
+			'intervals' => '',
+			'general' => true,
+		),
+		'REGDIST' => array (
+			'label' => 'Registration district',
+			'description' => 'Registration district',
+			'intervals' => '',
+			'general' => true,
+		),
+		'SUBDIST' => array (
+			'label' => 'Sub-district',
+			'description' => 'Sub-district',
+			'intervals' => '',
+			'general' => true,
+		),
+		
+		// Data fields
+		'TMFR' => array (
+			'label' => 'Total Marital Fertility Rate',
+			'description' => 'The average number of children per married woman aged 20-49.',
+			'intervals' => '<4, 4<5, 5<6, 6<7, 7<8, 8<9, >=9',
+		),
+		'TFR' => array (
+			'label' => 'Total Fertility Rate',
+			'description' => 'The average number of children per woman aged 20-49, irrespective of marital status.',
+			'intervals' => '<2, 2<3, 3<4, 4<5, 5<6, 6<7, >=7',
+		),
+		'ILEG_RATIO' => array (
+			'label' => 'Illegitimacy Ratio',
+			'description' => 'The number of illegitimate live births per 1,000 total live births',
+			'intervals' => '<3, 3<6, 6<9, 9<12, 12<15, 15<18, >=18',
+		),
+		'LEGIT_RATE' => array (
+			'label' => 'Legitimacy Ratio',
+			'description' => '?',
+			'intervals' => '?',
+		),
+		'IMR' => array (
+			'label' => 'Infant Mortality Rate',
+			'description' => 'The number of children who died during the first year of life out of 1,000 live births',
+			'intervals' => '<80, 80<100, 100<120, 120<140, 140<160, 160<180, >=180',
+		),
+		'ECMR' => array (
+			'label' => 'Early Childhood Mortality Rate',
+			'description' => 'The probability of dying in early childhood between the exact ages of 1 and 5 (also known in life table notation as 4q1)',
+			'intervals' => '<20, 20<40, 40<60, 60<80, 80<100, 100<120, >=120',
+		),
+		'SC1' => array (
+			'label' => 'Social Class 1',
+			'description' => 'The proportion of employed men aged 15-64 in social class 1: upper and middle class',
+			'intervals' => '<1.5. 1.5<3, 3<4.5, 4.5<6, 6<7.5, 7.5<9, >=9',
+		),
+		'SC2' => array (
+			'label' => 'Social Class 2',
+			'description' => 'The proportion of employed men aged 15-64 in social class 2: intermediate class',
+			'intervals' => '<5, 5<10, 10<15, 15<20, 20<25, 25<30, >=30',
+		),
+		'SC3' => array (
+			'label' => 'Social Class 3',
+			'description' => 'The proportion of employed men aged 15-64 in social class 3: skilled workmen',
+			'intervals' => '<5, 5<10, 10<15, 15<20, 20<25, 25<30, >=30',
+		),
+		'SC4' => array (
+			'label' => 'Social Class 4',
+			'description' => 'The proportion of employed men aged 15-64 in social class 4: intermediate class',
+			'intervals' => '<5, 5<10, 10<15, 15<20, 20<25, 25<30, >=30',
+		),
+		'SC5' => array (
+			'label' => 'Social Class 5',
+			'description' => 'The proportion of employed men aged 15-64 in social class 5: unskilled workmen',
+			'intervals' => '<5, 5<10, 10<15, 15<20, 20<25, 25<30, >=30',
+		),
+		'SC6' => array (
+			'label' => 'Social Class 6',
+			'description' => 'The proportion of employed men aged 15-64 in social class 6: textile workers',
+			'intervals' => '<5, 5<10, 10<15, 15<20, 20<25, 25<30, >=30',
+		),
+		'SC7' => array (
+			'label' => 'Social Class 7',
+			'description' => 'The proportion of employed men aged 15-64 in social class 7: miners',
+			'intervals' => '<5, 5<10, 10<15, 15<20, 20<25, 25<30, >=30',
+		),
+		'SC8' => array (
+			'label' => 'Social Class 8',
+			'description' => 'The proportion of employed men aged 15-64 in social class 8: agricultural labourers',
+			'intervals' => '<5, 5<10, 10<15, 15<20, 20<25, 25<30, >=30',
+		),
+		'FMAR_PRATE' => array (
+			'label' => 'Married women working',
+			'description' => 'The proportion of married women aged 15 or older working',
+			'intervals' => '<5, 5<10, 10<15, 15<20, 20<25, 25<30, >=30',
+		),
+		'FNM_PRATE' => array (
+			'label' => 'Single women working',
+			'description' => 'The proportion of single women aged 15 or older working',
+			'intervals' => '<40, 40<50, 50<60, 60<70, 70<80, 80<90, >=90',
+		),
+		'FWID_PRATE' => array (
+			'label' => 'Widowed women working',
+			'description' => 'The proportion of widowed women aged 15 or older working',
+			'intervals' => '<40, 40<50, 50<60, 60<70, 70<80, 80<90, >=90',
+		),
+		'IRISH_BORN' => array (
+			'label' => 'Irish born',
+			'description' => 'The proportion of population born in Ireland',
+			'intervals' => '<1, 1<3, 3<5, 5<7, 7<9, 9<11, >=11',
+		),
+		'SCOT_BORN' => array (
+			'label' => 'Scottish born',
+			'description' => 'The proportion of population born in Scotland',
+			'intervals' => '<1, 1<3, 3<5, 5<7, 7<9, 9<11, >=11',
+		),
+		'POP_DENS' => array (
+			'label' => 'Population Density',
+			'description' => 'The number of people per acre (one acre is 4047m2)',
+			'intervals' => '<1, 1<5, 5<50, 50<100, 100<200, 200<300, >=300',
+		),
+		'HOUSE_SERV' => array (
+			'label' => 'Houses with a live-in servant',
+			'description' => 'The proportion of households with live-in servants',
+			'intervals' => '<5, 5<10, 10<15, 15<20, 20<25, 25<30, >=30',
+		),
+		'M_SMAM' => array (
+			'label' => 'Singulate Mean Age at Marriage (male)',
+			'description' => 'Measure of marriage timing, the average number of person-years lived in the single (never married) state among those who marry before age 50. It is calculated from the proportions single by age.',
+			'intervals' => '<25, 25<26, 26<27, 27<28, 28<29, 29<30, >=30 (male and female)',
+		),
+		'F_SMAM' => array (
+			'label' => 'Singulate Mean Age at Marriage (female)',
+			'description' => 'Measure of marriage timing, the average number of person-years lived in the single (never married) state among those who marry before age 50. It is calculated from the proportions single by age.',
+			'intervals' => '<25, 25<26, 26<27, 27<28, 28<29, 29<30, >=30 (male and female)',
+		),
+		'M_CEL_4554' => array (
+			'label' => 'Celibate (men)',
+			'description' => 'Proportion of never married men between ages 45 to 54',
+			'intervals' => '<5, 5<7, 7<9, 9<11, 11<13, 13<15, >=15',
+		),
+		'F_CEL_4554' => array (
+			'label' => 'Celibate (women)',
+			'description' => 'Proportion of never married women between ages 45 to 54',
+			'intervals' => '<5, 5<7, 7<9, 9<11, 11<13, 13<15, >=15',
+		),
+		'TYPE' => array (
+			'label' => 'Type of place',
+			'description' => 'Types of places are defined by the occupational structure of registration sub-district (RSD). The classification consists of eight types: agriculture, mining, other urban, professional, semi-professional, semi-rural, textile and transport.',
+			'intervals' => '',
+		),
+	);
 	
 	
 	# Function to assign defaults additional to the general application defaults
@@ -137,9 +290,6 @@ class populationspast extends frontControllerApplication
 		# Set the default title
 		$this->template['title'] = $this->settings['applicationName'];
 		
-		# Get the dataset fields and their labels
-		$this->fields = $this->getFieldHeadings ();
-		
 	}
 	
 	
@@ -149,9 +299,9 @@ class populationspast extends frontControllerApplication
 	{
 		# Create a drop-down list of selectable fields
 		$dropListHtml  = "\n<div class=\"field\">";
-		foreach ($this->fields as $field => $label) {
-			if (in_array ($field, $this->generalFields)) {continue;}
-			$dropListHtml .= "\n<input type=\"radio\" name=\"field\" value=\"" . htmlspecialchars ($field) . '" id="field_' . htmlspecialchars ($field) . '" /><label for="field_' . htmlspecialchars ($field) . '"> ' . htmlspecialchars ($label) . '</label><br />';
+		foreach ($this->fields as $id => $field) {
+			if (isSet ($field['general']) && $field['general']) {continue;}		// Skip general fields, like year
+			$dropListHtml .= "\n<input type=\"radio\" name=\"field\" value=\"" . htmlspecialchars ($id) . '" id="field_' . htmlspecialchars ($id) . '" /><label for="field_' . htmlspecialchars ($id) . '> ' . htmlspecialchars ($field['label']) . '</label><br />';
 		}
 		$dropListHtml .= "\n</div>";
 		
