@@ -243,7 +243,7 @@ var populationspast = (function ($) {
 			_layer = L.geoJson(data, {
 				onEachFeature: populationspast.popup,
 				style: populationspast.setStyle,
-				interactive: (!_zoomedOut),
+				interactive: (!_zoomedOut)
 			});
 			
 			// Add to the map
