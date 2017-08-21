@@ -338,7 +338,6 @@ class populationspast extends frontControllerApplication
 			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/LeafletSlider/leaflet.SliderControl.min.js"></script>
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/populationspast.js"></script>
 			<script type="text/javascript">
@@ -471,7 +470,7 @@ class populationspast extends frontControllerApplication
 			# Convert to GeoJSON
 			$currentDirectory = getcwd ();
 			chdir ($tempDir);
-			$command = "ogr2ogr -f GeoJSON -lco COORDINATE_PRECISION=4 -t_srs EPSG:4326 {$geojson} *.shp";
+			$command = "ogr2ogr -f GeoJSON -lco COORDINATE_PRECISION=4 -t_srs EPSG:4326 {$geojson} *.shp";	// E.g.: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 1911.geojson RSD_1911.shp
 			exec ($command, $output);
 			// application::dumpData ($output);
 			chdir ($currentDirectory);	// Change back

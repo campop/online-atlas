@@ -52,33 +52,8 @@ var populationspast = (function ($) {
 		geocoderApiKey: 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
 		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924',
 		
-		// Data; created using e.g.: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 ../data/1911.geojson RSD_1911_MLS.shp
-		datasets: {
-			year1851: {
-				name: '1851',
-				source: 'data/1851.geojson'
-			},
-			year1861: {
-				name: '1861',
-				source: 'data/1861.geojson'
-			},
-			year1881: {
-				name: '1881',
-				source: 'data/1881.geojson'
-			},
-			year1891: {
-				name: '1891',
-				source: 'data/1891.geojson'
-			},
-			year1901: {
-				name: '1901',
-				source: 'data/1901.geojson'
-			},
-			year1911: {
-				name: '1911',
-				source: 'data/1911.geojson'
-			}
-		},
+		// Dataset years
+		datasets: [1851, 1861, 1881, 1891, 1901, 1911],
 		
 		// Fields and their labels
 		fields: {},		// Will be supplied from the database
@@ -119,13 +94,6 @@ var populationspast = (function ($) {
 			
 			// Create the map
 			populationspast.createMap ();
-			
-			// Add the data to the map
-			//var dataset = 'year1891';
-			//populationspast.addData (dataset);
-			
-			// Add the data to the map as switchable layers
-			//populationspast.addSwitchableLayers ();
 			
 			// Add the data via AJAX requests
 			populationspast.getData ();
@@ -213,46 +181,6 @@ var populationspast = (function ($) {
 					event.preventDefault();
 				}
 			});
-		},
-		
-		
-		// Function to load the data to the map
-		addData: function (dataset)
-		{
-			// Define the URL
-			var url = _settings.datasets[dataset].source;
-			
-			// Load GeoJSON and add to the map
-			$.getJSON(url, function(data) {
-				var popupHtml;
-				var geojsonLayer = L.geoJson(data, {
-					onEachFeature: populationspast.popup
-				}).addTo(_map);
-			});
-		},
-		
-		
-		// Function to add the data to the map as switchable layers; see: https://github.com/dwilhelm89/LeafletSlider
-		addSwitchableLayers: function ()
-		{
-			// Create each layer
-			var layers = [];
-			$.each (_settings.datasets, function (key, dataset) {
-				layers.push (new L.GeoJSON.AJAX (dataset.source, {
-					onEachFeature: populationspast.popup,
-					style: populationspast.setStyle,
-					time: dataset.name	// The time property specified here is used to label the slider
-				}));
-			});
-			
-			// Assemble and add the layers as a slider control; see example at: http://fiddle.jshell.net/nathansnider/260hffor/
-			var layerGroup = L.layerGroup(layers);
-			var sliderControl = L.control.sliderControl({
-				layer: layerGroup,
-				follow: true
-			});
-			_map.addControl(sliderControl);
-			sliderControl.startSlider();
 		},
 		
 		
