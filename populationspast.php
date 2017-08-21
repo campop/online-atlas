@@ -5,6 +5,10 @@
 require_once ('frontControllerApplication.php');
 class populationspast extends frontControllerApplication
 {
+	# Class properties
+	private $generalFields = array ('id', 'year', 'CEN', 'COUNTRY', 'DIVISION', 'REGCNTY', 'REGDIST', 'SUBDIST', 'TYPE', 'geometry', 'CEN_1851', 'CEN_1861', 'CEN_1881', 'CEN_1891', 'CEN_1901', 'CEN_1911');
+	
+	
 	# Function to assign defaults additional to the general application defaults
 	public function defaults ()
 	{
@@ -133,6 +137,9 @@ class populationspast extends frontControllerApplication
 		# Set the default title
 		$this->template['title'] = $this->settings['applicationName'];
 		
+		# Get the dataset fields and their labels
+		$this->fields = $this->getFieldHeadings ();
+		
 	}
 	
 	
@@ -140,8 +147,13 @@ class populationspast extends frontControllerApplication
 	# Welcome screen
 	public function home ()
 	{
-		# Get the dataset fields and their labels
-		$fields = $this->getFieldHeadings ();
+		# Create a drop-down list of selectable fields
+		$dropListHtml  = "\n<div class=\"field\">";
+		foreach ($this->fields as $field => $label) {
+			if (in_array ($field, $this->generalFields)) {continue;}
+			$dropListHtml .= "\n<input type=\"radio\" name=\"field\" value=\"" . htmlspecialchars ($field) . '" id="field_' . htmlspecialchars ($field) . '" /><label for="field_' . htmlspecialchars ($field) . '"> ' . htmlspecialchars ($label) . '</label><br />';
+		}
+		$dropListHtml .= "\n</div>";
 		
 		# Start the HTML
 		$html = '
@@ -181,7 +193,7 @@ class populationspast extends frontControllerApplication
 				var config = {
 					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
 					zoomedOut: ' . $this->settings['zoomedOut'] . ',
-					fields: ' . json_encode ($fields, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . '
+					fields: ' . json_encode ($this->fields, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . '
 				}
 				
 				$(function() {
@@ -201,7 +213,8 @@ class populationspast extends frontControllerApplication
 				
 				<nav>
 					<div id="controls">
-						<p><em>Controls here</em></p>
+						<p>Show:</p>
+						' . $dropListHtml . '
 					</div>
 				</nav>
 				
