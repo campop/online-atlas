@@ -11,7 +11,8 @@ var populationspast = (function ($) {
 	var _baseUrl;
 	var _map = null;
 	var _layer = null;
-	var _zoomedOut = null;
+	var _currentZoom = null;
+	var _zoomedOut = null;	// Boolean for whether the map is zoomed out 'too far'
 	
 	// Settings
 	var _settings = {
@@ -177,6 +178,14 @@ var populationspast = (function ($) {
 				layers: tileLayers[0]	// Documentation suggests tileLayers is all that is needed, but that shows all together
 			});
 			
+			// Set the zoom and determine whether the map is zoomed out too far, and set the mouse cursor
+			_currentZoom = _map.getZoom();
+			_zoomedOut = (_settings.defaultZoom <= _settings.zoomedOut);
+			_map.on('zoomend', function() {
+				_currentZoom = _map.getZoom();
+				_zoomedOut = (_currentZoom <= _settings.zoomedOut);
+			});
+			
 			// Add the base (background) layer switcher
 			L.control.layers(baseLayers, null).addTo(_map);
 			
@@ -255,13 +264,9 @@ var populationspast = (function ($) {
 			// Start API data parameters
 			var apiData = {};
 			
-			// Get the current zoom and determine if the map is zoomed out
-			var currentZoom = _map.getZoom();
-			_zoomedOut = (currentZoom <= _settings.zoomedOut);
-			
 			// Supply the bbox and zoom
 			apiData.bbox = _map.getBounds().toBBoxString();
-			apiData.zoom = currentZoom;
+			apiData.zoom = _currentZoom;
 			
 			// Supply the year
 			apiData.year = 1851;
