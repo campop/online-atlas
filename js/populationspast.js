@@ -11,6 +11,7 @@ var populationspast = (function ($) {
 	var _baseUrl;
 	var _map = null;
 	var _layer = null;
+	var _field = null;	// E.g. TMFR, TFR, etc.
 	var _currentZoom = null;
 	var _zoomedOut = null;	// Boolean for whether the map is zoomed out 'too far'
 	
@@ -82,39 +83,16 @@ var populationspast = (function ($) {
 		// Fields and their labels
 		fields: {},		// Will be supplied from the database
 		
-		// Map geometry styling; colour scales can be created at http://www.colorbrewer.org/
-		colourField: 'TFR',
+		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
 		colourStops: {
-			'IMR': [	// Infant mortality rate
-				[9999, 'red'],
-				[180, '#ed7552'],
-				[160, '#ed7552'],
-				[140, '#fab884'],
-				[120, '#ffffbf'],
-				[100, '#c0ccbe'],
-				[80, '#849eb9'],
-				[0, '#4575b5']
-			],
-			'TFR': [	// Total fertility rate
-				[9999, 'red'],
-				[5, '#ed7552'],
-				[4.5, '#ed7552'],
-				[4, '#fab884'],
-				[3.5, '#ffffbf'],
-				[3, '#c0ccbe'],
-				[2.5, '#849eb9'],
-				[0, '#4575b5']
-			],
-			'TMFR': [	// Total marital fertility rate
-				[9999, 'red'],
-				[8.5, '#ed7552'],
-				[8, '#ed7552'],
-				[7, '#fab884'],
-				[6, '#ffffbf'],
-				[5, '#c0ccbe'],
-				[4.5, '#849eb9'],
-				[0, '#4575b5']
-			]
+			7: 'red',
+			6: '#ed7552',
+			5: '#ed7552',
+			4: '#fab884',
+			3: '#ffffbf',
+			2: '#c0ccbe',
+			1: '#849eb9',
+			0: '#4575b5'
 		}
 	};
 	
@@ -129,6 +107,11 @@ var populationspast = (function ($) {
 			// Obtain the configuration and add to settings
 			$.each (config, function (key, value) {
 				_settings[key] = value;
+			});
+			
+			// Parse out the intervals in each field into an array, for use as colour stops
+			$.each (_settings.fields, function (field, value) {
+				_settings.fields[field].intervals = value.intervals.split(', ').reverse();
 			});
 			
 			// Obtain the base URL
@@ -286,8 +269,9 @@ var populationspast = (function ($) {
 			// Supply the year
 			apiData.year = 1851;
 			
-			// Set the field, based on the radiobutton
-			apiData.field = $("form#field input[type='radio']:checked").val();
+			// Set the field, based on the radiobutton value
+			_field = $("form#field input[type='radio']:checked").val();
+			apiData.field = _field;
 			
 			// Fetch data
 			$.ajax({
@@ -361,7 +345,7 @@ var populationspast = (function ($) {
 		{
 			// Base the colour on the specified colour field
 			var style = {
-				fillColor: populationspast.getColour (feature.properties[_settings.colourField]),
+				fillColor: populationspast.getColour (feature.properties[_field], _field),
 				weight: (_zoomedOut ? 0 : 1),
 				fillOpacity: 0.7
 			};
@@ -372,19 +356,19 @@ var populationspast = (function ($) {
 		
 		
 		// Assign colour from lookup table
-		getColour: function (value)
+		getColour: function (value, field)
 		{
 			// Loop through each colour until found
-			var colourStop;
-			for (var i = 0; i < _settings.colourStops['TFR'].length; i++) {	// NB $.each doesn't seem to work - it doesn't seem to reset the array pointer for each iteration
-				colourStop = _settings.colourStops['TFR'][i];
-				if (value >= colourStop[0]) {
-					return colourStop[1];
+			var interval;
+			for (var i = 0; i < _settings.fields[field].intervals.length; i++) {	// NB $.each doesn't seem to work - it doesn't seem to reset the array pointer for each iteration
+				interval = _settings.fields[field].intervals[i];
+				if (value >= interval) {
+					return _settings.colourStops[i];
 				}
 			}
 			
-			// Fallback to final colour in the list
-			return colourStop[1];
+			// Fall back to final colour in the list
+			return _settings.colourStops[0];
 		},
 		
 		
