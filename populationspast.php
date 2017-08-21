@@ -199,6 +199,12 @@ class populationspast extends frontControllerApplication
 					<input type="text" name="location" autocomplete="off" placeholder="Search locations and move map" tabindex="1" />
 				</div>
 				
+				<nav>
+					<div id="controls">
+						<p><em>Controls here</em></p>
+					</div>
+				</nav>
+				
 				<div id="map"></div>
 				
 			</div>

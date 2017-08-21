@@ -15,6 +15,13 @@ body .ui-front {z-index: 1000;}
 .ui-autocomplete li a span {color: gray; font-size: 0.81em;}
 .ui-autocomplete li a.ui-state-active {cursor: pointer; background-color: #f7f7f7;}
 
+/* Overlay */
+nav {position: absolute; right: 0; width: 290px; height: 100%; z-index: 1000; background-color: #333; opacity: 0.85;}
+nav {color: white;}
+nav a {color: white; text-decoration: none;}
+.leaflet-control-layers, .leaflet-control-attribution {right: 290px;}
+nav #controls {padding: 20px;}
+
 /* Popup styling */
 #map .leaflet-popup {min-width: 500px;}
 table#chart {table-layout: fixed; width: 350px;}
