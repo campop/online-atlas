@@ -168,9 +168,9 @@ class populationspast extends frontControllerApplication
 			<link href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css" rel="stylesheet" />
 			
 			<!-- Geolocation control; see: https://github.com/domoritz/leaflet-locatecontrol -->
-			<script src="https://www.domoritz.de/leaflet-locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+			<script src="' . $this->baseUrl . '/js/lib/leaflet-locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/leaflet-locatecontrol/dist/L.Control.Locate.min.css" />
 			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-			<link rel="stylesheet" href="https://www.domoritz.de/leaflet-locatecontrol/dist/L.Control.Locate.min.css" />
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/LeafletSlider/leaflet.SliderControl.min.js"></script>
