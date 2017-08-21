@@ -299,14 +299,14 @@ class populationspast extends frontControllerApplication
 	public function home ()
 	{
 		# Create a drop-down list of selectable fields
-		$dropListHtml  = "\n<div class=\"field\">";
+		$dropListHtml  = "\n<form id=\"field\">";
 		foreach ($this->fields as $id => $field) {
 			if (isSet ($field['general']) && $field['general']) {continue;}		// Skip general fields, like year
 			$dropListHtml .= "\n\t<input type=\"radio\" name=\"field\" value=\"" . htmlspecialchars ($id) . '" id="field_' . htmlspecialchars ($id) . '"' . ($id == $this->defaultField ? ' checked="checked"' : '') . ' />';
 			$dropListHtml .= "\n\t\t" . '<label for="field_' . htmlspecialchars ($id) . '" title="' . htmlspecialchars ($field['description']) . '"> ' . htmlspecialchars ($field['label']) . '</label>';
 			$dropListHtml .= "\n\t\t" . '<br />';
 		}
-		$dropListHtml .= "\n</div>";
+		$dropListHtml .= "\n</form>";
 		
 		# Start the HTML
 		$html = '
@@ -563,14 +563,20 @@ class populationspast extends frontControllerApplication
 			return array ('error' => 'A valid year must be supplied.');
 		}
 		
+		# Obtain the supplied field
+		$field = (isSet ($_GET['field']) && array_key_exists ($_GET['field'], $this->fields) ? $_GET['field'] : false);
+		if (!$field) {
+			return array ('error' => 'A valid field must be supplied.');
+		}
+		
 		# Construct the BBOX WKT string
 		$bboxGeom = "Polygon(({$bbox[0]} {$bbox[1]},{$bbox[2]} {$bbox[1]},{$bbox[2]} {$bbox[3]},{$bbox[0]} {$bbox[3]},{$bbox[0]} {$bbox[1]}))";
 		
 		# Obtain the data
 		$query = "
 			SELECT
-			-- *,
-			" . ($zoomedOut ? '' : 'year, SUBDIST, REGDIST, TMFR, ') . " TFR,
+			{$field},
+			" . ($zoomedOut ? '' : 'year, SUBDIST, REGDIST, ') . "
 			ST_AsText(geometry) AS geometry
 			FROM {$this->settings['database']}.data
 			WHERE MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )

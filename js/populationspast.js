@@ -151,6 +151,11 @@ var populationspast = (function ($) {
 			_map.on ('moveend', function (e) {
 				populationspast.getData ();
 			});
+			
+			// Register to refresh data on radio button selection
+			$('form#field input').on('change', function() {
+				populationspast.getData ();
+			});
 		},
 		
 		
@@ -280,6 +285,9 @@ var populationspast = (function ($) {
 			
 			// Supply the year
 			apiData.year = 1851;
+			
+			// Set the field, based on the radiobutton
+			apiData.field = $("form#field input[type='radio']:checked").val();
 			
 			// Fetch data
 			$.ajax({
