@@ -262,7 +262,7 @@ var populationspast = (function ($) {
 			
 			// Define the data layer
 			_layer = L.geoJson(data, {
-				onEachFeature: populationspast.popup,
+				onEachFeature: populationspast.onEachFeature,
 				style: populationspast.setStyle,
 				interactive: (!_zoomedOut)
 			});
@@ -325,15 +325,41 @@ var populationspast = (function ($) {
 		},
 		
 		
-		// Popup wrapper
-		popup: function (feature, layer)
+		// Feature wrapper, handling popups and highlighting
+		onEachFeature: function (feature, layer)
 		{
-			// Disable popups if zoomed out
-			if (_zoomedOut) {return;}
+			// Highlight features on hover; see: http://leafletjs.com/examples/choropleth/
+			layer.on({
+				mouseover: populationspast.highlightFeature,
+				mouseout: populationspast.resetHighlight
+			});
 			
-			// Create the popup
-			var popupHtml = populationspast.popupHtml (feature /*, dataset */);
-			layer.bindPopup(popupHtml, {autoPan: false});
+			// Enable popups (if close enough)
+			if (!_zoomedOut) {
+				var popupHtml = populationspast.popupHtml (feature /*, dataset */);
+				layer.bindPopup(popupHtml, {autoPan: false});
+			}
+		},
+		
+		
+		// Function to highlight a feature
+		highlightFeature: function (e)
+		{
+			var layer = e.target;
+			layer.setStyle({
+				weight: 4
+			});
+			
+			if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+				layer.bringToFront();
+			}
+		},
+		
+		
+		// Function to reset highlighting
+		resetHighlight: function (e)
+		{
+			_layer.resetStyle (e.target);
 		},
 		
 		
