@@ -95,6 +95,12 @@ var populationspast = (function ($) {
 			// Create the map
 			populationspast.createMap ();
 			
+			// Determine the active field, and create a handler for changes
+			_field = populationspast.getField ();
+			$('form#field input[type="radio"]').on('change', function() {
+				_field = populationspast.getField ();
+			});
+			
 			// Add the data via AJAX requests
 			populationspast.getData ();
 			
@@ -107,6 +113,13 @@ var populationspast = (function ($) {
 			$('form#field :input').on('change', function() {
 				populationspast.getData ();
 			});
+		},
+		
+		
+		// Function to determine the field from the form value
+		getField: function ()
+		{
+			return $('form#field input[type="radio"]:checked').val();
 		},
 		
 		
@@ -195,7 +208,6 @@ var populationspast = (function ($) {
 			apiData.zoom = _currentZoom;
 			
 			// Set the field, based on the radiobutton value
-			_field = $('form#field input[type="radio"]:checked').val();
 			apiData.field = _field;
 			
 			// Set the year, based on the slider value
