@@ -29,16 +29,16 @@ nav #controls {padding: 20px 10px 30px 15px;}
 #controls #field label {padding-left: 5px; display: inline-block; width: 260px; margin: 0;}
 
 /* Legend */
-.info {padding: 15px 12px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; width: 230px;}
+.info {padding: 15px 12px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
 .info h4 {margin: 0 0 5px; color: #777;}
-.legend {text-align: left; line-height: 18px; color: #555;}
+.legend {width: 230px; text-align: left; line-height: 18px; color: #555;}
 .legend i {width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7;}
+.summary {width: 300px;}
 
 /* Popup styling */
 #map .leaflet-popup {min-width: 500px;}
 table#chart {table-layout: fixed; width: 350px;}
 table#chart tr:first-child td {padding-bottom: 1em;}
-table#chart tr:first-child td:first-child {text-align: right;}
 table#chart td:first-child {width: 200px;}
 table#chart tr.RAW_TFR td {padding-top: 1em;}
 table#chart tr.RAW_TFR td, table#chart tr.EBS_TFR td {color: #603;}
