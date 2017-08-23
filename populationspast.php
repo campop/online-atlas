@@ -326,6 +326,9 @@ class populationspast extends frontControllerApplication
 			<!-- Leaflet-active-area; see: https://github.com/Mappy/Leaflet-active-area -->
 			<script src="' . $this->baseUrl . '/js/lib/Leaflet-active-area/src/leaflet.activearea.js" charset="utf-8"></script>
 			
+			<!-- Cookie support -->
+			<script src="' . $this->baseUrl . '/js/lib/js-cookie/js.cookie.min.js"></script>
+			
 			<!-- Vex dialogs; see: http://github.hubspot.com/vex/ -->
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.0/js/vex.combined.min.js"></script>
 			<script>vex.defaultOptions.className = \'vex-theme-plain\'</script>
@@ -358,8 +361,6 @@ class populationspast extends frontControllerApplication
 				
 			</script>
 			
-			
-			<p><em>Project under development.</em></p>
 			
 			<div id="mapcontainer">
 				
