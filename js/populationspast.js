@@ -337,11 +337,11 @@ var populationspast = (function ($) {
 			
 			// Add table
 			html += '<table id="chart" class="lines compressed">';
-			$.each (feature.properties, function (key, value) {
+			$.each (feature.properties, function (field, value) {
 				if (typeof value == 'string') {
 					value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 				}
-				html += '<tr class="' + key + '"><td>' + _settings.fields[key].label + ':</td><td><strong>' + value + '</strong></td></tr>';
+				html += '<tr class="' + field + '"><td>' + _settings.fields[field].label + ':</td><td><strong>' + value + '</strong></td></tr>';
 			});
 			html += '</table>';
 			
