@@ -395,6 +395,7 @@ var populationspast = (function ($) {
 			
 			// Compile the HTML
 			var html = '<h4>' + _settings.fields[field].label + '</h4>';
+			html += '<p>' + _settings.fields[field].description + '</p>';
 			html += labels.join ('<br />');
 			
 			// Set the HTML
