@@ -10,7 +10,7 @@ class populationspast extends frontControllerApplication
 	{
 		# Specify available arguments as defaults or as NULL (to represent a required argument)
 		$defaults = array (
-			'applicationName' => 'Atlas of Victorian and Edwardian Population',
+			'applicationName' => 'Populations Past',
 			'hostname' => 'localhost',
 			'database' => 'populationspast',
 			'username' => 'populationspast',
