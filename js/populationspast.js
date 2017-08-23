@@ -119,6 +119,9 @@ var populationspast = (function ($) {
 			$('form#field :input').on('change', function() {
 				populationspast.getData ();
 			});
+			
+			// Add tooltips to the forms
+			populationspast.tooltips ();
 		},
 		
 		
@@ -396,6 +399,16 @@ var populationspast = (function ($) {
 			
 			// Set the HTML
 			$('.legend').html (html);
+		},
+		
+		
+		// Function to add tooltips, using the title value
+		tooltips: function ()
+		{
+			// Use jQuery tooltips; see: https://jqueryui.com/tooltip/
+			$('form#field').tooltip ({
+				track: true
+			});
 		}
 		
 	}
