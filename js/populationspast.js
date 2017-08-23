@@ -21,8 +21,8 @@ var populationspast = (function ($) {
 	var _settings = {
 		
 		// Default map view
-		defaultLatitude: 53,
-		defaultLongitude: -2,
+		defaultLatitude: 53.035,
+		defaultLongitude: -1.082,
 		defaultZoom: 7,
 		
 		// Tileservers; historical map sources are listed at: http://wiki.openstreetmap.org/wiki/National_Library_of_Scotland
