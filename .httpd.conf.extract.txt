@@ -25,4 +25,8 @@
 	RewriteRule ^$applicationBaseUrl/(about|import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
 	RewriteRule ^$applicationBaseUrl/(about|import)$ $applicationBaseUrl/$1/ [R]
 	
+	<Location $applicationBaseUrl/>
+		php_value memory_limit 100M
+	</Location>
+	
 </Macro>
