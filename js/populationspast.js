@@ -61,13 +61,13 @@ var populationspast = (function ($) {
 		
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
 		colourStops: [
-			'#4575b5',	// Blue
+			'#4575b5',	// Blue - least
 			'#849eb9',
 			'#c0ccbe',
 			'#ffffbf',	// Yellow
 			'#fab884',
 			'#ed7552',
-			'red'		// Red
+			'red'		// Red - most
 		]
 	};
 	
@@ -175,7 +175,7 @@ var populationspast = (function ($) {
 			});
 			
 			// Add the base (background) layer switcher
-			L.control.layers(baseLayers, null).addTo(_map);
+			L.control.layers(baseLayers, null, {position: 'bottomright'}).addTo(_map);
 			
 			// Add geocoder control
 			populationspast.geocoder ();
