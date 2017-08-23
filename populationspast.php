@@ -5,6 +5,38 @@
 require_once ('frontControllerApplication.php');
 class populationspast extends frontControllerApplication
 {
+	# Function to assign defaults additional to the general application defaults
+	public function defaults ()
+	{
+		# Specify available arguments as defaults or as NULL (to represent a required argument)
+		$defaults = array (
+			'applicationName' => 'Atlas of Victorian and Edwardian Population',
+			'hostname' => 'localhost',
+			'database' => 'populationspast',
+			'username' => 'populationspast',
+			'password' => NULL,
+			'table' => 'data',
+			'databaseStrictWhere' => true,
+			'nativeTypes' => true,
+			'administrators' => true,
+			'geocoderApiKey' => NULL,
+			// 'importsSectionsMode' => true,
+			'datasets' => array (1851, 1861, 1881, 1891, 1901, 1911),
+			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down
+			'apiUsername' => true,
+			'apiJsonPretty' => false,
+			'useTemplating' => true,
+			'disableTabs' => true,
+			'authLinkVisibility' => false,
+			'h1' => '',
+			'div' => false,
+		);
+		
+		# Return the defaults
+		return $defaults;
+	}
+	
+	
 	# Fields
 	private $defaultField = 'TMFR';
 	private $fields = array (
@@ -161,38 +193,6 @@ class populationspast extends frontControllerApplication
 			'intervals' => '',
 		),
 	);
-	
-	
-	# Function to assign defaults additional to the general application defaults
-	public function defaults ()
-	{
-		# Specify available arguments as defaults or as NULL (to represent a required argument)
-		$defaults = array (
-			'applicationName' => 'Atlas of Victorian and Edwardian Population',
-			'hostname' => 'localhost',
-			'database' => 'populationspast',
-			'username' => 'populationspast',
-			'password' => NULL,
-			'table' => 'data',
-			'databaseStrictWhere' => true,
-			'nativeTypes' => true,
-			'administrators' => true,
-			'geocoderApiKey' => NULL,
-			// 'importsSectionsMode' => true,
-			'datasets' => array (1851, 1861, 1881, 1891, 1901, 1911),
-			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down
-			'apiUsername' => true,
-			'apiJsonPretty' => false,
-			'useTemplating' => true,
-			'disableTabs' => true,
-			'authLinkVisibility' => false,
-			'h1' => '',
-			'div' => false,
-		);
-		
-		# Return the defaults
-		return $defaults;
-	}
 	
 	
 	# Function assign additional actions
