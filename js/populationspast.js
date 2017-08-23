@@ -86,7 +86,7 @@ var populationspast = (function ($) {
 			
 			// Parse out the intervals in each field into an array, for use as colour stops
 			$.each (_settings.fields, function (field, value) {
-				_settings.fields[field].intervals = value.intervals.split(', ').reverse();
+				_settings.fields[field].intervals = value.intervals.split(', ');
 			});
 			
 			// Obtain the base URL
@@ -287,10 +287,14 @@ var populationspast = (function ($) {
 		// Assign colour from lookup table
 		getColour: function (value, field)
 		{
+			// Reverse the intervals list
+			var intervals = _settings.fields[field].intervals.slice(0);	// Make a copy of the array; see: https://stackoverflow.com/questions/3978492/
+			intervals = intervals.reverse();
+			
 			// Loop through each colour until found
 			var interval;
-			for (var i = 0; i < _settings.fields[field].intervals.length; i++) {	// NB $.each doesn't seem to work - it doesn't seem to reset the array pointer for each iteration
-				interval = _settings.fields[field].intervals[i];
+			for (var i = 0; i < intervals.length; i++) {	// NB $.each doesn't seem to work - it doesn't seem to reset the array pointer for each iteration
+				interval = intervals[i];
 				if (value >= interval) {
 					return _settings.colourStops[i];
 				}
