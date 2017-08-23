@@ -14,6 +14,7 @@ var populationspast = (function ($) {
 	var _field = null;	// E.g. TMFR, TFR, etc.
 	var _currentZoom = null;
 	var _zoomedOut = null;	// Boolean for whether the map is zoomed out 'too far'
+	var _legendHtml = null;	// Legend HTML content
 	
 	// Settings
 	var _settings = {
@@ -98,6 +99,12 @@ var populationspast = (function ($) {
 			_field = populationspast.getField ();
 			$('form#field input[type="radio"]').on('change', function() {
 				_field = populationspast.getField ();
+			});
+			
+			// Create the legend for the current field, and update on changes
+			populationspast.createLegend (_field);
+			$('form#field input[type="radio"]').on('change', function() {
+				populationspast.setLegend (_field);
 			});
 			
 			// Add the data via AJAX requests
@@ -345,6 +352,50 @@ var populationspast = (function ($) {
 			
 			// Return the HTML
 			return html;
+		}
+		,
+		
+		
+		// Function to create and update the legend
+		createLegend: function (field)
+		{
+			// Affix the legend
+			var legend = L.control({position: 'bottomleft'});
+			
+			// Define its contents
+			legend.onAdd = function () {
+				return L.DomUtil.create ('div', 'info legend');
+			};
+			
+			// Add to the map
+			legend.addTo(_map);
+			
+			// Set the initial value
+			populationspast.setLegend (field);
+		},
+		
+		
+		
+		// Function to set the legend contents
+		setLegend: function (field)
+		{
+			// Loop through each colour until found
+			var grades = _settings.fields[field].intervals;
+			var labels = [];
+			var from;
+			var to;
+			for (var i = 0; i < grades.length; i++) {
+				from = grades[i];
+				to = grades[i + 1];
+				labels.push('<i style="background:' + _settings.colourStops[i] + '"></i> ' + from + (to ? '&ndash;' + to : '+'));
+			}
+			
+			// Compile the HTML
+			var html = '<h4>' + _settings.fields[field].label + '</h4>';
+			html += labels.join ('<br />');
+			
+			// Set the HTML
+			$('.legend').html (html);
 		}
 		
 	}
