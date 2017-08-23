@@ -59,16 +59,15 @@ var populationspast = (function ($) {
 		fields: {},		// Will be supplied from the database
 		
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
-		colourStops: {
-			7: 'red',
-			6: '#ed7552',
-			5: '#ed7552',
-			4: '#fab884',
-			3: '#ffffbf',
-			2: '#c0ccbe',
-			1: '#849eb9',
-			0: '#4575b5'
-		}
+		colourStops: [
+			'#4575b5',	// Blue
+			'#849eb9',
+			'#c0ccbe',
+			'#ffffbf',	// Yellow
+			'#fab884',
+			'#ed7552',
+			'red'		// Red
+		]
 	};
 	
 	
@@ -299,13 +298,12 @@ var populationspast = (function ($) {
 		// Assign colour from lookup table
 		getColour: function (value, field)
 		{
-			// Reverse the intervals list
-			var intervals = _settings.fields[field].intervals.slice(0);	// Make a copy of the array; see: https://stackoverflow.com/questions/3978492/
-			intervals = intervals.reverse();
+			// Create a simpler variable for the intervals field
+			var intervals = _settings.fields[field].intervals;
 			
-			// Loop through each colour until found
+			// Loop through each colour downwards until found
 			var interval;
-			for (var i = 0; i < intervals.length; i++) {	// NB $.each doesn't seem to work - it doesn't seem to reset the array pointer for each iteration
+			for (var i = intervals.length; i >= 0; i--) {
 				interval = intervals[i];
 				if (value >= interval) {
 					return _settings.colourStops[i];
@@ -313,7 +311,7 @@ var populationspast = (function ($) {
 			}
 			
 			// Fall back to final colour in the list
-			return _settings.colourStops[0];
+			return colourStops[7];
 		},
 		
 		
