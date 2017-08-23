@@ -313,6 +313,9 @@ class populationspast extends frontControllerApplication
 		# Start the HTML
 		$html = '
 			
+			<!-- Main stylesheet -->
+			<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css" type="text/css">
+			
 			<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 			<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css">

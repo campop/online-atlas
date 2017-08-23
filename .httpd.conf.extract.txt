@@ -14,6 +14,7 @@
 	</Location>
 	
 	# Enable assets
+	Alias $applicationBaseUrl/css/ $repoPath/css/
 	Alias $applicationBaseUrl/data/ $repoPath/data/
 	Alias $applicationBaseUrl/images/ $repoPath/images/
 	Alias $applicationBaseUrl/js/ $repoPath/js/
