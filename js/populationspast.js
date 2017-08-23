@@ -373,7 +373,7 @@ var populationspast = (function ($) {
 			html += '<table id="chart" class="lines compressed">';
 			$.each (feature.properties, function (field, value) {
 				if (typeof value == 'string') {
-					value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+					value = populationspast.htmlspecialchars (value);
 				}
 				html += '<tr class="' + field + '"><td>' + _settings.fields[field].label + ':</td><td><strong>' + value + '</strong></td></tr>';
 			});
@@ -381,8 +381,14 @@ var populationspast = (function ($) {
 			
 			// Return the HTML
 			return html;
-		}
-		,
+		},
+		
+		
+		// Function to make data entity-safe
+		htmlspecialchars: function (string)
+		{
+			return string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		},
 		
 		
 		// Function to create and update the legend
