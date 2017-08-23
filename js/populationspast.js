@@ -375,7 +375,7 @@ var populationspast = (function ($) {
 				if (typeof value == 'string') {
 					value = populationspast.htmlspecialchars (value);
 				}
-				html += '<tr class="' + field + '"><td>' + _settings.fields[field].label + ':</td><td><strong>' + value + '</strong></td></tr>';
+				html += '<tr class="' + field + '"><td>' + populationspast.htmlspecialchars (_settings.fields[field].label) + ':</td><td><strong>' + value + '</strong></td></tr>';
 			});
 			html += '</table>';
 			
@@ -426,8 +426,8 @@ var populationspast = (function ($) {
 			}
 			
 			// Compile the HTML
-			var html = '<h4>' + _settings.fields[field].label + '</h4>';
-			html += '<p>' + _settings.fields[field].description + '</p>';
+			var html = '<h4>' + populationspast.htmlspecialchars (_settings.fields[field].label) + '</h4>';
+			html += '<p>' + populationspast.htmlspecialchars (_settings.fields[field].description) + '</p>';
 			html += labels.join ('<br />');
 			
 			// Set the HTML
