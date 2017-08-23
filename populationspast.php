@@ -185,6 +185,7 @@ class populationspast extends frontControllerApplication
 			'apiJsonPretty' => false,
 			'useTemplating' => true,
 			'disableTabs' => true,
+			'authLinkVisibility' => false,
 			'h1' => '',
 			'div' => false,
 		);
