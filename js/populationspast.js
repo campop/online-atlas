@@ -161,8 +161,7 @@ var populationspast = (function ($) {
 				center: [_settings.defaultLatitude, _settings.defaultLongitude],
 				zoom: _settings.defaultZoom,
 				layers: tileLayers[0]	// Documentation suggests tileLayers is all that is needed, but that shows all together
-			});
-			
+			}).setActiveArea('activearea');
 			
 			// Set a class corresponding to the map tile layer, so that the background can be styled with CSS
 			populationspast.setMapBackgroundColour (tileLayers[0].options);
