@@ -321,7 +321,7 @@ var populationspast = (function ($) {
 			}
 			
 			// Fall back to final colour in the list
-			return colourStops[7];
+			return _settings.colourStops[0];
 		},
 		
 		
