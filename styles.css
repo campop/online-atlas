@@ -17,7 +17,7 @@ body .ui-front {z-index: 1000;}
 
 /* Overlay */
 nav {position: absolute; right: 0; width: 310px; height: 100%; z-index: 1000; background-color: #333; opacity: 0.85;}
-.leaflet-control-layers, .leaflet-control-attribution {right: 310px;}
+.leaflet-control-layers, .leaflet-control-attribution, .summary {right: 310px;}
 nav {color: white;}
 nav a {color: white; text-decoration: none;}
 nav #controls {padding: 20px 10px 30px 15px;}

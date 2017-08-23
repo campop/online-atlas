@@ -15,6 +15,7 @@ var populationspast = (function ($) {
 	var _currentZoom = null;
 	var _zoomedOut = null;	// Boolean for whether the map is zoomed out 'too far'
 	var _legendHtml = null;	// Legend HTML content
+	var _summary = null;
 	
 	// Settings
 	var _settings = {
@@ -105,6 +106,12 @@ var populationspast = (function ($) {
 			populationspast.createLegend (_field);
 			$('form#field input[type="radio"]').on('change', function() {
 				populationspast.setLegend (_field);
+			});
+			
+			// Register an summary box control
+			populationspast.summaryControl ();
+			$('form#field input[type="radio"]').on('change', function() {
+				_summary.update (_field, null);
 			});
 			
 			// Add the data via AJAX requests
@@ -336,7 +343,7 @@ var populationspast = (function ($) {
 			
 			// Enable popups (if close enough)
 			if (!_zoomedOut) {
-				var popupHtml = populationspast.popupHtml (feature /*, dataset */);
+				var popupHtml = populationspast.popupHtml (feature);
 				layer.bindPopup(popupHtml, {autoPan: false});
 			}
 		},
@@ -353,6 +360,9 @@ var populationspast = (function ($) {
 			if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
 				layer.bringToFront();
 			}
+			
+			// Update the summary box
+			_summary.update (_field, layer.feature);
 		},
 		
 		
@@ -360,6 +370,9 @@ var populationspast = (function ($) {
 		resetHighlight: function (e)
 		{
 			_layer.resetStyle (e.target);
+			
+			// Update the summary box
+			_summary.update (_field, null);
 		},
 		
 		
@@ -388,6 +401,17 @@ var populationspast = (function ($) {
 		htmlspecialchars: function (string)
 		{
 			return string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		},
+		
+		
+		// Function to define summary box content
+		summaryHtml: function (field, feature)
+		{
+			// Assemble the HTML
+			var html = '<p>' + populationspast.htmlspecialchars (feature.properties['SUBDIST']) + ', in ' + feature.properties['year'] + ': <strong>' + feature.properties[field] + '</strong></p>';
+			
+			// Return the HTML
+			return html;
 		},
 		
 		
@@ -432,6 +456,33 @@ var populationspast = (function ($) {
 			
 			// Set the HTML
 			$('.legend').html (html);
+		},
+		
+		
+		// Function to create a summary box
+		summaryControl: function ()
+		{
+			// Create the control
+			_summary = L.control();
+			
+			// Define its contents
+			_summary.onAdd = function (map) {
+			    this._div = L.DomUtil.create('div', 'info summary'); // create a div with a classes 'info' and 'summary'
+			    this.update(_field, null);
+			    return this._div;
+			};
+			
+			// Register a method to update the control based on feature properties passed
+			_summary.update = function (field, feature) {
+				var html = '<h4>' + populationspast.htmlspecialchars (_settings.fields[field].label) + '</h4>';
+				html += (feature ?
+					populationspast.summaryHtml (field, feature)
+					: 'Hover over an area to view details.');
+				this._div.innerHTML = html;
+			};
+			
+			// Add to the map
+			_summary.addTo(_map);
 		},
 		
 		
