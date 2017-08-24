@@ -74,17 +74,17 @@ class populationspast extends frontControllerApplication
 		),
 		'LEGIT_RATE' => array (
 			'label' => 'Legitimacy Rate',
-			'description' => '?',
-			'intervals' => '0, 2, 3, 4, 5, 6, 7',
+			'description' => 'The number of legitimate live births per 1,000 married women aged 15-49',
+			'intervals' => '0, 150, 175, 200, 225, 250, 275',
 		),
 		'ILEG_RATE' => array (
 			'label' => 'Illegitimacy Rate',
-			'description' => '?',
-			'intervals' => '0, 3, 6, 9, 12, 15, 18',
+			'description' => 'The number of illegitimate live births per 1,000 single, widowed and divorced women aged 15-49',
+			'intervals' => '0, 5, 10, 15, 20, 25, 30',
 		),
 		'ILEG_RATIO' => array (
 			'label' => 'Illegitimacy Ratio',
-			'description' => 'The number of illegitimate live births per 1,000 total live births',
+			'description' => 'The number of illegitimate live births per 100 total live births',
 			'intervals' => '0, 3, 6, 9, 12, 15, 18',
 		),
 		'IMR' => array (
