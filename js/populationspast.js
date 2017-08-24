@@ -96,6 +96,9 @@ var populationspast = (function ($) {
 			// Create the map
 			populationspast.createMap ();
 			
+			// Create the location overlay pane
+			populationspast.createPane ();
+			
 			// Show first-run welcome message if the user is new to the site
 			populationspast.welcomeFirstRun ();
 			
@@ -228,6 +231,26 @@ var populationspast = (function ($) {
 					event.preventDefault();
 				}
 			});
+		},
+		
+		
+		// Function to create a location overlay pane; see: http://leafletjs.com/examples/map-panes/
+		createPane: function ()
+		{
+			// Create a pane
+			_map.createPane('labels');
+			_map.getPane('labels').style.zIndex = 650;
+			_map.getPane('labels').style.pointerEvents = 'none';
+			
+			// Create a labels layer; see: https://carto.com/location-data-services/basemaps/
+//			var locationLabels = L.tileLayer('http://tiles.oobrien.com/shine_labels_cdrc/{z}/{x}/{y}.png', {
+			var locationLabels = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png', {
+				attribution: '&copy; OpenStreetMap, &copy; CartoDB',
+				pane: 'labels'
+			})
+			
+			// Add to the map
+			locationLabels.addTo(_map);
 		},
 		
 		
