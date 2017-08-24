@@ -72,15 +72,20 @@ class populationspast extends frontControllerApplication
 			'description' => 'The average number of children per woman aged 20-49, irrespective of marital status.',
 			'intervals' => '0, 2, 3, 4, 5, 6, 7',
 		),
+		'LEGIT_RATE' => array (
+			'label' => 'Legitimacy Rate',
+			'description' => '?',
+			'intervals' => '0, 2, 3, 4, 5, 6, 7',
+		),
+		'ILEG_RATE' => array (
+			'label' => 'Illegitimacy Rate',
+			'description' => '?',
+			'intervals' => '0, 3, 6, 9, 12, 15, 18',
+		),
 		'ILEG_RATIO' => array (
 			'label' => 'Illegitimacy Ratio',
 			'description' => 'The number of illegitimate live births per 1,000 total live births',
 			'intervals' => '0, 3, 6, 9, 12, 15, 18',
-		),
-		'LEGIT_RATE' => array (
-			'label' => 'Legitimacy Ratio',
-			'description' => '?',
-			'intervals' => '?',
 		),
 		'IMR' => array (
 			'label' => 'Infant Mortality Rate',
