@@ -99,67 +99,67 @@ class populationspast extends frontControllerApplication
 		),
 		'SC1' => array (
 			'label' => 'Social Class 1: upper and middle class',
-			'description' => 'The proportion of employed men aged 15-64 in social class 1: upper and middle class',
+			'description' => 'The percentage of employed men aged 15-64 in social class 1: upper and middle class',
 			'intervals' => '0, 1.5, 3, 4.5, 6, 7.5, 9',
 		),
 		'SC2' => array (
 			'label' => 'Social Class 2: intermediate class',
-			'description' => 'The proportion of employed men aged 15-64 in social class 2: intermediate class',
+			'description' => 'The percentage of employed men aged 15-64 in social class 2: intermediate class',
 			'intervals' => '0, 5, 10, 15, 20, 25, 30',
 		),
 		'SC3' => array (
 			'label' => 'Social Class 3: skilled workmen',
-			'description' => 'The proportion of employed men aged 15-64 in social class 3: skilled workmen',
+			'description' => 'The percentage of employed men aged 15-64 in social class 3: skilled workmen',
 			'intervals' => '0, 5, 10, 15, 20, 25, 30',
 		),
 		'SC4' => array (
 			'label' => 'Social Class 4: intermediate class',
-			'description' => 'The proportion of employed men aged 15-64 in social class 4: intermediate class',
+			'description' => 'The percentage of employed men aged 15-64 in social class 4: intermediate class',
 			'intervals' => '0, 5, 10, 15, 20, 25, 30',
 		),
 		'SC5' => array (
 			'label' => 'Social Class 5: unskilled workmen',
-			'description' => 'The proportion of employed men aged 15-64 in social class 5: unskilled workmen',
+			'description' => 'The percentage of employed men aged 15-64 in social class 5: unskilled workmen',
 			'intervals' => '0, 5, 10, 15, 20, 25, 30',
 		),
 		'SC6' => array (
 			'label' => 'Social Class 6: textile workers',
-			'description' => 'The proportion of employed men aged 15-64 in social class 6: textile workers',
+			'description' => 'The percentage of employed men aged 15-64 in social class 6: textile workers',
 			'intervals' => '0, 5, 10, 15, 20, 25, 30',
 		),
 		'SC7' => array (
 			'label' => 'Social Class 7: miners',
-			'description' => 'The proportion of employed men aged 15-64 in social class 7: miners',
+			'description' => 'The percentage of employed men aged 15-64 in social class 7: miners',
 			'intervals' => '0, 5, 10, 15, 20, 25, 30',
 		),
 		'SC8' => array (
 			'label' => 'Social Class 8: agricultural labourers',
-			'description' => 'The proportion of employed men aged 15-64 in social class 8: agricultural labourers',
+			'description' => 'The percentage of employed men aged 15-64 in social class 8: agricultural labourers',
 			'intervals' => '0, 5, 10, 15, 20, 25, 30',
 		),
 		'FMAR_PRATE' => array (
 			'label' => 'Married women working',
-			'description' => 'The proportion of married women aged 15 or older working',
+			'description' => 'The percentage of married women aged 15 or older working',
 			'intervals' => '0, 5, 10, 15, 20, 25, 30',
 		),
 		'FNM_PRATE' => array (
 			'label' => 'Single women working',
-			'description' => 'The proportion of single women aged 15 or older working',
+			'description' => 'The percentage of single women aged 15 or older working',
 			'intervals' => '0, 40, 50, 60, 70, 80, 90',
 		),
 		'FWID_PRATE' => array (
 			'label' => 'Widowed women working',
-			'description' => 'The proportion of widowed women aged 15 or older working',
+			'description' => 'The percentage of widowed women aged 15 or older working',
 			'intervals' => '0, 40, 50, 60, 70, 80, 90',
 		),
 		'IRISH_BORN' => array (
 			'label' => 'Irish born',
-			'description' => 'The proportion of population born in Ireland',
+			'description' => 'The percentage of population born in Ireland',
 			'intervals' => '0, 1, 3, 5, 7, 9, 11',
 		),
 		'SCOT_BORN' => array (
 			'label' => 'Scottish born',
-			'description' => 'The proportion of population born in Scotland',
+			'description' => 'The percentage of population born in Scotland',
 			'intervals' => '0, 1, 3, 5, 7, 9, 11',
 		),
 		'POP_DENS' => array (
@@ -169,7 +169,7 @@ class populationspast extends frontControllerApplication
 		),
 		'HOUSE_SERV' => array (
 			'label' => 'Houses with a live-in servant',
-			'description' => 'The proportion of households with live-in servants',
+			'description' => 'The percentage of households with live-in servants',
 			'intervals' => '0, 5, 10, 15, 20, 25, 30',
 		),
 		'M_SMAM' => array (
@@ -184,12 +184,12 @@ class populationspast extends frontControllerApplication
 		),
 		'M_CEL_4554' => array (
 			'label' => 'Celibate (men)',
-			'description' => 'Proportion of never married men between ages 45 to 54',
+			'description' => 'Percentage of never married men between ages 45 to 54',
 			'intervals' => '0, 5, 7, 9, 11, 13, 15',
 		),
 		'F_CEL_4554' => array (
 			'label' => 'Celibate (women)',
-			'description' => 'Proportion of never married women between ages 45 to 54',
+			'description' => 'Percentage of never married women between ages 45 to 54',
 			'intervals' => '0, 5, 7, 9, 11, 13, 15',
 		),
 		'TYPE' => array (
