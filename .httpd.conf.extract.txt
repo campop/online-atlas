@@ -23,8 +23,8 @@
 	Use MacroFrontControllerApplication "$applicationBaseUrl/" "Atlas of Victorian and Edwardian Population"
 	
 	# Application directives
-	RewriteRule ^$applicationBaseUrl/(about|import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
-	RewriteRule ^$applicationBaseUrl/(about|import)$ $applicationBaseUrl/$1/ [R]
+	RewriteRule ^$applicationBaseUrl/(about|funders|import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
+	RewriteRule ^$applicationBaseUrl/(about|funders|import)$ $applicationBaseUrl/$1/ [R]
 	
 	<Location $applicationBaseUrl/>
 		php_value memory_limit 100M

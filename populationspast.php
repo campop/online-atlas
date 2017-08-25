@@ -216,6 +216,11 @@ class populationspast extends frontControllerApplication
 				'url' => 'about/',
 				'tab' => 'About the Atlas',
 			),
+			'funders' => array (
+				'description' => 'Funders',
+				'url' => 'funders/',
+				'tab' => 'Funders',
+			),
 			'import' => array (
 				'description' => 'Import',
 				'url' => 'import/',
@@ -427,6 +432,21 @@ class populationspast extends frontControllerApplication
 	{
 		# Load and show the HTML
 		$html = file_get_contents ($this->applicationRoot . '/about.html');
+		
+		# Templatise
+		$this->template['contentHtml'] = $html;
+		$html = $this->templatise ();
+		
+		# Show the HTML
+		echo $html;
+	}
+	
+	
+	# Funders page
+	public function funders ()
+	{
+		# Load and show the HTML
+		$html = file_get_contents ($this->applicationRoot . '/funders.html');
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
