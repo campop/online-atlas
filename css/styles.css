@@ -16,9 +16,9 @@ body .ui-front {z-index: 1000;}
 .ui-autocomplete li a.ui-state-active {cursor: pointer; background-color: #f7f7f7;}
 
 /* Overlay */
-nav {position: absolute; right: 0; width: 310px; height: 100%; z-index: 1000; background-color: #333; opacity: 0.85;}
-.activearea {position: absolute; top: 0; left: 0; right: 310px; height: 100%;}
-.leaflet-control-layers, .leaflet-control-attribution, .summary {right: 310px;}
+nav {position: absolute; right: 0; width: 330px; height: 100%; z-index: 1000; background-color: #333; opacity: 0.85;}
+.activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
+.leaflet-control-layers, .leaflet-control-attribution, .summary {right: 330px;}
 nav {color: white;}
 nav a {color: white; text-decoration: none;}
 nav #controls {padding: 20px 10px 30px 15px;}
@@ -27,7 +27,7 @@ nav #controls {padding: 20px 10px 30px 15px;}
 #controls #year {width: 200px; margin-bottom: 30px;}
 #controls #field div {padding-left: 3px; border-radius: 4px; width: 100%;}
 #controls #field div:hover {background-color: #666;}
-#controls #field label {padding-left: 5px; display: inline-block; width: 260px; margin: 0;}
+#controls #field label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
 
 /* Legend */
 .info {padding: 15px 12px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
@@ -36,6 +36,11 @@ nav #controls {padding: 20px 10px 30px 15px;}
 .legend i {width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7;}
 .summary {width: 300px;}
 
+/* More details box */
+a.moredetails {color: gray; font-size: 0.83em;}
+#aboutfields {display: none;}
+.vex.vex-theme-plain.wider .vex-content {width: 75%; padding: 25px; min-height: 300px;}
+
 /* Popup styling */
 #map .leaflet-popup {min-width: 350px;}
 table#chart {table-layout: fixed; width: 100%;}
@@ -43,5 +48,4 @@ table#chart tr:first-child td {padding-bottom: 1em;}
 table#chart td:first-child {width: 200px;}
 table#chart tr.RAW_TFR td {padding-top: 1em;}
 table#chart tr.RAW_TFR td, table#chart tr.EBS_TFR td {color: #603;}
-
 

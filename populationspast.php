@@ -316,7 +316,10 @@ class populationspast extends frontControllerApplication
 			if (isSet ($field['general']) && $field['general']) {continue;}		// Skip general fields, like year
 			$dropListHtml .= "\n\t\t\t\t\t\t\t" . '<div title="' . htmlspecialchars ($field['description']) . '">';
 			$dropListHtml .= "\n\t\t\t\t\t\t\t\t" . '<input type="radio" name="field" value="' . htmlspecialchars ($id) . '" id="field_' . htmlspecialchars ($id) . '"' . ($id == $this->defaultField ? ' checked="checked"' : '') . ' />';
-			$dropListHtml .= '<label for="field_' . htmlspecialchars ($id) . '">' . htmlspecialchars ($field['label']) . '</label>';
+			$dropListHtml .= '<label for="field_' . htmlspecialchars ($id) . '">';
+			$dropListHtml .= htmlspecialchars ($field['label']);
+			$dropListHtml .= ' <a class="moredetails" data-field="' . $id . '" href="#">[?]</a>';
+			$dropListHtml .= '</label>';
 			$dropListHtml .= "\n\t\t\t\t\t\t\t" . '</div>';
 		}
 		
@@ -401,6 +404,11 @@ class populationspast extends frontControllerApplication
 				
 			</div>
 		';
+		
+		# Add text for more details on each field into the page
+		$html .= "\n<div id=\"aboutfields\">";
+		$html .= file_get_contents ($this->applicationRoot . '/about.html');
+		$html .= "\n</div>";
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;

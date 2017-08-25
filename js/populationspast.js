@@ -135,6 +135,9 @@ var populationspast = (function ($) {
 			
 			// Add tooltips to the forms
 			populationspast.tooltips ();
+			
+			// Register a dialog dialog box handler, giving a link more information
+			populationspast.moreDetails ();
 		},
 		
 		
@@ -272,6 +275,41 @@ var populationspast = (function ($) {
 			
 			// Show the dialog
 			vex.dialog.alert ({unsafeMessage: message});
+		},
+		
+		
+		// Handler for a more details popup layer
+		moreDetails: function ()
+		{
+			// Create popup when link clicked on
+			$('.moredetails').click (function (e) {
+				
+				// Obtain the field
+				var field = $(this).attr('data-field');
+				
+				// Obtain the content; see: https://stackoverflow.com/a/14744011/180733 and https://stackoverflow.com/a/25183183/180733
+				var dialogBoxContentHtml = $('#aboutfields').find('h3#' + field).nextUntil('h3').addBack().map(function() {
+					return this.outerHTML;
+				}).get().join('');
+				if (!dialogBoxContentHtml) {
+					dialogBoxContentHtml = '<p><em>Sorry, no further details for this field available yet.</em></p>';
+				}
+				
+				// Create the dialog box
+				populationspast.dialogBox ('#moredetails', _field, dialogBoxContentHtml);
+				
+				// Prevent link
+				e.preventDefault ();
+			});
+		},
+		
+		
+		// Dialog box
+		dialogBox: function (triggerElement, name, html)
+		{
+			html = '<div id="moredetailsbox">' + html + '</div>';
+			vex.dialog.buttons.YES.text = 'Close';
+			vex.dialog.alert ({unsafeMessage: html, showCloseButton: true, className: 'vex vex-theme-plain wider'});
 		},
 		
 		
