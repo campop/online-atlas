@@ -87,7 +87,9 @@ var populationspast = (function ($) {
 			
 			// Parse out the intervals in each field into an array, for use as colour stops
 			$.each (_settings.fields, function (field, value) {
-				_settings.fields[field].intervals = value.intervals.split(', ');
+				if (typeof value.intervals == 'string') {
+					_settings.fields[field].intervals = value.intervals.split(', ');
+				}
 			});
 			
 			// Obtain the base URL
@@ -418,17 +420,25 @@ var populationspast = (function ($) {
 			// Create a simpler variable for the intervals field
 			var intervals = _settings.fields[field].intervals;
 			
-			// Loop through each colour downwards until found
-			var interval;
-			for (var i = intervals.length; i >= 0; i--) {
-				interval = intervals[i];
-				if (value >= interval) {
-					return _settings.colourStops[i];
+			// If the intervals is an array, i.e. standard list of colour stops, loop until found
+			if (intervals[0]) {		// Simple, quick check
+				
+				// Loop through each colour downwards until found
+				var interval;
+				for (var i = intervals.length; i >= 0; i--) {
+					interval = intervals[i];
+					if (value >= interval) {
+						return _settings.colourStops[i];
+					}
 				}
+				
+				// Fall back to final colour in the list
+				return _settings.colourStops[0];
+				
+			// For pure key-value pair objects, read the value off
+			} else {
+				return intervals[value];
 			}
-			
-			// Fall back to final colour in the list
-			return _settings.colourStops[0];
 		},
 		
 		
@@ -504,6 +514,13 @@ var populationspast = (function ($) {
 		},
 		
 		
+		// Function to make first character upper-case; see: https://stackoverflow.com/a/1026087/180733
+		ucfirst: function (string)
+		{
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		},
+		
+		
 		// Function to define summary box content
 		summaryHtml: function (field, feature)
 		{
@@ -538,15 +555,23 @@ var populationspast = (function ($) {
 		// Function to set the legend contents
 		setLegend: function (field)
 		{
-			// Loop through each colour until found
-			var grades = _settings.fields[field].intervals;
+			// If the intervals is an array, i.e. standard list of colour stops, loop until found
 			var labels = [];
-			var from;
-			var to;
-			for (var i = 0; i < grades.length; i++) {
-				from = grades[i];
-				to = grades[i + 1];
-				labels.push('<i style="background:' + _settings.colourStops[i] + '"></i> ' + from + (to ? '&ndash;' + to : '+'));
+			var intervals = _settings.fields[field].intervals;
+			if (intervals[0]) {		// Simple, quick check
+				
+				// Loop through each colour until found
+				var from;
+				var to;
+				for (var i = 0; i < intervals.length; i++) {
+					from = intervals[i];
+					to = intervals[i + 1];
+					labels.push('<i style="background:' + _settings.colourStops[i] + '"></i> ' + from + (to ? '&ndash;' + to : '+'));
+				}
+			} else {
+				$.each (intervals, function (key, colour) {
+					labels.push('<i style="background:' + colour + '"></i> ' + populationspast.htmlspecialchars (populationspast.ucfirst (key)));
+				});
 			}
 			
 			// Compile the HTML
