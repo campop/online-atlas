@@ -195,8 +195,17 @@ class populationspast extends frontControllerApplication
 		'TYPE' => array (
 			'label' => 'Type of place',
 			'description' => 'Types of places are defined by the occupational structure of registration sub-district (RSD). The classification consists of eight types: agriculture, mining, other urban, professional, semi-professional, semi-rural, textile and transport.',
-			'intervals' => '',
-		),
+			'intervals' => array (
+				'agriculture'		=> '#74b273',
+				'semi-rural'		=> '#d2ffbe',
+				'professional'		=> '#0071fe',
+				'semi-professional'	=> '#bee8ff',
+				'mining'			=> '#cd6667',
+				'textile'			=> '#aa66cd',
+				'transport'			=> '#ffaa01',
+				'otherUrban'		=> '#b2b2b2',
+			),
+		)
 	);
 	
 	
