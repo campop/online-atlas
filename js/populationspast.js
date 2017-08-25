@@ -568,6 +568,7 @@ var populationspast = (function ($) {
 					to = intervals[i + 1];
 					labels.push('<i style="background:' + _settings.colourStops[i] + '"></i> ' + from + (to ? '&ndash;' + to : '+'));
 				}
+				labels = labels.reverse();	// Legends should be shown highest first
 			} else {
 				$.each (intervals, function (key, colour) {
 					labels.push('<i style="background:' + colour + '"></i> ' + populationspast.htmlspecialchars (populationspast.ucfirst (key)));
