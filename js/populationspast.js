@@ -332,6 +332,12 @@ var populationspast = (function ($) {
 			var yearIndex = $('form input#year').val();
 			apiData.year = _settings.datasets[yearIndex];
 			
+			// Start spinner, initially adding it to the page
+			if (!$('#loading').length) {
+				$('#mapcontainer').append('<img id="loading" src="' + _baseUrl + '/images/spinner.svg" />');
+			}
+			$('#loading').show();
+			
 			// Fetch data
 			$.ajax({
 				url: _baseUrl + '/api/locations',
@@ -347,6 +353,9 @@ var populationspast = (function ($) {
 					}
 				},
 				success: function (data, textStatus, jqXHR) {
+					
+					// Remove spinner
+					$('#loading').hide();
 					
 					// Show API-level error if one occured
 					// #!# This is done here because the API still returns Status code 200
