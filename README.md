@@ -17,9 +17,9 @@ Usage
 Dependencies
 ------------
 
-* [application.php application support library](http://download.geog.cam.ac.uk/projects/application/)
-* [frontControllerApplication.php front controller application implementation library](http://download.geog.cam.ac.uk/projects/frontcontrollerapplication/)
-* [ultimateForm.php form library](http://download.geog.cam.ac.uk/projects/ultimateform/)
+* [application.php application support library](https://download.geog.cam.ac.uk/projects/application/)
+* [frontControllerApplication.php front controller application implementation library](https://download.geog.cam.ac.uk/projects/frontcontrollerapplication/)
+* [ultimateForm.php form library](https://download.geog.cam.ac.uk/projects/ultimateform/)
 * [Smarty](https://www.smarty.net/)
 
 
