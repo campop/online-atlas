@@ -643,13 +643,14 @@ class populationspast extends frontControllerApplication
 		;";
 		$data = $this->databaseConnection->getData ($query);
 		
-		# Determine fields that are DECIMAL so that trailing zeros are removed
-		#!# Ideally this should be handled natively by the database library
+		# Determine fields that are DECIMAL so that trailing zeros are removed; also format to 2dp
+		#!# Ideally the trailing zeroes handling should be handled natively by the database library
 		$fields = $this->databaseConnection->getFields ($this->settings['database'], 'data');
 		foreach ($fields as $field => $attributes) {
 			if (substr_count (strtolower ($attributes['Type']), 'decimal')) {
 				foreach ($data as $index => $record) {
 					if (isSet ($data[$index][$field])) {
+						$data[$index][$field] = number_format ($data[$index][$field], 2);
 						$data[$index][$field] = $data[$index][$field] + 0;
 					}
 				}
