@@ -319,19 +319,6 @@ class populationspast extends frontControllerApplication
 	# Welcome screen
 	public function home ()
 	{
-		# Create a drop-down list of selectable fields
-		$dropListHtml = '';
-		foreach ($this->fields as $id => $field) {
-			if (isSet ($field['general']) && $field['general']) {continue;}		// Skip general fields, like year
-			$dropListHtml .= "\n\t\t\t\t\t\t\t" . '<div title="' . htmlspecialchars ($field['description']) . '">';
-			$dropListHtml .= "\n\t\t\t\t\t\t\t\t" . '<input type="radio" name="field" value="' . htmlspecialchars ($id) . '" id="field_' . htmlspecialchars ($id) . '"' . ($id == $this->defaultField ? ' checked="checked"' : '') . ' />';
-			$dropListHtml .= '<label for="field_' . htmlspecialchars ($id) . '">';
-			$dropListHtml .= htmlspecialchars ($field['label']);
-			$dropListHtml .= ' <a class="moredetails" data-field="' . $id . '" href="#">[?]</a>';
-			$dropListHtml .= '</label>';
-			$dropListHtml .= "\n\t\t\t\t\t\t\t" . '</div>';
-		}
-		
 		# Start the HTML
 		$html = '
 			
@@ -378,6 +365,7 @@ class populationspast extends frontControllerApplication
 				var config = {
 					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
 					zoomedOut: ' . $this->settings['zoomedOut'] . ',
+					defaultField: \'' . $this->defaultField . '\',
 					fields: ' . json_encode ($this->fields, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . '
 				}
 				
@@ -387,31 +375,7 @@ class populationspast extends frontControllerApplication
 				
 			</script>
 			
-			
-			<div id="mapcontainer">
-				
-				<div id="geocoder">
-					<input type="text" name="location" autocomplete="off" placeholder="Search locations and move map" tabindex="1" />
-				</div>
-				
-				<nav>
-					<div id="controls">
-						
-						<form id="field">
-							
-							<h3>Year:</h3>
-							' . htmlspecialchars (min ($this->settings['datasets'])) . ' <input id="year" type="range" list="years" min="0" max="' . (count ($this->settings['datasets']) - 1) . '" step="1" /> ' . htmlspecialchars (max ($this->settings['datasets'])) . '
-							
-							<h3>Show:</h3>
-							' . $dropListHtml . '
-							
-						</form>
-					</div>
-				</nav>
-				
-				<div id="map"></div>
-				
-			</div>
+			<div id="mapcontainers"></div>
 		';
 		
 		# Add text for more details on each field into the page

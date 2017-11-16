@@ -1,13 +1,12 @@
 
-#mapcontainer {position: relative;}
-
-#map {width: auto; height: 700px;}
+.mapcontainer {position: relative;}
+.map {width: auto; height: 700px;}
 
 /* Geocoder */
-#geocoder {position: absolute; top: 10px; left: 55px; z-index: 500;}
-#geocoder input {padding: 5px; font-size: 1em; color: #603; width: 250px;}
-#geocoder input.ui-autocomplete-loading {background: white url('../images/ui-anim_basic_16x16.gif') right center no-repeat;}
-#geocoder input, .ui-autocomplete {border: 1px solid #eee; box-shadow: 5px 5px 10px 0px rgba(28,28,28,0.5);}
+.geocoder {position: absolute; top: 10px; left: 55px; z-index: 500;}
+.geocoder input {padding: 5px; font-size: 1em; color: #603; width: 250px;}
+.geocoder input.ui-autocomplete-loading {background: white url('../images/ui-anim_basic_16x16.gif') right center no-repeat;}
+.geocoder input, .ui-autocomplete {border: 1px solid #eee; box-shadow: 5px 5px 10px 0px rgba(28,28,28,0.5);}
 .ui-autocomplete {background-color: white; z-index: 1000; width: 200px; list-style: none; margin-left: 0; padding-left: 0;}
 body .ui-front {z-index: 1000;}
 .ui-autocomplete li {list-style: none; margin-left: 0; padding-left: 0;}
@@ -16,19 +15,18 @@ body .ui-front {z-index: 1000;}
 .ui-autocomplete li a.ui-state-active {cursor: pointer; background-color: #f7f7f7;}
 
 /* Overlay */
-nav {position: absolute; right: 0; width: 330px; height: 100%; z-index: 1000; background-color: #333; opacity: 0.85;}
+nav {position: absolute; right: 0; width: 330px; height: 100%; z-index: 1000; background-color: #333; opacity: 0.85; color: white;}
 .activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
 .leaflet-control-layers, .leaflet-control-attribution, .summary {right: 330px;}
-nav {color: white;}
-nav a {color: white; text-decoration: none;}
-nav #controls {padding: 20px 10px 30px 15px;}
-nav h3 {margin-bottom: 5px;}
+nav form { padding: 20px 10px 30px 15px;}
+nav form h3 {margin-bottom: 5px;}
+nav form a {color: white; text-decoration: none;}
 
 /* Controls */
-#controls #year {width: 200px; margin-bottom: 30px;}
-#controls #field div {padding-left: 3px; border-radius: 4px; width: 100%;}
-#controls #field div:hover {background-color: #666;}
-#controls #field label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
+nav form .year {width: 200px; margin-bottom: 30px;}
+nav form div {padding-left: 3px; border-radius: 4px; width: 100%;}
+nav form div:hover {background-color: #666;}
+nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
 
 /* Legend */
 .info {padding: 15px 12px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
@@ -43,7 +41,7 @@ a.moredetails {color: gray; font-size: 0.83em;}
 .vex.vex-theme-plain.wider .vex-content {width: 75%; padding: 25px; min-height: 300px;}
 
 /* Popup styling */
-#map .leaflet-popup {min-width: 350px;}
+.map .leaflet-popup {min-width: 350px;}
 table#chart {table-layout: fixed; width: 100%;}
 table#chart tr:first-child td {padding-bottom: 1em;}
 table#chart td:first-child {width: 200px;}

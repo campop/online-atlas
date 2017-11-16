@@ -52,6 +52,7 @@ var populationspast = (function ($) {
 		
 		// Fields and their labels
 		fields: {},		// Will be supplied from the database
+		defaultField: '',		// Will be supplied
 		
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
 		colourStops: [
@@ -89,40 +90,49 @@ var populationspast = (function ($) {
 			_baseUrl = baseUrl;
 			
 			// Create the map panel and associated controls
-			populationspast.mapUi ('map');
+			populationspast.mapUi (1);
 		},
 		
 		
 		// Main function to create a map panel
-		mapUi: function (divId)
+		mapUi: function (mapUiIndex)
 		{
 			// Create a map UI collection object
 			var mapUi = {};
 			
+			// Create a div for this map UI within the mapcontainers section div
+			mapUi.index = mapUiIndex;
+			mapUi.containerDivId = 'mapcontainer' + mapUi.index
+			$('#mapcontainers').append ('<div id="' + mapUi.containerDivId + '" class="mapcontainer"></div>');
+			
 			// Create the map
-			populationspast.createMap (mapUi, divId);
+			mapUi.mapDivId = 'map' + mapUi.index;
+			populationspast.createMap (mapUi);
+			
+			// Create the nav panel
+			populationspast.createNav (mapUi);
 			
 			// Create the location overlay pane
-			populationspast.createPane (mapUi.map);
+			populationspast.createLocationsOverlayPane (mapUi.map);
 			
 			// Show first-run welcome message if the user is new to the site
 			populationspast.welcomeFirstRun ();
 			
 			// Determine the active field, and create a handler for changes
-			mapUi.field = populationspast.getField ();	// E.g. TMFR, TFR, etc.
-			$('form#field input[type="radio"]').on('change', function() {
-				mapUi.field = populationspast.getField ();
+			mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.
+			$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function() {
+				mapUi.field = populationspast.getField (mapUi.navDivId);
 			});
 			
 			// Create the legend for the current field, and update on changes
 			populationspast.createLegend (mapUi);
-			$('form#field input[type="radio"]').on('change', function() {
+			$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function() {
 				populationspast.setLegend (mapUi.field);
 			});
 			
 			// Register an summary box control
 			populationspast.summaryControl (mapUi);
-			$('form#field input[type="radio"]').on('change', function() {
+			$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function() {
 				mapUi.summary.update (mapUi.field, null);
 			});
 			
@@ -135,7 +145,7 @@ var populationspast = (function ($) {
 			});
 			
 			// Register to refresh data on any form field change
-			$('form#field :input').on('change', function() {
+			$('#' + mapUi.navDivId + ' form :input').on('change', function() {
 				populationspast.getData (mapUi);
 			});
 			
@@ -148,15 +158,18 @@ var populationspast = (function ($) {
 		
 		
 		// Function to determine the field from the form value
-		getField: function ()
+		getField: function (navDivId)
 		{
-			return $('form#field input[type="radio"]:checked').val();
+			return $('#' + navDivId + ' form input[type="radio"]:checked').val();
 		},
 		
 		
 		// Function to create the map and attach this to the mapUi
-		createMap: function (mapUi, divId)
+		createMap: function (mapUi)
 		{
+			// Create a div for this map within the map UI container
+			$('#' + mapUi.containerDivId).append ('<div id="' + mapUi.mapDivId + '" class="map"></div>');
+			
 			// Add the tile layers
 			var tileLayers = [];		// Background tile layers
 			var baseLayers = {};		// Labels, by name
@@ -172,7 +185,7 @@ var populationspast = (function ($) {
 			});
 			
 			// Create the map
-			var map = L.map(divId, {
+			var map = L.map(mapUi.mapDivId, {
 				center: [_settings.defaultLatitude, _settings.defaultLongitude],
 				zoom: _settings.defaultZoom,
 				layers: tileLayers[0]	// Documentation suggests tileLayers is all that is needed, but that shows all together
@@ -206,7 +219,7 @@ var populationspast = (function ($) {
 			L.control.layers(baseLayers, null, {position: 'bottomright'}).addTo(map);
 			
 			// Add geocoder control
-			populationspast.geocoder (map);
+			populationspast.createGeocoder (mapUi);
 			
 			// Add hash support
 			new L.Hash (map, baseLayersById);
@@ -232,22 +245,65 @@ var populationspast = (function ($) {
 		
 		
 		// Wrapper function to add a geocoder control
-		geocoder: function (map)
+		createGeocoder: function (mapUi)
 		{
+			// Create a div for the geocoder within the map container
+			var geocoderDivId = 'geocoder' + mapUi.index;
+			$('#' + mapUi.containerDivId).prepend ('<div id="' + geocoderDivId + '" class="geocoder"></div>');
+			
+			// Create the input form within the geocoder container
+			$('#' + geocoderDivId).append ('<input type="text" name="location" autocomplete="off" placeholder="Search locations and move map" tabindex="1" />');
+			
 			// Attach the autocomplete library behaviour to the location control
-			autocomplete.addTo ('#geocoder input', {
+			autocomplete.addTo ('#' + geocoderDivId + ' input', {
 				sourceUrl: _settings.geocoderApiBaseUrl + '?key=' + _settings.geocoderApiKey + '&bounded=1&bbox=' + _settings.autocompleteBbox,
 				select: function (event, ui) {
 					var bbox = ui.item.feature.properties.bbox.split(',');
-					map.fitBounds([ [bbox[1], bbox[0]], [bbox[3], bbox[2]] ]);
+					mapUi.map.fitBounds([ [bbox[1], bbox[0]], [bbox[3], bbox[2]] ]);
 					event.preventDefault();
 				}
 			});
 		},
 		
 		
+		// Function to create the navigation panel
+		createNav: function (mapUi)
+		{
+			// Create a div for the nav within the map container
+			mapUi.navDivId = 'nav' + mapUi.index;
+			$('#' + mapUi.containerDivId).prepend ('<nav id="' + mapUi.navDivId + '"></nav>');
+			
+			// Create a form within the nav
+			$('#' + mapUi.navDivId).append ('<form></form>');
+			
+			// Create the year control within the form
+			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
+			mapUi.yearDivId = 'year' + mapUi.index;
+			$('#' + mapUi.navDivId + ' form').append (Math.min.apply(null, _settings.datasets) + ' <input id="' + mapUi.yearDivId + '" type="range" list="years" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" /> ' + Math.max.apply (null, _settings.datasets));
+			
+			// Build a droplist
+			var dropListHtml = '';
+			var fieldname;
+			$.each (_settings.fields, function (id, field) {
+				if (field.general) {return /* i.e. continue */;}		// Skip general fields, like year
+				dropListHtml += '<div title="' + populationspast.htmlspecialchars (field.description) + '">';
+				fieldname = 'field' + mapUi.index + '_' + populationspast.htmlspecialchars (id);
+				dropListHtml += '<input type="radio" name="field" value="' + populationspast.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
+				dropListHtml += '<label for="' + fieldname + '">';
+				dropListHtml += populationspast.htmlspecialchars (field.label);
+				dropListHtml += ' <a class="moredetails" data-field="' + id + '" href="#">[?]</a>';
+				dropListHtml += '</label>';
+				dropListHtml += '</div>';
+			});
+			
+			// Create the year control within the form
+			$('#' + mapUi.navDivId + ' form').append ('<h3>Show:</h3>');
+			$('#' + mapUi.navDivId + ' form').append (dropListHtml);
+		},
+		
+		
 		// Function to create a location overlay pane; see: http://leafletjs.com/examples/map-panes/
-		createPane: function (map)
+		createLocationsOverlayPane: function (map)
 		{
 			// Create a pane
 			map.createPane('labels');
@@ -336,12 +392,12 @@ var populationspast = (function ($) {
 			apiData.field = mapUi.field;
 			
 			// Set the year, based on the slider value
-			var yearIndex = $('form input#year').val();
+			var yearIndex = $('#' + mapUi.yearDivId).val();
 			apiData.year = _settings.datasets[yearIndex];
 			
 			// Start spinner, initially adding it to the page
 			if (!$('#loading').length) {
-				$('#mapcontainer').append('<img id="loading" src="' + _baseUrl + '/images/spinner.svg" />');
+				$('#' + mapUi.containerDivId).append('<img id="loading" src="' + _baseUrl + '/images/spinner.svg" />');
 			}
 			$('#loading').show();
 			
