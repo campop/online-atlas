@@ -9,6 +9,7 @@ var populationspast = (function ($) {
 	
 	// Internal class properties
 	var _baseUrl;
+	var _mapUis = {};
 	var _secondMapLoaded = false;
 	
 	// Settings
@@ -91,7 +92,7 @@ var populationspast = (function ($) {
 			_baseUrl = baseUrl;
 			
 			// Create the map panel and associated controls
-			populationspast.mapUi (0);
+			_mapUis[0] = populationspast.mapUi (0);
 			
 			// Add support for side-by-side comparison
 			populationspast.sideBySide ();
@@ -113,12 +114,16 @@ var populationspast = (function ($) {
 					
 					// Load the second map UI if not already loaded
 					if (!_secondMapLoaded) {
-						populationspast.mapUi (1);
+						_mapUis[1] = populationspast.mapUi (1);
 						_secondMapLoaded = true;
 					}
 					
 					// Show the second map
 					$('#mapcontainer1').show ();
+					
+					// Syncronise the map position and zoom
+					_mapUis[0].map.sync (_mapUis[1].map);
+					_mapUis[1].map.sync (_mapUis[0].map);
 				
 				// Normal, single map mode
 				} else {
@@ -126,6 +131,10 @@ var populationspast = (function ($) {
 					
 					// Hide the second map
 					$('#mapcontainer1').hide ();
+					
+					// Unsyncronise the maps
+					_mapUis[0].map.sync (_mapUis[1].map);
+					_mapUis[1].map.sync (_mapUis[0].map);
 				}
 			});
 		},
@@ -191,6 +200,9 @@ var populationspast = (function ($) {
 			
 			// Register a dialog dialog box handler, giving a link more information
 			populationspast.moreDetails (mapUi.field);
+			
+			// Return the mapUi handle
+			return mapUi;
 		},
 		
 		
