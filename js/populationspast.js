@@ -127,7 +127,7 @@ var populationspast = (function ($) {
 			// Create the legend for the current field, and update on changes
 			populationspast.createLegend (mapUi);
 			$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function() {
-				populationspast.setLegend (mapUi.field);
+				populationspast.setLegend (mapUi);
 			});
 			
 			// Register an summary box control
@@ -614,16 +614,16 @@ var populationspast = (function ($) {
 			legend.addTo(mapUi.map);
 			
 			// Set the initial value
-			populationspast.setLegend (mapUi.field);
+			populationspast.setLegend (mapUi);
 		},
 		
 		
 		// Function to set the legend contents
-		setLegend: function (field)
+		setLegend: function (mapUi)
 		{
 			// If the intervals is an array, i.e. standard list of colour stops, loop until found
 			var labels = [];
-			var intervals = _settings.fields[field].intervals;
+			var intervals = _settings.fields[mapUi.field].intervals;
 			if (intervals[0]) {		// Simple, quick check
 				
 				// Loop through each colour until found
@@ -642,12 +642,12 @@ var populationspast = (function ($) {
 			}
 			
 			// Compile the HTML
-			var html = '<h4>' + populationspast.htmlspecialchars (_settings.fields[field].label) + '</h4>';
-			html += '<p>' + populationspast.htmlspecialchars (_settings.fields[field].description) + '</p>';
+			var html = '<h4>' + populationspast.htmlspecialchars (_settings.fields[mapUi.field].label) + '</h4>';
+			html += '<p>' + populationspast.htmlspecialchars (_settings.fields[mapUi.field].description) + '</p>';
 			html += labels.join ('<br />');
 			
 			// Set the HTML
-			$('.legend').html (html);
+			$('#' + mapUi.mapDivId + ' .legend').html (html);
 		},
 		
 		
