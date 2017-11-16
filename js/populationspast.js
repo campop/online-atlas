@@ -9,7 +9,6 @@ var populationspast = (function ($) {
 	
 	// Internal class properties
 	var _baseUrl;
-	var _legendHtml = null;	// Legend HTML content
 	var _summary = null;
 	
 	// Settings
