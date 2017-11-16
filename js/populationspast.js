@@ -9,6 +9,7 @@ var populationspast = (function ($) {
 	
 	// Internal class properties
 	var _baseUrl;
+	var _totalMaps = 0;
 	
 	// Settings
 	var _settings = {
@@ -90,7 +91,13 @@ var populationspast = (function ($) {
 			_baseUrl = baseUrl;
 			
 			// Create the map panel and associated controls
-			populationspast.mapUi (1);
+			populationspast.mapUi (_totalMaps);
+			
+			/*
+			// Create the map panel and associated controls
+			_totalMaps++;
+			populationspast.mapUi (_totalMaps);
+			*/
 		},
 		
 		
@@ -222,7 +229,9 @@ var populationspast = (function ($) {
 			populationspast.createGeocoder (mapUi);
 			
 			// Add hash support
-			new L.Hash (map, baseLayersById);
+			if (mapUi.index == 0) {		// If more than one map on the page, apply only to the first one
+				new L.Hash (map, baseLayersById);
+			}
 			
 			// Add full screen control
 			map.addControl(new L.Control.Fullscreen({pseudoFullscreen: true}));

@@ -1,5 +1,5 @@
 
-.mapcontainer {position: relative;}
+.mapcontainer {position: relative; margin-bottom: 15px;}
 .map {width: auto; height: 700px;}
 
 /* Geocoder */
