@@ -525,6 +525,7 @@ var populationspast = (function ($) {
 		// Function to make data entity-safe
 		htmlspecialchars: function (string)
 		{
+			// #!# Sometimes get: "Uncaught TypeError: Cannot read property 'replace' of undefined"
 			return string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 		},
 		
