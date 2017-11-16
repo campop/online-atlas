@@ -9,7 +9,6 @@ var populationspast = (function ($) {
 	
 	// Internal class properties
 	var _baseUrl;
-	var _map = null;
 	var _layer = null;
 	var _field = null;	// E.g. TMFR, TFR, etc.
 	var _currentZoom = null;
@@ -96,10 +95,10 @@ var populationspast = (function ($) {
 			_baseUrl = baseUrl;
 			
 			// Create the map
-			populationspast.createMap ();
+			var map = populationspast.createMap ();
 			
 			// Create the location overlay pane
-			populationspast.createPane ();
+			populationspast.createPane (map);
 			
 			// Show first-run welcome message if the user is new to the site
 			populationspast.welcomeFirstRun ();
@@ -111,28 +110,28 @@ var populationspast = (function ($) {
 			});
 			
 			// Create the legend for the current field, and update on changes
-			populationspast.createLegend (_field);
+			populationspast.createLegend (map, _field);
 			$('form#field input[type="radio"]').on('change', function() {
 				populationspast.setLegend (_field);
 			});
 			
 			// Register an summary box control
-			populationspast.summaryControl ();
+			populationspast.summaryControl (map);
 			$('form#field input[type="radio"]').on('change', function() {
 				_summary.update (_field, null);
 			});
 			
 			// Add the data via AJAX requests
-			populationspast.getData ();
+			populationspast.getData (map);
 			
 			// Register to refresh data on map move
-			_map.on ('moveend', function (e) {
-				populationspast.getData ();
+			map.on ('moveend', function (e) {
+				populationspast.getData (map);
 			});
 			
 			// Register to refresh data on any form field change
 			$('form#field :input').on('change', function() {
-				populationspast.getData ();
+				populationspast.getData (map);
 			});
 			
 			// Add tooltips to the forms
@@ -168,7 +167,7 @@ var populationspast = (function ($) {
 			});
 			
 			// Create the map
-			_map = L.map('map', {
+			var map = L.map('map', {
 				center: [_settings.defaultLatitude, _settings.defaultLongitude],
 				zoom: _settings.defaultZoom,
 				layers: tileLayers[0]	// Documentation suggests tileLayers is all that is needed, but that shows all together
@@ -176,15 +175,15 @@ var populationspast = (function ($) {
 			
 			// Set a class corresponding to the map tile layer, so that the background can be styled with CSS
 			populationspast.setMapBackgroundColour (tileLayers[0].options);
-			_map.on('baselayerchange', function(e) {
+			map.on('baselayerchange', function(e) {
 				populationspast.setMapBackgroundColour (baseLayers[e.name].options);
 			});
 			
 			// Set the zoom and determine whether the map is zoomed out too far, and set the mouse cursor
-			_currentZoom = _map.getZoom();
+			_currentZoom = map.getZoom();
 			_zoomedOut = (_settings.defaultZoom <= _settings.zoomedOut);
-			_map.on('zoomend', function() {
-				_currentZoom = _map.getZoom();
+			map.on('zoomend', function() {
+				_currentZoom = map.getZoom();
 				_zoomedOut = (_currentZoom <= _settings.zoomedOut);
 			});
 			
@@ -192,26 +191,29 @@ var populationspast = (function ($) {
 			$('#map').css('cursor', (_zoomedOut ? 'zoom-in' : 'auto'));
 			
 			// Zoom in on single click if zoomed out
-			 _map.on ('click', function (e) {
+			 map.on ('click', function (e) {
 				if (_zoomedOut) {
-					_map.setZoomAround (e.latlng, (_settings.zoomedOut + 1));
+					map.setZoomAround (e.latlng, (_settings.zoomedOut + 1));
 				}
 			});
 			
 			// Add the base (background) layer switcher
-			L.control.layers(baseLayers, null, {position: 'bottomright'}).addTo(_map);
+			L.control.layers(baseLayers, null, {position: 'bottomright'}).addTo(map);
 			
 			// Add geocoder control
-			populationspast.geocoder ();
+			populationspast.geocoder (map);
 			
 			// Add hash support
-			new L.Hash (_map, baseLayersById);
+			new L.Hash (map, baseLayersById);
 			
 			// Add full screen control
-			_map.addControl(new L.Control.Fullscreen({pseudoFullscreen: true}));
+			map.addControl(new L.Control.Fullscreen({pseudoFullscreen: true}));
 			
 			// Add geolocation control
-			L.control.locate().addTo(_map);
+			L.control.locate().addTo(map);
+			
+			// Return the map
+			return map;
 		},
 		
 		
@@ -225,14 +227,14 @@ var populationspast = (function ($) {
 		
 		
 		// Wrapper function to add a geocoder control
-		geocoder: function ()
+		geocoder: function (map)
 		{
 			// Attach the autocomplete library behaviour to the location control
 			autocomplete.addTo ('#geocoder input', {
 				sourceUrl: _settings.geocoderApiBaseUrl + '?key=' + _settings.geocoderApiKey + '&bounded=1&bbox=' + _settings.autocompleteBbox,
 				select: function (event, ui) {
 					var bbox = ui.item.feature.properties.bbox.split(',');
-					_map.fitBounds([ [bbox[1], bbox[0]], [bbox[3], bbox[2]] ]);
+					map.fitBounds([ [bbox[1], bbox[0]], [bbox[3], bbox[2]] ]);
 					event.preventDefault();
 				}
 			});
@@ -240,12 +242,12 @@ var populationspast = (function ($) {
 		
 		
 		// Function to create a location overlay pane; see: http://leafletjs.com/examples/map-panes/
-		createPane: function ()
+		createPane: function (map)
 		{
 			// Create a pane
-			_map.createPane('labels');
-			_map.getPane('labels').style.zIndex = 650;
-			_map.getPane('labels').style.pointerEvents = 'none';
+			map.createPane('labels');
+			map.getPane('labels').style.zIndex = 650;
+			map.getPane('labels').style.pointerEvents = 'none';
 			
 			// Create a labels layer; see: https://carto.com/location-data-services/basemaps/
 //			var locationLabels = L.tileLayer('http://tiles.oobrien.com/shine_labels_cdrc/{z}/{x}/{y}.png', {
@@ -255,7 +257,7 @@ var populationspast = (function ($) {
 			})
 			
 			// Add to the map
-			locationLabels.addTo(_map);
+			locationLabels.addTo(map);
 		},
 		
 		
@@ -316,13 +318,13 @@ var populationspast = (function ($) {
 		
 		
 		// Function to add data to the map via an AJAX API call
-		getData: function ()
+		getData: function (map)
 		{
 			// Start API data parameters
 			var apiData = {};
 			
 			// Supply the bbox and zoom
-			apiData.bbox = _map.getBounds().toBBoxString();
+			apiData.bbox = map.getBounds().toBBoxString();
 			apiData.zoom = _currentZoom;
 			
 			// Set the field, based on the radiobutton value
@@ -360,23 +362,23 @@ var populationspast = (function ($) {
 					// Show API-level error if one occured
 					// #!# This is done here because the API still returns Status code 200
 					if (data.error) {
-						populationspast.removeLayer ();
+						populationspast.removeLayer (map);
 						vex.dialog.alert ('Error: ' + data.error);
 						return {};
 					}
 					
 					// Show the data successfully
-					populationspast.showCurrentData(data);
+					populationspast.showCurrentData(map, data);
 				}
 			});
 		},
 		
 		
 		// Function to show the data for a layer
-		showCurrentData: function (data)
+		showCurrentData: function (map, data)
 		{
 			// If this layer already exists, remove it so that it can be redrawn
-			populationspast.removeLayer ();
+			populationspast.removeLayer (map);
 			
 			// Define the data layer
 			_layer = L.geoJson(data, {
@@ -386,7 +388,7 @@ var populationspast = (function ($) {
 			});
 			
 			// Add to the map
-			_layer.addTo(_map);
+			_layer.addTo(map);
 			
 		},
 		
@@ -399,11 +401,11 @@ var populationspast = (function ($) {
 		
 		
 		// Function to remove the data layer
-		removeLayer: function ()
+		removeLayer: function (map)
 		{
 			// Remove the layer, checking first to ensure it exists
 			if (_layer) {
-				_map.removeLayer (_layer);
+				map.removeLayer (_layer);
 			}
 		},
 		
@@ -542,7 +544,7 @@ var populationspast = (function ($) {
 		
 		
 		// Function to create and update the legend
-		createLegend: function (field)
+		createLegend: function (map, field)
 		{
 			// Affix the legend
 			var legend = L.control({position: 'bottomleft'});
@@ -553,7 +555,7 @@ var populationspast = (function ($) {
 			};
 			
 			// Add to the map
-			legend.addTo(_map);
+			legend.addTo(map);
 			
 			// Set the initial value
 			populationspast.setLegend (field);
@@ -595,7 +597,7 @@ var populationspast = (function ($) {
 		
 		
 		// Function to create a summary box
-		summaryControl: function ()
+		summaryControl: function (map)
 		{
 			// Create the control
 			_summary = L.control();
@@ -617,7 +619,7 @@ var populationspast = (function ($) {
 			};
 			
 			// Add to the map
-			_summary.addTo(_map);
+			_summary.addTo(map);
 		},
 		
 		
