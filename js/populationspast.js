@@ -95,15 +95,15 @@ var populationspast = (function ($) {
 			_baseUrl = baseUrl;
 			
 			// Create the map panel and associated controls
-			populationspast.mapUi ();
+			populationspast.mapUi ('map');
 		},
 		
 		
-		// Main function to create a map UI
-		mapUi: function ()
+		// Main function to create a map panel
+		mapUi: function (divId)
 		{
 			// Create the map
-			var map = populationspast.createMap ();
+			var map = populationspast.createMap (divId);
 			
 			// Create the location overlay pane
 			populationspast.createPane (map);
@@ -158,7 +158,7 @@ var populationspast = (function ($) {
 		
 		
 		// Function to create the map
-		createMap: function ()
+		createMap: function (divId)
 		{
 			// Add the tile layers
 			var tileLayers = [];		// Background tile layers
@@ -175,7 +175,7 @@ var populationspast = (function ($) {
 			});
 			
 			// Create the map
-			var map = L.map('map', {
+			var map = L.map(divId, {
 				center: [_settings.defaultLatitude, _settings.defaultLongitude],
 				zoom: _settings.defaultZoom,
 				layers: tileLayers[0]	// Documentation suggests tileLayers is all that is needed, but that shows all together
