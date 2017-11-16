@@ -15,6 +15,7 @@ var populationspast = (function ($) {
 	var _zoomedOut = null;	// Boolean for whether the map is zoomed out 'too far'
 	var _legendHtml = null;	// Legend HTML content
 	var _summary = null;
+	var _defaultLineWeight = 1;
 	
 	// Settings
 	var _settings = {
@@ -427,7 +428,7 @@ var populationspast = (function ($) {
 			// Base the colour on the specified colour field
 			var style = {
 				fillColor: populationspast.getColour (feature.properties[_field], _field),
-				weight: (_zoomedOut ? 0 : 1),
+				weight: (_zoomedOut ? 0 : _defaultLineWeight),
 				fillOpacity: 0.7
 			};
 			
@@ -501,7 +502,11 @@ var populationspast = (function ($) {
 		// Function to reset highlighting
 		resetHighlight: function (e)
 		{
-			_layer.resetStyle (e.target);
+			// Reset the style; NB can't use resetStyle (e.target) as that requires a handle to the layer, which would need to be a global properly
+			var layer = e.target;
+			layer.setStyle({
+				weight: _defaultLineWeight
+			});
 			
 			// Update the summary box
 			_summary.update (_field, null);
