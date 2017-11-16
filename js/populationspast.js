@@ -9,7 +9,6 @@ var populationspast = (function ($) {
 	
 	// Internal class properties
 	var _baseUrl;
-	var _zoomedOut = null;	// Boolean for whether the map is zoomed out 'too far'
 	var _legendHtml = null;	// Legend HTML content
 	var _summary = null;
 	
@@ -189,18 +188,18 @@ var populationspast = (function ($) {
 			
 			// Set the zoom and determine whether the map is zoomed out too far, and set the mouse cursor
 			mapUi.currentZoom = map.getZoom();
-			_zoomedOut = (_settings.defaultZoom <= _settings.zoomedOut);
+			mapUi.zoomedOut = (_settings.defaultZoom <= _settings.zoomedOut);
 			map.on('zoomend', function() {
 				mapUi.currentZoom = map.getZoom();
-				_zoomedOut = (mapUi.currentZoom <= _settings.zoomedOut);
+				mapUi.zoomedOut = (mapUi.currentZoom <= _settings.zoomedOut);
 			});
 			
 			// Set mouse cursor based on zoom status
-			$('#map').css('cursor', (_zoomedOut ? 'zoom-in' : 'auto'));
+			$('#map').css('cursor', (mapUi.zoomedOut ? 'zoom-in' : 'auto'));
 			
 			// Zoom in on single click if zoomed out
 			 map.on ('click', function (e) {
-				if (_zoomedOut) {
+				if (mapUi.zoomedOut) {
 					map.setZoomAround (e.latlng, (_settings.zoomedOut + 1));
 				}
 			});
@@ -428,7 +427,7 @@ var populationspast = (function ($) {
 					});
 					
 					// Enable popups (if close enough)
-					if (!_zoomedOut) {
+					if (!mapUi.zoomedOut) {
 						var popupHtml = populationspast.popupHtml (feature);
 						layer.bindPopup(popupHtml, {autoPan: false});
 					}
@@ -439,13 +438,13 @@ var populationspast = (function ($) {
 				style: function (feature) {
 					return {
 						fillColor: populationspast.getColour (feature.properties[mapUi.field], mapUi.field),
-						weight: (_zoomedOut ? 0 : 1),
+						weight: (mapUi.zoomedOut ? 0 : 1),
 						fillOpacity: 0.7
 					};
 				},
 						
 				// Interactivity
-				interactive: (!_zoomedOut)
+				interactive: (!mapUi.zoomedOut)
 			});
 			
 			// Add to the map
