@@ -9,7 +9,6 @@ var populationspast = (function ($) {
 	
 	// Internal class properties
 	var _baseUrl;
-	var _currentZoom = null;
 	var _zoomedOut = null;	// Boolean for whether the map is zoomed out 'too far'
 	var _legendHtml = null;	// Legend HTML content
 	var _summary = null;
@@ -104,7 +103,7 @@ var populationspast = (function ($) {
 			var mapUi = {};
 			
 			// Create the map
-			mapUi.map = populationspast.createMap (divId);
+			populationspast.createMap (mapUi, divId);
 			
 			// Create the location overlay pane
 			populationspast.createPane (mapUi.map);
@@ -158,8 +157,8 @@ var populationspast = (function ($) {
 		},
 		
 		
-		// Function to create the map
-		createMap: function (divId)
+		// Function to create the map and attach this to the mapUi
+		createMap: function (mapUi, divId)
 		{
 			// Add the tile layers
 			var tileLayers = [];		// Background tile layers
@@ -189,11 +188,11 @@ var populationspast = (function ($) {
 			});
 			
 			// Set the zoom and determine whether the map is zoomed out too far, and set the mouse cursor
-			_currentZoom = map.getZoom();
+			mapUi.currentZoom = map.getZoom();
 			_zoomedOut = (_settings.defaultZoom <= _settings.zoomedOut);
 			map.on('zoomend', function() {
-				_currentZoom = map.getZoom();
-				_zoomedOut = (_currentZoom <= _settings.zoomedOut);
+				mapUi.currentZoom = map.getZoom();
+				_zoomedOut = (mapUi.currentZoom <= _settings.zoomedOut);
 			});
 			
 			// Set mouse cursor based on zoom status
@@ -221,8 +220,8 @@ var populationspast = (function ($) {
 			// Add geolocation control
 			L.control.locate().addTo(map);
 			
-			// Return the map
-			return map;
+			// Attach the map to the mapUi
+			mapUi.map = map;
 		},
 		
 		
@@ -334,7 +333,7 @@ var populationspast = (function ($) {
 			
 			// Supply the bbox and zoom
 			apiData.bbox = mapUi.map.getBounds().toBBoxString();
-			apiData.zoom = _currentZoom;
+			apiData.zoom = mapUi.currentZoom;
 			
 			// Set the field, based on the radiobutton value
 			apiData.field = mapUi.field;
