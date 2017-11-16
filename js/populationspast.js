@@ -469,8 +469,35 @@ var populationspast = (function ($) {
 		{
 			// Highlight features on hover; see: http://leafletjs.com/examples/choropleth/
 			layer.on({
-				mouseover: populationspast.highlightFeature,
-				mouseout: populationspast.resetHighlight
+				
+				// Highlight feature; NB this has to be inlined, and cannot be refactored to a 'highlightFeature' method, as the field is needed as a parameter
+				mouseover: function (e) {
+					
+					// Set the style for this feature
+					var layer = e.target;
+					layer.setStyle({
+						weight: 4
+					});
+					if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+						layer.bringToFront();
+					}
+					
+					// Update the summary box
+					_summary.update (_field, layer.feature);
+				},
+				
+				// Reset highlighting; NB this has to be inlined, and cannot be refactored to a 'resetHighlight' method, as the field is needed as a parameter
+				mouseout: function (e) {
+					
+					// Reset the style; NB can't use resetStyle (e.target) as that requires a handle to the layer, which would need to be a global properly
+					var layer = e.target;
+					layer.setStyle({
+						weight: _defaultLineWeight
+					});
+					
+					// Update the summary box
+					_summary.update (_field, null);
+				}
 			});
 			
 			// Enable popups (if close enough)
@@ -478,37 +505,6 @@ var populationspast = (function ($) {
 				var popupHtml = populationspast.popupHtml (feature);
 				layer.bindPopup(popupHtml, {autoPan: false});
 			}
-		},
-		
-		
-		// Function to highlight a feature
-		highlightFeature: function (e)
-		{
-			var layer = e.target;
-			layer.setStyle({
-				weight: 4
-			});
-			
-			if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-				layer.bringToFront();
-			}
-			
-			// Update the summary box
-			_summary.update (_field, layer.feature);
-		},
-		
-		
-		// Function to reset highlighting
-		resetHighlight: function (e)
-		{
-			// Reset the style; NB can't use resetStyle (e.target) as that requires a handle to the layer, which would need to be a global properly
-			var layer = e.target;
-			layer.setStyle({
-				weight: _defaultLineWeight
-			});
-			
-			// Update the summary box
-			_summary.update (_field, null);
 		},
 		
 		
