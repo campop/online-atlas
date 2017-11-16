@@ -9,7 +9,6 @@ var populationspast = (function ($) {
 	
 	// Internal class properties
 	var _baseUrl;
-	var _field = null;	// E.g. TMFR, TFR, etc.
 	var _currentZoom = null;
 	var _zoomedOut = null;	// Boolean for whether the map is zoomed out 'too far'
 	var _legendHtml = null;	// Legend HTML content
@@ -114,21 +113,21 @@ var populationspast = (function ($) {
 			populationspast.welcomeFirstRun ();
 			
 			// Determine the active field, and create a handler for changes
-			_field = populationspast.getField ();
+			mapUi.field = populationspast.getField ();	// E.g. TMFR, TFR, etc.
 			$('form#field input[type="radio"]').on('change', function() {
-				_field = populationspast.getField ();
+				mapUi.field = populationspast.getField ();
 			});
 			
 			// Create the legend for the current field, and update on changes
-			populationspast.createLegend (mapUi.map, _field);
+			populationspast.createLegend (mapUi);
 			$('form#field input[type="radio"]').on('change', function() {
-				populationspast.setLegend (_field);
+				populationspast.setLegend (mapUi.field);
 			});
 			
 			// Register an summary box control
-			populationspast.summaryControl (mapUi.map);
+			populationspast.summaryControl (mapUi);
 			$('form#field input[type="radio"]').on('change', function() {
-				_summary.update (_field, null);
+				_summary.update (mapUi.field, null);
 			});
 			
 			// Add the data via AJAX requests
@@ -148,7 +147,7 @@ var populationspast = (function ($) {
 			populationspast.tooltips ();
 			
 			// Register a dialog dialog box handler, giving a link more information
-			populationspast.moreDetails ();
+			populationspast.moreDetails (mapUi.field);
 		},
 		
 		
@@ -293,7 +292,7 @@ var populationspast = (function ($) {
 		
 		
 		// Handler for a more details popup layer
-		moreDetails: function ()
+		moreDetails: function (field)
 		{
 			// Create popup when link clicked on
 			$('.moredetails').click (function (e) {
@@ -310,7 +309,7 @@ var populationspast = (function ($) {
 				}
 				
 				// Create the dialog box
-				populationspast.dialogBox ('#moredetails', _field, dialogBoxContentHtml);
+				populationspast.dialogBox ('#moredetails', field, dialogBoxContentHtml);
 				
 				// Prevent link
 				e.preventDefault ();
@@ -338,7 +337,7 @@ var populationspast = (function ($) {
 			apiData.zoom = _currentZoom;
 			
 			// Set the field, based on the radiobutton value
-			apiData.field = _field;
+			apiData.field = mapUi.field;
 			
 			// Set the year, based on the slider value
 			var yearIndex = $('form input#year').val();
@@ -414,7 +413,7 @@ var populationspast = (function ($) {
 							}
 							
 							// Update the summary box
-							_summary.update (_field, layer.feature);
+							_summary.update (mapUi.field, layer.feature);
 						},
 						
 						// Reset highlighting
@@ -425,7 +424,7 @@ var populationspast = (function ($) {
 							mapUi.dataLayer.resetStyle (e.target);
 							
 							// Update the summary box
-							_summary.update (_field, null);
+							_summary.update (mapUi.field, null);
 						}
 					});
 					
@@ -440,7 +439,7 @@ var populationspast = (function ($) {
 				// NB this has to be inlined, and cannot be refactored to a 'setStyle' method, as the field is needed as a parameter
 				style: function (feature) {
 					return {
-						fillColor: populationspast.getColour (feature.properties[_field], _field),
+						fillColor: populationspast.getColour (feature.properties[mapUi.field], mapUi.field),
 						weight: (_zoomedOut ? 0 : 1),
 						fillOpacity: 0.7
 					};
@@ -549,7 +548,7 @@ var populationspast = (function ($) {
 		
 		
 		// Function to create and update the legend
-		createLegend: function (map, field)
+		createLegend: function (mapUi)
 		{
 			// Affix the legend
 			var legend = L.control({position: 'bottomleft'});
@@ -560,10 +559,10 @@ var populationspast = (function ($) {
 			};
 			
 			// Add to the map
-			legend.addTo(map);
+			legend.addTo(mapUi.map);
 			
 			// Set the initial value
-			populationspast.setLegend (field);
+			populationspast.setLegend (mapUi.field);
 		},
 		
 		
@@ -602,15 +601,16 @@ var populationspast = (function ($) {
 		
 		
 		// Function to create a summary box
-		summaryControl: function (map)
+		summaryControl: function (mapUi)
 		{
 			// Create the control
 			_summary = L.control();
 			
 			// Define its contents
+			var map = mapUi.map;
 			_summary.onAdd = function (map) {
 			    this._div = L.DomUtil.create('div', 'info summary'); // create a div with a classes 'info' and 'summary'
-			    this.update(_field, null);
+			    this.update(mapUi.field, null);
 			    return this._div;
 			};
 			
