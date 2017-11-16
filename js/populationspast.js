@@ -76,7 +76,7 @@ var populationspast = (function ($) {
 	// Functions
 	return {
 		
-		// Main function
+		// Entry point
 		initialise: function (config, baseUrl)
 		{
 			// Obtain the configuration and add to settings
@@ -94,6 +94,14 @@ var populationspast = (function ($) {
 			// Obtain the base URL
 			_baseUrl = baseUrl;
 			
+			// Create the map panel and associated controls
+			populationspast.mapUi ();
+		},
+		
+		
+		// Main function to create a map UI
+		mapUi: function ()
+		{
 			// Create the map
 			var map = populationspast.createMap ();
 			
