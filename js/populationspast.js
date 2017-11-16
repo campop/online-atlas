@@ -9,7 +9,7 @@ var populationspast = (function ($) {
 	
 	// Internal class properties
 	var _baseUrl;
-	var _totalMaps = 0;
+	var _secondMapLoaded = false;
 	
 	// Settings
 	var _settings = {
@@ -91,13 +91,43 @@ var populationspast = (function ($) {
 			_baseUrl = baseUrl;
 			
 			// Create the map panel and associated controls
-			populationspast.mapUi (_totalMaps);
+			populationspast.mapUi (0);
 			
-			/*
-			// Create the map panel and associated controls
-			_totalMaps++;
-			populationspast.mapUi (_totalMaps);
-			*/
+			// Add support for side-by-side comparison
+			populationspast.sideBySide ();
+		},
+		
+		
+		// Function to add support for side-by-side comparison
+		sideBySide: function ()
+		{
+			// Add a checkbox control
+			$('#mapcontainers').prepend ('<p id="comparebox"><input id="compare" name="compare" type="checkbox"><label for="compare"> Compare side-by-side</label></p>');
+			
+			// Handle toggle
+			$('#compare').on('click', function() {
+				
+				// Side-by-side mode
+				if ( $(this).is(':checked') ) {
+					$('#mapcontainers').addClass('sidebyside');
+					
+					// Load the second map UI if not already loaded
+					if (!_secondMapLoaded) {
+						populationspast.mapUi (1);
+						_secondMapLoaded = true;
+					}
+					
+					// Show the second map
+					$('#mapcontainer1').show ();
+				
+				// Normal, single map mode
+				} else {
+					$('#mapcontainers').removeClass('sidebyside');
+					
+					// Hide the second map
+					$('#mapcontainer1').hide ();
+				}
+			});
 		},
 		
 		
