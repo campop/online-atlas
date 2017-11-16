@@ -9,7 +9,6 @@ var populationspast = (function ($) {
 	
 	// Internal class properties
 	var _baseUrl;
-	var _summary = null;
 	
 	// Settings
 	var _settings = {
@@ -124,7 +123,7 @@ var populationspast = (function ($) {
 			// Register an summary box control
 			populationspast.summaryControl (mapUi);
 			$('form#field input[type="radio"]').on('change', function() {
-				_summary.update (mapUi.field, null);
+				mapUi.summary.update (mapUi.field, null);
 			});
 			
 			// Add the data via AJAX requests
@@ -410,7 +409,7 @@ var populationspast = (function ($) {
 							}
 							
 							// Update the summary box
-							_summary.update (mapUi.field, layer.feature);
+							mapUi.summary.update (mapUi.field, layer.feature);
 						},
 						
 						// Reset highlighting
@@ -421,7 +420,7 @@ var populationspast = (function ($) {
 							mapUi.dataLayer.resetStyle (e.target);
 							
 							// Update the summary box
-							_summary.update (mapUi.field, null);
+							mapUi.summary.update (mapUi.field, null);
 						}
 					});
 					
@@ -563,7 +562,6 @@ var populationspast = (function ($) {
 		},
 		
 		
-		
 		// Function to set the legend contents
 		setLegend: function (field)
 		{
@@ -601,18 +599,18 @@ var populationspast = (function ($) {
 		summaryControl: function (mapUi)
 		{
 			// Create the control
-			_summary = L.control();
+			mapUi.summary = L.control();
 			
 			// Define its contents
 			var map = mapUi.map;
-			_summary.onAdd = function (map) {
+			mapUi.summary.onAdd = function (map) {
 			    this._div = L.DomUtil.create('div', 'info summary'); // create a div with a classes 'info' and 'summary'
 			    this.update(mapUi.field, null);
 			    return this._div;
 			};
 			
 			// Register a method to update the control based on feature properties passed
-			_summary.update = function (field, feature) {
+			mapUi.summary.update = function (field, feature) {
 				var html = '<h4>' + populationspast.htmlspecialchars (_settings.fields[field].label) + '</h4>';
 				html += (feature ?
 					populationspast.summaryHtml (field, feature)
@@ -621,7 +619,7 @@ var populationspast = (function ($) {
 			};
 			
 			// Add to the map
-			_summary.addTo(map);
+			mapUi.summary.addTo(map);
 		},
 		
 		
