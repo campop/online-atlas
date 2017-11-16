@@ -436,9 +436,16 @@ var populationspast = (function ($) {
 					}
 				},
 				
-				// Style
-				style: populationspast.setStyle,
-				
+				// Style: base the colour on the specified colour field
+				// NB this has to be inlined, and cannot be refactored to a 'setStyle' method, as the field is needed as a parameter
+				style: function (feature) {
+					return {
+						fillColor: populationspast.getColour (feature.properties[_field], _field),
+						weight: (_zoomedOut ? 0 : 1),
+						fillOpacity: 0.7
+					};
+				},
+						
 				// Interactivity
 				interactive: (!_zoomedOut)
 			});
@@ -463,21 +470,6 @@ var populationspast = (function ($) {
 			if (mapUi.dataLayer) {
 				mapUi.map.removeLayer (mapUi.dataLayer);
 			}
-		},
-		
-		
-		// Function to set the feature style
-		setStyle: function (feature)
-		{
-			// Base the colour on the specified colour field
-			var style = {
-				fillColor: populationspast.getColour (feature.properties[_field], _field),
-				weight: (_zoomedOut ? 0 : 1),
-				fillOpacity: 0.7
-			};
-			
-			// Return the style
-			return style;
 		},
 		
 		
