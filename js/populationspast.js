@@ -9,7 +9,6 @@ var populationspast = (function ($) {
 	
 	// Internal class properties
 	var _baseUrl;
-	var _layer = null;
 	var _field = null;	// E.g. TMFR, TFR, etc.
 	var _currentZoom = null;
 	var _zoomedOut = null;	// Boolean for whether the map is zoomed out 'too far'
@@ -134,16 +133,16 @@ var populationspast = (function ($) {
 			});
 			
 			// Add the data via AJAX requests
-			populationspast.getData (mapUi.map);
+			populationspast.getData (mapUi);
 			
 			// Register to refresh data on map move
 			mapUi.map.on ('moveend', function (e) {
-				populationspast.getData (mapUi.map);
+				populationspast.getData (mapUi);
 			});
 			
 			// Register to refresh data on any form field change
 			$('form#field :input').on('change', function() {
-				populationspast.getData (mapUi.map);
+				populationspast.getData (mapUi);
 			});
 			
 			// Add tooltips to the forms
@@ -330,13 +329,13 @@ var populationspast = (function ($) {
 		
 		
 		// Function to add data to the map via an AJAX API call
-		getData: function (map)
+		getData: function (mapUi)
 		{
 			// Start API data parameters
 			var apiData = {};
 			
 			// Supply the bbox and zoom
-			apiData.bbox = map.getBounds().toBBoxString();
+			apiData.bbox = mapUi.map.getBounds().toBBoxString();
 			apiData.zoom = _currentZoom;
 			
 			// Set the field, based on the radiobutton value
@@ -374,33 +373,33 @@ var populationspast = (function ($) {
 					// Show API-level error if one occured
 					// #!# This is done here because the API still returns Status code 200
 					if (data.error) {
-						populationspast.removeLayer (map);
+						populationspast.removeLayer (mapUi);
 						vex.dialog.alert ('Error: ' + data.error);
 						return {};
 					}
 					
 					// Show the data successfully
-					populationspast.showCurrentData(map, data);
+					populationspast.showCurrentData (mapUi, data);
 				}
 			});
 		},
 		
 		
 		// Function to show the data for a layer
-		showCurrentData: function (map, data)
+		showCurrentData: function (mapUi, data)
 		{
 			// If this layer already exists, remove it so that it can be redrawn
-			populationspast.removeLayer (map);
+			populationspast.removeLayer (mapUi);
 			
 			// Define the data layer
-			_layer = L.geoJson(data, {
+			mapUi.dataLayer = L.geoJson(data, {
 				onEachFeature: populationspast.onEachFeature,
 				style: populationspast.setStyle,
 				interactive: (!_zoomedOut)
 			});
 			
 			// Add to the map
-			_layer.addTo(map);
+			mapUi.dataLayer.addTo(mapUi.map);
 			
 		},
 		
@@ -413,11 +412,11 @@ var populationspast = (function ($) {
 		
 		
 		// Function to remove the data layer
-		removeLayer: function (map)
+		removeLayer: function (mapUi)
 		{
 			// Remove the layer, checking first to ensure it exists
-			if (_layer) {
-				map.removeLayer (_layer);
+			if (mapUi.dataLayer) {
+				mapUi.map.removeLayer (mapUi.dataLayer);
 			}
 		},
 		
