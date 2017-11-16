@@ -102,11 +102,14 @@ var populationspast = (function ($) {
 		// Main function to create a map panel
 		mapUi: function (divId)
 		{
+			// Create a map UI collection object
+			var mapUi = {};
+			
 			// Create the map
-			var map = populationspast.createMap (divId);
+			mapUi.map = populationspast.createMap (divId);
 			
 			// Create the location overlay pane
-			populationspast.createPane (map);
+			populationspast.createPane (mapUi.map);
 			
 			// Show first-run welcome message if the user is new to the site
 			populationspast.welcomeFirstRun ();
@@ -118,28 +121,28 @@ var populationspast = (function ($) {
 			});
 			
 			// Create the legend for the current field, and update on changes
-			populationspast.createLegend (map, _field);
+			populationspast.createLegend (mapUi.map, _field);
 			$('form#field input[type="radio"]').on('change', function() {
 				populationspast.setLegend (_field);
 			});
 			
 			// Register an summary box control
-			populationspast.summaryControl (map);
+			populationspast.summaryControl (mapUi.map);
 			$('form#field input[type="radio"]').on('change', function() {
 				_summary.update (_field, null);
 			});
 			
 			// Add the data via AJAX requests
-			populationspast.getData (map);
+			populationspast.getData (mapUi.map);
 			
 			// Register to refresh data on map move
-			map.on ('moveend', function (e) {
-				populationspast.getData (map);
+			mapUi.map.on ('moveend', function (e) {
+				populationspast.getData (mapUi.map);
 			});
 			
 			// Register to refresh data on any form field change
 			$('form#field :input').on('change', function() {
-				populationspast.getData (map);
+				populationspast.getData (mapUi.map);
 			});
 			
 			// Add tooltips to the forms
