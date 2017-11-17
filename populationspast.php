@@ -630,17 +630,28 @@ class populationspast extends frontControllerApplication
 		# Construct the BBOX WKT string
 		$bboxGeom = "Polygon(({$bbox[0]} {$bbox[1]},{$bbox[2]} {$bbox[1]},{$bbox[2]} {$bbox[3]},{$bbox[0]} {$bbox[3]},{$bbox[0]} {$bbox[1]}))";
 		
-		# Obtain the data
+		# Determine the fields to obtain
+		$fields = array ();
+		$fields[] = $field;
+		if (!$zoomedOut) {
+			$fields[] = 'year';
+			$fields[] = 'SUBDIST';
+			$fields[] = 'REGDIST';
+		}
+		$fields[] = 'ST_AsText(geometry) AS geometry';
+		$fields = implode (', ', $fields);
+		
+		# Construct the query
 		$query = "
 			SELECT
-			{$field},
-			" . ($zoomedOut ? '' : 'year, SUBDIST, REGDIST, ') . "
-			ST_AsText(geometry) AS geometry
-			FROM {$this->settings['database']}.data
+				{$fields}
+			FROM {$this->settings['database']}.{$this->settings['table']}
 			WHERE MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
 			AND year = {$year}
 			-- LIMIT " . ($zoomedOut ? '1000' : '250') . "
 		;";
+		
+		# Get the data
 		$data = $this->databaseConnection->getData ($query);
 		
 		# Determine fields that are DECIMAL so that trailing zeros are removed; also format to 2dp
