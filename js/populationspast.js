@@ -104,8 +104,15 @@ var populationspast = (function ($) {
 		// Function to add support for side-by-side comparison
 		sideBySide: function ()
 		{
-			// Add a checkbox control
-			$('#mapcontainers').prepend ('<p id="comparebox"><input id="compare" name="compare" type="checkbox"><label for="compare"> Compare side-by-side</label></p>');
+			// Add checkbox controls to enable and syncronise side-by-side maps
+			var checkboxesHtml = '<p id="comparebox">';
+			checkboxesHtml += '<span id="syncronisebutton"><label for="syncronise"><img src="/images/icons/arrow_refresh.png" alt="" class="icon" /> Keep map positions in sync &nbsp;</label><input id="syncronise" name="syncronise" type="checkbox" checked="checked"></span> ';
+			checkboxesHtml += '<span id="comparebutton"><label for="compare"><img src="/images/icons/application_tile_horizontal.png" alt="" class="icon" /> Compare side-by-side &nbsp;</label><input id="compare" name="compare" type="checkbox"></span>';
+			checkboxesHtml += '</p>';
+			$('#mapcontainers').prepend (checkboxesHtml);
+			
+			// Determine whether to syncronise maps
+			var syncroniseMaps = true;
 			
 			// Handle toggle
 			$('#compare').on('click', function() {
@@ -123,9 +130,23 @@ var populationspast = (function ($) {
 					// Show the second map
 					$('#mapcontainer1').show ();
 					
-					// Syncronise the map position and zoom
+					// Show the syncronisation button
+					$('#syncronisebutton').show ();
+					
+					// By default, syncronise the map positions
 					_mapUis[0].map.sync (_mapUis[1].map);
 					_mapUis[1].map.sync (_mapUis[0].map);
+					
+					$('#syncronise').on('click', function() {
+						if ( $(this).is(':checked') ) {
+							_mapUis[0].map.sync (_mapUis[1].map);
+							_mapUis[1].map.sync (_mapUis[0].map);
+						} else {
+							_mapUis[0].map.unsync (_mapUis[1].map);
+							_mapUis[1].map.unsync (_mapUis[0].map);
+						}
+					});
+					
 				
 				// Normal, single map mode
 				} else {
@@ -134,9 +155,12 @@ var populationspast = (function ($) {
 					// Hide the second map
 					$('#mapcontainer1').hide ();
 					
-					// Unsyncronise the maps
-					_mapUis[0].map.sync (_mapUis[1].map);
-					_mapUis[1].map.sync (_mapUis[0].map);
+					// Hide the syncronisation button
+					$('#syncronisebutton').hide ();
+					
+					// Unsyncronise the map positions
+					_mapUis[0].map.unsync (_mapUis[1].map);
+					_mapUis[1].map.unsync (_mapUis[0].map);
 				}
 			});
 		},
