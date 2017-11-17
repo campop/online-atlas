@@ -602,6 +602,9 @@ class populationspast extends frontControllerApplication
 	# API call to retrieve data
 	public function apiCall_locations ()
 	{
+		# Determine whether in CSV export mode
+		$export = (isSet ($_GET['format']) && $_GET['format'] == 'csv');
+		
 		# Obtain the supplied BBOX (W,S,E,N)
 		$bbox = (isSet ($_GET['bbox']) && (substr_count ($_GET['bbox'], ',') == 3) && preg_match ('/^([-.,0-9]+)$/', $_GET['bbox']) ? explode (',', $_GET['bbox'], 4) : false);
 		if (!$bbox) {
@@ -632,14 +635,19 @@ class populationspast extends frontControllerApplication
 		
 		# Determine the fields to obtain
 		$fields = array ();
-		$fields[] = $field;
-		if (!$zoomedOut) {
-			$fields[] = 'year';
-			$fields[] = 'SUBDIST';
+		if (!$zoomedOut || $export) {
 			$fields[] = 'REGDIST';
+			$fields[] = 'SUBDIST';
+			$fields[] = 'year';
 		}
-		$fields[] = 'ST_AsText(geometry) AS geometry';
+		$fields[] = $field;
+		if (!$export) {
+			$fields[] = 'ST_AsText(geometry) AS geometry';
+		}
 		$fields = implode (', ', $fields);
+		
+		# In export mode, order the data
+		$orderBySql = ($export ? 'ORDER BY REGDIST,SUBDIST,year' : '');
 		
 		# Construct the query
 		$query = "
@@ -649,7 +657,16 @@ class populationspast extends frontControllerApplication
 			WHERE
 				MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
 				AND year = {$year}
+			{$orderBySql}
 		;";
+		
+		# If exporting, serve CSV and end
+		if ($export) {
+			$headings = $this->databaseConnection->getHeadings ($this->settings['database'], $this->settings['table']);
+			$filenameBase = "populationspast_{$field}_{$year}";
+			$this->databaseConnection->serveCsv ($query, array (), $filenameBase, $timestamp = true, $headings);
+			die;
+		}
 		
 		# Get the data
 		$data = $this->databaseConnection->getData ($query);
