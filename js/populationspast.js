@@ -239,11 +239,16 @@ var populationspast = (function ($) {
 				baseLayersById[tileLayerId] = layer;
 			});
 			
+			// Parse any hash in the URL to obtain any default position
+			var urlParameters = populationspast.getUrlParameters ();
+			var defaultLocation = (urlParameters.defaultLocation || _settings.defaultLocation);
+			var defaultTileLayer = (urlParameters.defaultTileLayer || _settings.defaultTileLayer);
+			
 			// Create the map
 			var map = L.map (mapUi.mapDivId, {
-				center: [_settings.defaultLocation.latitude, _settings.defaultLocation.longitude],
-				zoom: _settings.defaultLocation.zoom,
-				layers: tileLayers[0]	// Documentation suggests tileLayers is all that is needed, but that shows all together
+				center: [defaultLocation.latitude, defaultLocation.longitude],
+				zoom: defaultLocation.zoom,
+				layers: baseLayersById[defaultTileLayer]	// Documentation suggests tileLayers is all that is needed, but that shows all together
 			}).setActiveArea('activearea');
 			
 			// Set a class corresponding to the map tile layer, so that the background can be styled with CSS
@@ -289,6 +294,32 @@ var populationspast = (function ($) {
 			
 			// Attach the map to the mapUi
 			mapUi.map = map;
+		},
+		
+		
+		// Function to parse the URL parameters
+		getUrlParameters: function ()
+		{
+			// Start a list of parameters
+			var urlParameters = {};
+			
+			// Get the location from the URL
+			urlParameters.defaultLocation = null;
+			urlParameters.defaultTileLayer = null;
+			if (window.location.hash) {
+				var hashParts = window.location.hash.match (/^#([0-9]{1,2})\/([-.0-9]+)\/([-.0-9]+)\/([a-z0-9]+)$/);	// E.g. #17/51.51137/-0.10498/bartholomew
+				if (hashParts) {
+					urlParameters.defaultLocation = {
+						latitude: hashParts[2],
+						longitude: hashParts[3],
+						zoom: hashParts[1]
+					}
+					urlParameters.defaultTileLayer = hashParts[4];
+				}
+			}
+			
+			// Return the parameters
+			return urlParameters;
 		},
 		
 		
