@@ -16,9 +16,11 @@ var populationspast = (function ($) {
 	var _settings = {
 		
 		// Default map view
-		defaultLatitude: 53.035,
-		defaultLongitude: -1.082,
-		defaultZoom: 7,
+		defaultLocation: {
+			latitude: 53.035,
+			longitude: -1.082,
+			zoom: 7,
+		},
 		
 		// Tileservers; historical map sources are listed at: http://wiki.openstreetmap.org/wiki/National_Library_of_Scotland
 		tileUrls: {
@@ -238,9 +240,9 @@ var populationspast = (function ($) {
 			});
 			
 			// Create the map
-			var map = L.map(mapUi.mapDivId, {
-				center: [_settings.defaultLatitude, _settings.defaultLongitude],
-				zoom: _settings.defaultZoom,
+			var map = L.map (mapUi.mapDivId, {
+				center: [_settings.defaultLocation.latitude, _settings.defaultLocation.longitude],
+				zoom: _settings.defaultLocation.zoom,
 				layers: tileLayers[0]	// Documentation suggests tileLayers is all that is needed, but that shows all together
 			}).setActiveArea('activearea');
 			
