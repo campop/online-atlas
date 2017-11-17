@@ -828,7 +828,7 @@ var populationspast = (function ($) {
 		tooltips: function ()
 		{
 			// Use jQuery tooltips; see: https://jqueryui.com/tooltip/
-			$('form#field').tooltip ({
+			$('form .radiobuttons').tooltip ({
 				track: true
 			});
 		}
