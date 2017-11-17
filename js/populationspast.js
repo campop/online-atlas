@@ -502,10 +502,10 @@ var populationspast = (function ($) {
 			apiData.year = _settings.datasets[yearIndex];
 			
 			// Start spinner, initially adding it to the page
-			if (!$('#loading').length) {
+			if (!$('#' + mapUi.containerDivId + ' #loading').length) {
 				$('#' + mapUi.containerDivId).append('<img id="loading" src="' + _baseUrl + '/images/spinner.svg" />');
 			}
-			$('#loading').show();
+			$('#' + mapUi.containerDivId + ' #loading').show();
 			
 			// Fetch data
 			$.ajax({
@@ -524,7 +524,7 @@ var populationspast = (function ($) {
 				success: function (data, textStatus, jqXHR) {
 					
 					// Remove spinner
-					$('#loading').hide();
+					$('#' + mapUi.containerDivId + ' #loading').hide();
 					
 					// Show API-level error if one occured
 					// #!# This is done here because the API still returns Status code 200
