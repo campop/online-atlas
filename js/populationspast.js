@@ -22,6 +22,9 @@ var populationspast = (function ($) {
 			zoom: 7,
 		},
 		
+		// Max bounds
+		maxBounds: [[47, -14], [60, 7]],	// South, West ; East, North
+		
 		// Tileservers; historical map sources are listed at: http://wiki.openstreetmap.org/wiki/National_Library_of_Scotland
 		defaultTileLayer: 'bartholomew',
 		tileUrls: {
@@ -287,7 +290,8 @@ var populationspast = (function ($) {
 			var map = L.map (mapUi.mapDivId, {
 				center: [defaultLocation.latitude, defaultLocation.longitude],
 				zoom: defaultLocation.zoom,
-				layers: baseLayersById[defaultTileLayer]	// Documentation suggests tileLayers is all that is needed, but that shows all together
+				layers: baseLayersById[defaultTileLayer],	// Documentation suggests tileLayers is all that is needed, but that shows all together
+				maxBounds: _settings.maxBounds
 			}).setActiveArea('activearea');
 			
 			// Set a class corresponding to the map tile layer, so that the background can be styled with CSS
