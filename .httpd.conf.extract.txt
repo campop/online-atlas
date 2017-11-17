@@ -27,9 +27,16 @@
 	# Application directives
 	RewriteRule ^$applicationBaseUrl/(about|funders|contacts|import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
 	RewriteRule ^$applicationBaseUrl/(about|funders|contacts|import)$ $applicationBaseUrl/$1/ [R]
+	RewriteRule ^$applicationBaseUrl/data.csv$ $applicationBaseUrl/index.html?action=export [L,QSA]
 	
 	<Location $applicationBaseUrl/>
 		php_value memory_limit 100M
+	</Location>
+	
+	# Export
+	<Location $applicationBaseUrl/data.csv>
+		php_value auto_prepend_file none
+		php_value auto_append_file none
 	</Location>
 	
 </Macro>

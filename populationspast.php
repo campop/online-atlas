@@ -235,6 +235,11 @@ class populationspast extends frontControllerApplication
 				'url' => 'contacts/',
 				'tab' => 'Contacts',
 			),
+			'export' => array (
+				'description' => false,
+				'url' => 'data.csv',
+				'export' => true,
+			),
 			'import' => array (
 				'description' => false,
 				'url' => 'import/',
@@ -599,12 +604,16 @@ class populationspast extends frontControllerApplication
 	}
 	
 	
-	# API call to retrieve data
-	public function apiCall_locations ()
+	# Export, essentially just a nicer URL to the API
+	public function export ()
 	{
-		# Determine whether in CSV export mode
-		$export = (isSet ($_GET['format']) && $_GET['format'] == 'csv');
-		
+		return $this->apiCall_locations (true);
+	}
+	
+	
+	# API call to retrieve data
+	public function apiCall_locations ($export = false)
+	{
 		# Obtain the supplied BBOX (W,S,E,N)
 		$bbox = (isSet ($_GET['bbox']) && (substr_count ($_GET['bbox'], ',') == 3) && preg_match ('/^([-.,0-9]+)$/', $_GET['bbox']) ? explode (',', $_GET['bbox'], 4) : false);
 		if (!$bbox) {

@@ -530,9 +530,6 @@ var populationspast = (function ($) {
 		// Function to add data to the map via an AJAX API call
 		getData: function (mapUi)
 		{
-			// Specify the API location
-			var apiUrl = _baseUrl + '/api/locations';
-			
 			// Start API data parameters
 			var apiData = {};
 			
@@ -549,7 +546,7 @@ var populationspast = (function ($) {
 			
 			// Update the export link with the new parameters
 			var requestSerialised = $.param(apiData);
-			var exportUrl = apiUrl + '?' + requestSerialised + '&format=csv';
+			var exportUrl = _baseUrl + '/data.csv?' + requestSerialised;
 			$('#' + mapUi.navDivId + ' p.export a').attr('href', exportUrl);
 			
 			// Start spinner, initially adding it to the page
@@ -560,7 +557,7 @@ var populationspast = (function ($) {
 			
 			// Fetch data
 			$.ajax({
-				url: apiUrl,
+				url: _baseUrl + '/api/locations',
 				dataType: (populationspast.browserSupportsCors () ? 'json' : 'jsonp'),		// Fall back to JSON-P for IE9
 				crossDomain: true,	// Needed for IE<=9; see: https://stackoverflow.com/a/12644252/180733
 				data: apiData,
