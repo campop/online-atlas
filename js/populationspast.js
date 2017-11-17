@@ -410,10 +410,19 @@ var populationspast = (function ($) {
 			var exportDivId = 'export' + mapUi.index;
 			$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a href="#" title="Export the current view (as shown on the map) as raw data"><img src="/images/icons/page_excel.png" alt="" /> Export</a></p>');
 			
-			// Create the year control within the form
+			// Construct a datalist for the year control
+			var datalistId = 'yearlist' + mapUi.index;
+			var datalistHtml = '<ul class="rangelabels">';
+			$.each (_settings.datasets, function (index, year) {
+				datalistHtml += '<li>' + year + '</li>';
+			});
+			datalistHtml += '</ul>';
+			
+			// Create the year control within the form and an associated datalist
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
 			mapUi.yearDivId = 'year' + mapUi.index;
-			$('#' + mapUi.navDivId + ' form').append (Math.min.apply(null, _settings.datasets) + ' <input id="' + mapUi.yearDivId + '" type="range" list="years" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" /> ' + Math.max.apply (null, _settings.datasets));
+			$('#' + mapUi.navDivId + ' form').append (' <input id="' + mapUi.yearDivId + '" type="range" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" /> ');
+			$('#' + mapUi.navDivId + ' form').append (datalistHtml);
 			
 			// Build radiobutton and select list options; both are created up-front, and the relevant one hidden according when changing to/from side-by-side mode
 			var radiobuttonsHtml = '';

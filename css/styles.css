@@ -37,14 +37,18 @@ nav {position: absolute; right: 0; width: 330px; height: 100%; z-index: 1000; ba
 .activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
 .leaflet-control-layers, .leaflet-control-attribution, .summary {right: 330px;}
 nav form { padding: 20px 10px 30px 15px;}
-nav form h3 {margin: 12px 0 5px;}
+nav form h3 {margin: 10px 0 2px;}
 nav form a {color: white; text-decoration: none;}
 
 /* Controls */
-nav form .year {width: 200px; margin-bottom: 30px;}
 nav form div {padding-left: 3px; border-radius: 4px; width: 100%;}
 nav form div.radiobuttons div:hover {background-color: #666;}
 nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
+
+/* Year range */
+nav form input[type="range"] {width: 206px; margin-left: 18px;}
+ul.rangelabels {margin: 0; padding: 0; height: 10px; position: relative; top: -5px;}
+ul.rangelabels li {width: 40px; display: block; float: left; text-align: center; margin: 0; padding: 0;}
 
 /* Export */
 p.export {float: right;}
