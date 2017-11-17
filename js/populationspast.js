@@ -147,7 +147,6 @@ var populationspast = (function ($) {
 						}
 					});
 					
-				
 				// Normal, single map mode
 				} else {
 					$('#mapcontainers').removeClass('sidebyside');
