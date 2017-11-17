@@ -3,3 +3,5 @@
 !/tmp/templates_tpl/
 /tmp/templates_tpl/*
 !/tmp/templates_tpl/README.txt
+/exports/*
+!/exports/.gitignore
