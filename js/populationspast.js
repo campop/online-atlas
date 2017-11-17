@@ -125,6 +125,21 @@ var populationspast = (function ($) {
 					if (!_secondMapLoaded) {
 						_mapUis[1] = populationspast.mapUi (1);
 						_secondMapLoaded = true;
+						
+						// Register handlers to keep the select and radiobuttons in sync, for each map
+						var value;
+						var fieldname;
+						$.each (_mapUis, function (index, mapUi) {
+							$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function() {
+								value = $(this).val();
+								$('#' + mapUi.navDivId + ' form select').val( value );
+							});
+							$('#' + mapUi.navDivId + ' form select').on('change', function() {
+								value = $(this).val();
+								fieldname = 'field' + index + '_' + populationspast.htmlspecialchars (value);
+								$('#' + fieldname).prop('checked', true);
+							});
+						});
 					}
 					
 					// Show the second map
