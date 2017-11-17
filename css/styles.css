@@ -6,10 +6,12 @@
 #comparebox {text-align: right;}
 #mapcontainers.sidebyside .mapcontainer {width: 49%;}
 #mapcontainers.sidebyside .mapcontainer .activearea {right: 0;}
-#mapcontainers.sidebyside .mapcontainer .leaflet-control-layers, #mapcontainers.sidebyside .mapcontainer .leaflet-control-attribution, #mapcontainers.sidebyside .mapcontainer .summary {right: 0;}
+#mapcontainers.sidebyside .mapcontainer .leaflet-control-layers, #mapcontainers.sidebyside .mapcontainer .leaflet-control-attribution {right: 0;}
+#mapcontainers.sidebyside .mapcontainer .summary {position: absolute; top: 0; right: 0; margin: 60px 320px 0 0; width: 157px;}
+#mapcontainers.sidebyside .mapcontainer .geocoder input {width: 170px;}
 #mapcontainers.sidebyside #mapcontainer0 {float: left;}
 #mapcontainers.sidebyside #mapcontainer1 {float: right; margin-left: 20px;}
-#mapcontainers.sidebyside nav {height: 150px;}
+#mapcontainers.sidebyside nav {height: 150px; width: 310px;}
 #mapcontainers.sidebyside nav .radiobuttons {display: none;}
 #mapcontainers nav select {display: none;}
 #mapcontainers.sidebyside nav select {display: block;}
@@ -40,7 +42,7 @@ nav form div {padding-left: 3px; border-radius: 4px; width: 100%;}
 nav form div.radiobuttons div:hover {background-color: #666;}
 nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
 
-/* Legend */
+/* Legend and summary */
 .info {padding: 15px 12px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
 .info h4 {margin: 0 0 5px; color: #777;}
 .legend {width: 170px; text-align: left; line-height: 18px; color: #555;}
