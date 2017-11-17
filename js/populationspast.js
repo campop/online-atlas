@@ -23,6 +23,7 @@ var populationspast = (function ($) {
 		},
 		
 		// Tileservers; historical map sources are listed at: http://wiki.openstreetmap.org/wiki/National_Library_of_Scotland
+		defaultTileLayer: 'bartholomew',
 		tileUrls: {
 			'bartholomew': [
 				'https://geo.nls.uk/mapdata2/bartholomew/great_britain/{z}/{x}/{-y}.png',	// E.g. http://geo.nls.uk/mapdata2/bartholomew/great_britain/12/2046/2745.png
