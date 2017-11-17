@@ -4,10 +4,15 @@
 
 /* Side-by-side comparison */
 #comparebox {text-align: right;}
-#mapcontainers.sidebyside #mapcontainer0 {width: 49%; float: left;}
-#mapcontainers.sidebyside #mapcontainer1 {width: 49%; float: right; margin-left: 20px;}
-
-
+#mapcontainers.sidebyside .mapcontainer {width: 49%;}
+#mapcontainers.sidebyside .mapcontainer .activearea {right: 0;}
+#mapcontainers.sidebyside .mapcontainer .leaflet-control-layers, #mapcontainers.sidebyside .mapcontainer .leaflet-control-attribution, #mapcontainers.sidebyside .mapcontainer .summary {right: 0;}
+#mapcontainers.sidebyside #mapcontainer0 {float: left;}
+#mapcontainers.sidebyside #mapcontainer1 {float: right; margin-left: 20px;}
+#mapcontainers.sidebyside nav {height: 150px;}
+#mapcontainers.sidebyside nav .radiobuttons {display: none;}
+#mapcontainers nav select {display: none;}
+#mapcontainers.sidebyside nav select {display: block;}
 
 /* Geocoder */
 .geocoder {position: absolute; top: 10px; left: 55px; z-index: 500;}
@@ -32,7 +37,7 @@ nav form a {color: white; text-decoration: none;}
 /* Controls */
 nav form .year {width: 200px; margin-bottom: 30px;}
 nav form div {padding-left: 3px; border-radius: 4px; width: 100%;}
-nav form div:hover {background-color: #666;}
+nav form div.radiobuttons div:hover {background-color: #666;}
 nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
 
 /* Legend */

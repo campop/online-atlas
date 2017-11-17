@@ -166,19 +166,18 @@ var populationspast = (function ($) {
 			
 			// Determine the active field, and create a handler for changes
 			mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.
-			$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function() {
+			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
 				mapUi.field = populationspast.getField (mapUi.navDivId);
 			});
-			
 			// Create the legend for the current field, and update on changes
 			populationspast.createLegend (mapUi);
-			$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function() {
+			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
 				populationspast.setLegend (mapUi);
 			});
 			
 			// Register an summary box control
 			populationspast.summaryControl (mapUi);
-			$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function() {
+			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
 				mapUi.summary.update (mapUi.field, null);
 			});
 			
@@ -209,7 +208,12 @@ var populationspast = (function ($) {
 		// Function to determine the field from the form value
 		getField: function (navDivId)
 		{
-			return $('#' + navDivId + ' form input[type="radio"]:checked').val();
+			// Switch between radiobuttons (full mode) and select (side-by-side mode)
+			if ( $('#' + navDivId + ' select').is(':visible') ) {
+				return $('#' + navDivId + ' form select').val();
+			} else {
+				return $('#' + navDivId + ' form input[type="radio"]:checked').val();
+			}
 		},
 		
 		
@@ -320,8 +324,11 @@ var populationspast = (function ($) {
 		// Function to create the navigation panel
 		createNav: function (mapUi)
 		{
-			// Create a div for the nav within the map container
+			// Remove any current content, e.g. due to redrawing
 			mapUi.navDivId = 'nav' + mapUi.index;
+			$('#' + mapUi.navDivId).remove();
+			
+			// Create a div for the nav within the map container
 			$('#' + mapUi.containerDivId).prepend ('<nav id="' + mapUi.navDivId + '"></nav>');
 			
 			// Create a form within the nav
@@ -332,24 +339,39 @@ var populationspast = (function ($) {
 			mapUi.yearDivId = 'year' + mapUi.index;
 			$('#' + mapUi.navDivId + ' form').append (Math.min.apply(null, _settings.datasets) + ' <input id="' + mapUi.yearDivId + '" type="range" list="years" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" /> ' + Math.max.apply (null, _settings.datasets));
 			
-			// Build a droplist
-			var dropListHtml = '';
+			// Build radiobutton and select list options; both are created up-front, and the relevant one hidden according when changing to/from side-by-side mode
+			var radiobuttonsHtml = '';
+			var selectHtml = '';
 			var fieldname;
 			$.each (_settings.fields, function (id, field) {
-				if (field.general) {return /* i.e. continue */;}		// Skip general fields, like year
-				dropListHtml += '<div title="' + populationspast.htmlspecialchars (field.description) + '">';
+				
+				// Skip general fields, like year
+				if (field.general) {return /* i.e. continue */;}
+				
+				// Construct the radiobutton list (for full mode)
 				fieldname = 'field' + mapUi.index + '_' + populationspast.htmlspecialchars (id);
-				dropListHtml += '<input type="radio" name="field" value="' + populationspast.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
-				dropListHtml += '<label for="' + fieldname + '">';
-				dropListHtml += populationspast.htmlspecialchars (field.label);
-				dropListHtml += ' <a class="moredetails" data-field="' + id + '" href="#">[?]</a>';
-				dropListHtml += '</label>';
-				dropListHtml += '</div>';
+				radiobuttonsHtml += '<div title="' + populationspast.htmlspecialchars (field.description) + '">';
+				radiobuttonsHtml += '<input type="radio" name="field" value="' + populationspast.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
+				radiobuttonsHtml += '<label for="' + fieldname + '">';
+				radiobuttonsHtml += populationspast.htmlspecialchars (field.label);
+				radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#">[?]</a>';
+				radiobuttonsHtml += '</label>';
+				radiobuttonsHtml += '</div>';
+				
+				// Select widget (for side-by-side mode)
+				selectHtml += '<option value="' + populationspast.htmlspecialchars (id) + '">' + populationspast.htmlspecialchars (field.label) + '</option>';
 			});
+			
+			// Add a container for the radiobuttons
+			radiobuttonsHtml = '<div class="radiobuttons">' + radiobuttonsHtml + '</div>';
+			
+			// Assemble the select widget
+			selectHtml = '<select name="field">' + selectHtml + '</select>';
 			
 			// Create the year control within the form
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Show:</h3>');
-			$('#' + mapUi.navDivId + ' form').append (dropListHtml);
+			$('#' + mapUi.navDivId + ' form').append (radiobuttonsHtml);
+			$('#' + mapUi.navDivId + ' form').append (selectHtml);
 		},
 		
 		
