@@ -221,17 +221,17 @@ class populationspast extends frontControllerApplication
 				'icon' => 'map',
 			),
 			'about' => array (
-				'description' => 'About the Atlas of Victorian Fertility',
+				'description' => false,
 				'url' => 'about/',
 				'tab' => 'About the Atlas',
 			),
 			'funders' => array (
-				'description' => 'Funders',
+				'description' => false,
 				'url' => 'funders/',
 				'tab' => 'Funders',
 			),
 			'import' => array (
-				'description' => 'Import',
+				'description' => false,
 				'url' => 'import/',
 				'tab' => 'Import',
 				'icon' => 'database_refresh',
