@@ -230,6 +230,11 @@ class populationspast extends frontControllerApplication
 				'url' => 'funders/',
 				'tab' => 'Funders',
 			),
+			'contacts' => array (
+				'description' => false,
+				'url' => 'contacts/',
+				'tab' => 'Contacts',
+			),
 			'import' => array (
 				'description' => false,
 				'url' => 'import/',
@@ -434,6 +439,20 @@ class populationspast extends frontControllerApplication
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
+		$html = $this->templatise ();
+		
+		# Show the HTML
+		echo $html;
+	}
+	
+	
+	# Contact page
+	public function contacts ()
+	{
+		# Add the feedback form
+		$this->template['feedbackform'] = parent::feedback (NULL, NULL, $echoHtml = false);
+		
+		# Templatise
 		$html = $this->templatise ();
 		
 		# Show the HTML
