@@ -478,7 +478,14 @@ class populationspast extends frontControllerApplication
 		$fileCreationInstructionsHtml  = "\n\t" . '<p>Create the shapefile, and zip up the contents of the folder.</p>';
 		
 		# Run the import UI (which will output HTML)
-		$this->importUi ($importFiles, $importTypes, $fileCreationInstructionsHtml, 'zip');
+		$html = $this->importUi ($importFiles, $importTypes, $fileCreationInstructionsHtml, 'zip', $echoHtml = false);
+		
+		# Templatise
+		$this->template['contentHtml'] = $html;
+		$html = $this->templatise ();
+		
+		# Show the HTML
+		echo $html;
 	}
 	
 	
