@@ -498,6 +498,13 @@ class populationspast extends frontControllerApplication
 		# Enable high memory due to GeoJSON size
 		ini_set ('memory_limit','200M');
 		
+		# Ensure the temp directory is writable
+		$exportsTmpDir = "{$this->applicationRoot}/exports-tmp";
+		if (!is_writable ($exportsTmpDir)) {
+			$html = "\n<p class=\"warning\">ERROR: the temporary directory {$exportsTmpDir}/ does not exist or is not writable.</p>";
+			return false;
+		}
+		
 		# Loop through each file
 		$i = 0;
 		foreach ($exportFiles as $dataset => $file) {
@@ -507,14 +514,14 @@ class populationspast extends frontControllerApplication
 			$year = $matches[1];
 			
 			# Remove existing data file if present
-			$geojson = "{$this->applicationRoot}/exports-tmp/{$year}.geojson";
+			$geojson = "{$exportsTmpDir}/{$year}.geojson";
 			if (is_file ($geojson)) {
 				unlink ($geojson);
 			}
 			
 			# Unzip the shapefile
 			$path = pathinfo ($file);
-			$tempDir = "{$this->applicationRoot}/exports/{$path['filename']}/";
+			$tempDir = "{$exportsTmpDir}/{$path['filename']}/";
 			$command = "unzip {$file} -d {$tempDir}";		// http://stackoverflow.com/questions/8107886/create-folder-for-zip-file-and-extract-to-it
 			exec ($command, $output);
 			// application::dumpData ($output);
