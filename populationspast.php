@@ -646,9 +646,9 @@ class populationspast extends frontControllerApplication
 			SELECT
 				{$fields}
 			FROM {$this->settings['database']}.{$this->settings['table']}
-			WHERE MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
-			AND year = {$year}
-			-- LIMIT " . ($zoomedOut ? '1000' : '250') . "
+			WHERE
+				MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
+				AND year = {$year}
 		;";
 		
 		# Get the data
