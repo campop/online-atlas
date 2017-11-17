@@ -333,7 +333,7 @@ class populationspast extends frontControllerApplication
 		$html = '
 			
 			<!-- Main stylesheet -->
-			<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css?2" type="text/css">
+			<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css?3" type="text/css">
 			
 			<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -372,7 +372,7 @@ class populationspast extends frontControllerApplication
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/populationspast.js?2"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/populationspast.js?3"></script>
 			<script type="text/javascript">
 				
 				var config = {
