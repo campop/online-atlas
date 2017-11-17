@@ -406,6 +406,10 @@ var populationspast = (function ($) {
 			// Create a form within the nav
 			$('#' + mapUi.navDivId).append ('<form></form>');
 			
+			// Create an export link
+			var exportDivId = 'export' + mapUi.index;
+			$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a href="#" title="Export the current view (as shown on the map) as raw data"><img src="/images/icons/page_excel.png" alt="" /> Export</a></p>');
+			
 			// Create the year control within the form
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
 			mapUi.yearDivId = 'year' + mapUi.index;
@@ -526,6 +530,9 @@ var populationspast = (function ($) {
 		// Function to add data to the map via an AJAX API call
 		getData: function (mapUi)
 		{
+			// Specify the API location
+			var apiUrl = _baseUrl + '/api/locations';
+			
 			// Start API data parameters
 			var apiData = {};
 			
@@ -540,6 +547,11 @@ var populationspast = (function ($) {
 			var yearIndex = $('#' + mapUi.yearDivId).val();
 			apiData.year = _settings.datasets[yearIndex];
 			
+			// Update the export link with the new parameters
+			var requestSerialised = $.param(apiData);
+			var exportUrl = apiUrl + '?' + requestSerialised + '&format=csv';
+			$('#' + mapUi.navDivId + ' p.export a').attr('href', exportUrl);
+			
 			// Start spinner, initially adding it to the page
 			if (!$('#' + mapUi.containerDivId + ' #loading').length) {
 				$('#' + mapUi.containerDivId).append('<img id="loading" src="' + _baseUrl + '/images/spinner.svg" />');
@@ -548,7 +560,7 @@ var populationspast = (function ($) {
 			
 			// Fetch data
 			$.ajax({
-				url: _baseUrl + '/api/locations',
+				url: apiUrl,
 				dataType: (populationspast.browserSupportsCors () ? 'json' : 'jsonp'),		// Fall back to JSON-P for IE9
 				crossDomain: true,	// Needed for IE<=9; see: https://stackoverflow.com/a/12644252/180733
 				data: apiData,
@@ -828,7 +840,7 @@ var populationspast = (function ($) {
 		tooltips: function ()
 		{
 			// Use jQuery tooltips; see: https://jqueryui.com/tooltip/
-			$('form .radiobuttons').tooltip ({
+			$('form .radiobuttons, .export').tooltip ({
 				track: true
 			});
 		}
