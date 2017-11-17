@@ -507,7 +507,7 @@ class populationspast extends frontControllerApplication
 			$year = $matches[1];
 			
 			# Remove existing data file if present
-			$geojson = "{$this->applicationRoot}/data/{$year}.geojson";
+			$geojson = "{$this->applicationRoot}/exports-tmp/{$year}.geojson";
 			if (is_file ($geojson)) {
 				unlink ($geojson);
 			}
