@@ -378,6 +378,7 @@ class populationspast extends frontControllerApplication
 				var config = {
 					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
 					zoomedOut: ' . $this->settings['zoomedOut'] . ',
+					datasets: ' . json_encode ($this->settings['datasets']) . ',
 					defaultField: \'' . $this->defaultField . '\',
 					fields: ' . json_encode ($this->fields, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . '
 				}

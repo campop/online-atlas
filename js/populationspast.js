@@ -56,7 +56,7 @@ var populationspast = (function ($) {
 		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924',
 		
 		// Dataset years
-		datasets: [1851, 1861, 1881, 1891, 1901, 1911],
+		datasets: [],	// Will be supplied from the database
 		
 		// Fields and their labels
 		fields: {},		// Will be supplied from the database
