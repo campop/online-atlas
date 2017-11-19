@@ -110,7 +110,6 @@ class onlineAtlas extends frontControllerApplication
 			CREATE TABLE administrators (
 			  username varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Username',
 			  active enum('','Yes','No') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Yes' COMMENT 'Currently active?',
-			  privilege enum('Administrator','Restricted administrator') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Administrator' COMMENT 'Administrator level',
 			  PRIMARY KEY (username)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='System administrators';
 			
@@ -121,8 +120,8 @@ class onlineAtlas extends frontControllerApplication
 			  {$specificFields}
 			  
 			  `geometry` GEOMETRY NOT NULL COMMENT 'Geometry'
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Data'
-		;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Data';
+		";
 		
 		# Return the SQL
 		return $sql;
