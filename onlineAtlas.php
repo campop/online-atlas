@@ -423,10 +423,12 @@ class onlineAtlas extends frontControllerApplication
 				'year'	=> $year,
 			);
 			
-			# Replace CEN_1851, CEN_1861, etc. with CEN
+			# If present, replace CEN_1851, CEN_1861, etc. with CEN
 			$fieldname = 'CEN_' . $year;
-			$feature['properties']['CEN'] = $feature['properties'][$fieldname];
-			unset ($feature['properties'][$fieldname]);
+			if (isSet ($feature['properties'][$fieldname])) {
+				$feature['properties']['CEN'] = $feature['properties'][$fieldname];
+				unset ($feature['properties'][$fieldname]);
+			}
 			
 			# Add the properties
 			$insert += $feature['properties'];
