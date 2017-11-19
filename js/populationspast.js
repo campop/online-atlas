@@ -334,7 +334,8 @@ var populationspast = (function ($) {
 			
 			// Add geolocation control
 			L.control.locate({
-				icon: 'fa fa-location-arrow'
+				icon: 'fa fa-location-arrow',
+				locateOptions: {maxZoom: 12}
 			}).addTo(map);
 			
 			// Attach the map to the mapUi
