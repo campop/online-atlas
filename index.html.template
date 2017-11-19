@@ -2,9 +2,32 @@
 
 # Settings
 $settings = array (
-	'geocoderApiKey' => 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
+	
+	// Database
 	'password' => 'YOUR_DATABASE_PASSWORD',
-	'administrators' => array (),			// List of admin usernames
+	
+	// Geocoder
+	'geocoderApiKey' => 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
+	
+	// Datasets
+	'datasets' => array (),	// Must supply an array of datasets
+	
+	// Fields
+	'defaultField' => 'DEFAULT_FIELD',
+	'fields' => array (
+		'year' => array (
+			'label' => 'Year',
+			'description' => 'Year',
+			'intervals' => '',
+			'general' => true,
+		),
+		'FIELD' => array (
+			'label' => 'Some field',
+			'description' => 'Description of this field',
+			'intervals' => '0, 4, 5, 6, 7, 8, 9',
+		),
+		// etc.
+	),
 );
 
 # Load and run the class
