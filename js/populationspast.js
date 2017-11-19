@@ -333,7 +333,9 @@ var populationspast = (function ($) {
 			map.addControl(new L.Control.Fullscreen({pseudoFullscreen: true}));
 			
 			// Add geolocation control
-			L.control.locate().addTo(map);
+			L.control.locate({
+				icon: 'fa fa-location-arrow'
+			}).addTo(map);
 			
 			// Attach the map to the mapUi
 			mapUi.map = map;
