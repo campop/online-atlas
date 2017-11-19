@@ -1,9 +1,9 @@
-// Populationspast application code
+// Online atlas application code
 
 /*jslint browser: true, white: true, single: true, for: true */
 /*global alert, console, window, $, jQuery, L, autocomplete, vex */
 
-var populationspast = (function ($) {
+var onlineatlas = (function ($) {
 	
 	'use strict';
 	
@@ -101,10 +101,10 @@ var populationspast = (function ($) {
 			_baseUrl = baseUrl;
 			
 			// Create the map panel and associated controls
-			_mapUis[0] = populationspast.mapUi (0);
+			_mapUis[0] = onlineatlas.mapUi (0);
 			
 			// Add support for side-by-side comparison
-			populationspast.sideBySide ();
+			onlineatlas.sideBySide ();
 		},
 		
 		
@@ -130,7 +130,7 @@ var populationspast = (function ($) {
 					
 					// Load the second map UI if not already loaded
 					if (!_secondMapLoaded) {
-						_mapUis[1] = populationspast.mapUi (1);
+						_mapUis[1] = onlineatlas.mapUi (1);
 						_secondMapLoaded = true;
 						
 						// Register handlers to keep the select and radiobuttons in sync, for each map
@@ -143,7 +143,7 @@ var populationspast = (function ($) {
 							});
 							$('#' + mapUi.navDivId + ' form select').on('change', function() {
 								value = $(this).val();
-								fieldname = 'field' + index + '_' + populationspast.htmlspecialchars (value);
+								fieldname = 'field' + index + '_' + onlineatlas.htmlspecialchars (value);
 								$('#' + fieldname).prop('checked', true);
 							});
 						});
@@ -200,52 +200,52 @@ var populationspast = (function ($) {
 			
 			// Create the map
 			mapUi.mapDivId = 'map' + mapUi.index;
-			populationspast.createMap (mapUi);
+			onlineatlas.createMap (mapUi);
 			
 			// Create the nav panel
-			populationspast.createNav (mapUi);
+			onlineatlas.createNav (mapUi);
 			
 			// Create the location overlay pane
-			populationspast.createLocationsOverlayPane (mapUi.map);
+			onlineatlas.createLocationsOverlayPane (mapUi.map);
 			
 			// Show first-run welcome message if the user is new to the site
-			populationspast.welcomeFirstRun ();
+			onlineatlas.welcomeFirstRun ();
 			
 			// Determine the active field, and create a handler for changes
 			mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.
 			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
-				mapUi.field = populationspast.getField (mapUi.navDivId);
+				mapUi.field = onlineatlas.getField (mapUi.navDivId);
 			});
 			// Create the legend for the current field, and update on changes
-			populationspast.createLegend (mapUi);
+			onlineatlas.createLegend (mapUi);
 			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
-				populationspast.setLegend (mapUi);
+				onlineatlas.setLegend (mapUi);
 			});
 			
 			// Register an summary box control
-			populationspast.summaryControl (mapUi);
+			onlineatlas.summaryControl (mapUi);
 			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
 				mapUi.summary.update (mapUi.field, null);
 			});
 			
 			// Add the data via AJAX requests
-			populationspast.getData (mapUi);
+			onlineatlas.getData (mapUi);
 			
 			// Register to refresh data on map move
 			mapUi.map.on ('moveend', function (e) {
-				populationspast.getData (mapUi);
+				onlineatlas.getData (mapUi);
 			});
 			
 			// Register to refresh data on any form field change
 			$('#' + mapUi.navDivId + ' form :input').on('change', function() {
-				populationspast.getData (mapUi);
+				onlineatlas.getData (mapUi);
 			});
 			
 			// Add tooltips to the forms
-			populationspast.tooltips ();
+			onlineatlas.tooltips ();
 			
 			// Register a dialog dialog box handler, giving a link more information
-			populationspast.moreDetails (mapUi.field);
+			onlineatlas.moreDetails (mapUi.field);
 			
 			// Return the mapUi handle
 			return mapUi;
@@ -285,7 +285,7 @@ var populationspast = (function ($) {
 			});
 			
 			// Parse any hash in the URL to obtain any default position
-			var urlParameters = populationspast.getUrlParameters ();
+			var urlParameters = onlineatlas.getUrlParameters ();
 			var defaultLocation = (urlParameters.defaultLocation || _settings.defaultLocation);
 			var defaultTileLayer = (urlParameters.defaultTileLayer || _settings.defaultTileLayer);
 			
@@ -298,9 +298,9 @@ var populationspast = (function ($) {
 			}).setActiveArea('activearea');
 			
 			// Set a class corresponding to the map tile layer, so that the background can be styled with CSS
-			populationspast.setMapBackgroundColour (tileLayers[0].options);
+			onlineatlas.setMapBackgroundColour (tileLayers[0].options);
 			map.on('baselayerchange', function(e) {
-				populationspast.setMapBackgroundColour (baseLayers[e.name].options);
+				onlineatlas.setMapBackgroundColour (baseLayers[e.name].options);
 			});
 			
 			// Set the zoom and determine whether the map is zoomed out too far, and set the mouse cursor
@@ -325,7 +325,7 @@ var populationspast = (function ($) {
 			L.control.layers(baseLayers, null, {position: 'bottomright'}).addTo(map);
 			
 			// Add geocoder control
-			populationspast.createGeocoder (mapUi);
+			onlineatlas.createGeocoder (mapUi);
 			
 			// Add hash support
 			if (mapUi.index == 0) {		// If more than one map on the page, apply only to the first one
@@ -444,17 +444,17 @@ var populationspast = (function ($) {
 				if (field.general) {return /* i.e. continue */;}
 				
 				// Construct the radiobutton list (for full mode)
-				fieldname = 'field' + mapUi.index + '_' + populationspast.htmlspecialchars (id);
-				radiobuttonsHtml += '<div title="' + populationspast.htmlspecialchars (field.description) + '">';
-				radiobuttonsHtml += '<input type="radio" name="field" value="' + populationspast.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
+				fieldname = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (id);
+				radiobuttonsHtml += '<div title="' + onlineatlas.htmlspecialchars (field.description) + '">';
+				radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
 				radiobuttonsHtml += '<label for="' + fieldname + '">';
-				radiobuttonsHtml += populationspast.htmlspecialchars (field.label);
+				radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
 				radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#">[?]</a>';
 				radiobuttonsHtml += '</label>';
 				radiobuttonsHtml += '</div>';
 				
 				// Select widget (for side-by-side mode)
-				selectHtml += '<option value="' + populationspast.htmlspecialchars (id) + '">' + populationspast.htmlspecialchars (field.label) + '</option>';
+				selectHtml += '<option value="' + onlineatlas.htmlspecialchars (id) + '">' + onlineatlas.htmlspecialchars (field.label) + '</option>';
 			});
 			
 			// Add a container for the radiobuttons
@@ -529,7 +529,7 @@ var populationspast = (function ($) {
 				}
 				
 				// Create the dialog box
-				populationspast.dialogBox ('#moredetails', field, dialogBoxContentHtml);
+				onlineatlas.dialogBox ('#moredetails', field, dialogBoxContentHtml);
 				
 				// Prevent link
 				e.preventDefault ();
@@ -577,7 +577,7 @@ var populationspast = (function ($) {
 			// Fetch data
 			$.ajax({
 				url: _baseUrl + '/api/locations',
-				dataType: (populationspast.browserSupportsCors () ? 'json' : 'jsonp'),		// Fall back to JSON-P for IE9
+				dataType: (onlineatlas.browserSupportsCors () ? 'json' : 'jsonp'),		// Fall back to JSON-P for IE9
 				crossDomain: true,	// Needed for IE<=9; see: https://stackoverflow.com/a/12644252/180733
 				data: apiData,
 				error: function (jqXHR, error, exception) {
@@ -596,13 +596,13 @@ var populationspast = (function ($) {
 					// Show API-level error if one occured
 					// #!# This is done here because the API still returns Status code 200
 					if (data.error) {
-						populationspast.removeLayer (mapUi);
+						onlineatlas.removeLayer (mapUi);
 						vex.dialog.alert ('Error: ' + data.error);
 						return {};
 					}
 					
 					// Show the data successfully
-					populationspast.showCurrentData (mapUi, data);
+					onlineatlas.showCurrentData (mapUi, data);
 				}
 			});
 		},
@@ -612,7 +612,7 @@ var populationspast = (function ($) {
 		showCurrentData: function (mapUi, data)
 		{
 			// If this layer already exists, remove it so that it can be redrawn
-			populationspast.removeLayer (mapUi);
+			onlineatlas.removeLayer (mapUi);
 			
 			// Define the data layer
 			mapUi.dataLayer = L.geoJson (data, {
@@ -655,7 +655,7 @@ var populationspast = (function ($) {
 					
 					// Enable popups (if close enough)
 					if (!mapUi.zoomedOut) {
-						var popupHtml = populationspast.popupHtml (feature);
+						var popupHtml = onlineatlas.popupHtml (feature);
 						layer.bindPopup(popupHtml, {autoPan: false});
 					}
 				},
@@ -664,7 +664,7 @@ var populationspast = (function ($) {
 				// NB this has to be inlined, and cannot be refactored to a 'setStyle' method, as the field is needed as a parameter
 				style: function (feature) {
 					return {
-						fillColor: populationspast.getColour (feature.properties[mapUi.field], mapUi.field),
+						fillColor: onlineatlas.getColour (feature.properties[mapUi.field], mapUi.field),
 						weight: (mapUi.zoomedOut ? 0 : 1),
 						fillOpacity: 0.7
 					};
@@ -735,9 +735,9 @@ var populationspast = (function ($) {
 			html += '<table id="chart" class="lines compressed">';
 			$.each (feature.properties, function (field, value) {
 				if (typeof value == 'string') {
-					value = populationspast.htmlspecialchars (value);
+					value = onlineatlas.htmlspecialchars (value);
 				}
-				html += '<tr class="' + field + '"><td>' + populationspast.htmlspecialchars (_settings.fields[field].label) + ':</td><td><strong>' + value + '</strong></td></tr>';
+				html += '<tr class="' + field + '"><td>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + ':</td><td><strong>' + value + '</strong></td></tr>';
 			});
 			html += '</table>';
 			
@@ -765,7 +765,7 @@ var populationspast = (function ($) {
 		summaryHtml: function (field, feature)
 		{
 			// Assemble the HTML
-			var html = '<p>' + populationspast.htmlspecialchars (feature.properties['SUBDIST']) + ', in ' + feature.properties['year'] + ': <strong>' + feature.properties[field] + '</strong></p>';
+			var html = '<p>' + onlineatlas.htmlspecialchars (feature.properties['SUBDIST']) + ', in ' + feature.properties['year'] + ': <strong>' + feature.properties[field] + '</strong></p>';
 			
 			// Return the HTML
 			return html;
@@ -787,7 +787,7 @@ var populationspast = (function ($) {
 			legend.addTo(mapUi.map);
 			
 			// Set the initial value
-			populationspast.setLegend (mapUi);
+			onlineatlas.setLegend (mapUi);
 		},
 		
 		
@@ -810,13 +810,13 @@ var populationspast = (function ($) {
 				labels = labels.reverse();	// Legends should be shown highest first
 			} else {
 				$.each (intervals, function (key, colour) {
-					labels.push('<i style="background:' + colour + '"></i> ' + populationspast.htmlspecialchars (populationspast.ucfirst (key)));
+					labels.push('<i style="background:' + colour + '"></i> ' + onlineatlas.htmlspecialchars (onlineatlas.ucfirst (key)));
 				});
 			}
 			
 			// Compile the HTML
-			var html = '<h4>' + populationspast.htmlspecialchars (_settings.fields[mapUi.field].label) + '</h4>';
-			html += '<p>' + populationspast.htmlspecialchars (_settings.fields[mapUi.field].description) + '</p>';
+			var html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].label) + '</h4>';
+			html += '<p>' + onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].description) + '</p>';
 			html += labels.join ('<br />');
 			
 			// Set the HTML
@@ -840,9 +840,9 @@ var populationspast = (function ($) {
 			
 			// Register a method to update the control based on feature properties passed
 			mapUi.summary.update = function (field, feature) {
-				var html = '<h4>' + populationspast.htmlspecialchars (_settings.fields[field].label) + '</h4>';
+				var html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + '</h4>';
 				html += (feature ?
-					populationspast.summaryHtml (field, feature)
+					onlineatlas.summaryHtml (field, feature)
 					: 'Hover over an area to view details.');
 				this._div.innerHTML = html;
 			};

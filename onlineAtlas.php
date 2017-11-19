@@ -3,7 +3,7 @@
 # Class to create the online atlas
 
 require_once ('frontControllerApplication.php');
-class populationspast extends frontControllerApplication
+class onlineAtlas extends frontControllerApplication
 {
 	# Function to assign defaults additional to the general application defaults
 	public function defaults ()
@@ -216,7 +216,7 @@ class populationspast extends frontControllerApplication
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/populationspast.js?3"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/onlineatlas.js?3"></script>
 			<script type="text/javascript">
 				
 				var config = {
@@ -229,7 +229,7 @@ class populationspast extends frontControllerApplication
 				}
 				
 				$(function() {
-					populationspast.initialise (config, \'' . $this->baseUrl . '\');
+					onlineatlas.initialise (config, \'' . $this->baseUrl . '\');
 				});
 				
 			</script>

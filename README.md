@@ -1,6 +1,6 @@
-# Atlas of Victorian and Edwardian Population
+# Online Atlas
 
-This is a PHP application which implements an online atlas of data from CAMPOP.
+This is a PHP application consisting of unbranded base code which implements an online atlas of data from CAMPOP.
 
 
 Usage
