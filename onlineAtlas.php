@@ -312,7 +312,7 @@ class onlineAtlas extends frontControllerApplication
 		# Create the list of import files
 		$importFiles = array ();
 		foreach ($this->settings['datasets'] as $dataset) {
-			$importFiles[] = sprintf ('FERTILITY_%s', $dataset);
+			$importFiles[] = sprintf ('dataset_%s', $dataset);
 		}
 		
 		# Define the introduction HTML
