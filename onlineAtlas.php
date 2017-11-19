@@ -11,6 +11,7 @@ class onlineAtlas extends frontControllerApplication
 		# Specify available arguments as defaults or as NULL (to represent a required argument)
 		$defaults = array (
 			'applicationName' => 'Online atlas',
+			'pageHeader' => 'Online atlas',
 			'hostname' => 'localhost',
 			'database' => 'onlineatlas',
 			'username' => 'onlineatlas',
@@ -153,6 +154,7 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Set the default title
 		$this->template['title'] = $this->settings['applicationName'];
+		$this->template['pageHeader'] = $this->settings['pageHeader'];
 		
 	}
 	
