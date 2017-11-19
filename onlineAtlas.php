@@ -101,7 +101,11 @@ class onlineAtlas extends frontControllerApplication
 	# Database structure definition
 	public function databaseStructure ()
 	{
-		return "
+		# Get the domain-specific fields
+		$specificFields = $this->databaseStructureSpecificFields ();
+		
+		# Define the base SQL
+		$sql = "
 			CREATE TABLE administrators (
 			  username varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Username',
 			  active enum('','Yes','No') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Yes' COMMENT 'Currently active?',
@@ -112,42 +116,26 @@ class onlineAtlas extends frontControllerApplication
 			CREATE TABLE `data` (
 			  `id` INT(11) NOT NULL COMMENT 'Automatic key',
 			  `year` INT(4) NOT NULL COMMENT 'Year',
-			  `CEN` INT(11) NOT NULL COMMENT 'CEN (e.g. from CEN_1851)',
-			  `COUNTRY` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Country',
-			  `DIVISION` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Division',
-			  `REGCNTY` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'County',
-			  `REGDIST` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Registration district',
-			  `SUBDIST` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Sub-district',
-			  `TMFR` DECIMAL(14,7) NOT NULL COMMENT 'Total Marital Fertility Rate',
-			  `TFR` DECIMAL(14,7) NOT NULL COMMENT 'Total Fertility Rate',
-			  `IMR` DECIMAL(14,7) NOT NULL COMMENT 'Infant Mortality Rate',
-			  `LEGIT_RATE` DECIMAL(14,7) NOT NULL COMMENT 'Legitimacy Rate',
-			  `ILEG_RATE` DECIMAL(14,7) NOT NULL COMMENT 'Illegitimacy Rate',
-			  `ILEG_RATIO` DECIMAL(14,7) NOT NULL COMMENT 'Illegitimacy Ratio',
-			  `ECMR` DECIMAL(14,7) NOT NULL COMMENT 'Early Childhood Mortality Rate',
-			  `SC1` DECIMAL(14,7) NOT NULL COMMENT 'Social Class 1',
-			  `SC2` DECIMAL(14,7) NOT NULL COMMENT 'Social Class 2',
-			  `SC3` DECIMAL(14,7) NOT NULL COMMENT 'Social Class 3',
-			  `SC4` DECIMAL(14,7) NOT NULL COMMENT 'Social Class 4',
-			  `SC5` DECIMAL(14,7) NOT NULL COMMENT 'Social Class 5',
-			  `SC6` DECIMAL(14,7) NOT NULL COMMENT 'Social Class 6',
-			  `SC7` DECIMAL(14,7) NOT NULL COMMENT 'Social Class 7',
-			  `SC8` DECIMAL(14,7) NOT NULL COMMENT 'Social Class 8',
-			  `FMAR_PRATE` DECIMAL(14,7) NOT NULL COMMENT 'Married women working',
-			  `FNM_PRATE` DECIMAL(14,7) NOT NULL COMMENT 'Single women working',
-			  `FWID_PRATE` DECIMAL(14,7) NOT NULL COMMENT 'Widowed women working',
-			  `SCOT_BORN` DECIMAL(14,7) NOT NULL COMMENT 'Scottish born',
-			  `IRISH_BORN` DECIMAL(14,7) NOT NULL COMMENT 'Irish born',
-			  `POP_DENS` DECIMAL(14,7) NOT NULL COMMENT 'Population Density',
-			  `HOUSE_SERV` DECIMAL(14,7) NOT NULL COMMENT 'Houses with a live-in servant',
-			  `M_SMAM` DECIMAL(14,7) NOT NULL COMMENT 'Singulate Mean Age at Marriage (Male)',
-			  `F_SMAM` DECIMAL(14,7) NOT NULL COMMENT 'Singulate Mean Age at Marriage (Female)',
-			  `M_CEL_4554` DECIMAL(14,7) NOT NULL COMMENT 'Celibate (Male)',
-			  `F_CEL_4554` DECIMAL(14,7) NOT NULL COMMENT 'Celibate (Female)',
-			  `TYPE` VARCHAR(255) NOT NULL COMMENT 'Type of place',
+			  
+			  {$specificFields}
+			  
 			  `geometry` GEOMETRY NOT NULL COMMENT 'Geometry'
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Data'
 		;";
+		
+		# Return the SQL
+		return $sql;
+	}
+	
+	
+	# Database structure, which the implementation should override
+	public function databaseStructureSpecificFields ()
+	{
+		# Return the SQL
+		return $sql = "
+			  /* Domain-specific fields to be added here */
+			  
+		";
 	}
 	
 	
