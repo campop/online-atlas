@@ -30,6 +30,10 @@ class populationspast extends frontControllerApplication
 			'authLinkVisibility' => false,
 			'h1' => '',
 			'div' => false,
+			'firstRunMessageHtml' =>
+				  '<p><strong>Welcome to Populations Past, from CAMPOP</strong></p>'
+				. '<p>Populationspast.org, the Atlas of Victorian and Edwardian Population, enables you to explore demographic changes from 1851-1911.</p>'
+				. '<p>Please note that various improvements are still being made to the site.</p>',
 		);
 		
 		# Return the defaults
@@ -380,7 +384,8 @@ class populationspast extends frontControllerApplication
 					zoomedOut: ' . $this->settings['zoomedOut'] . ',
 					datasets: ' . json_encode ($this->settings['datasets']) . ',
 					defaultField: \'' . $this->defaultField . '\',
-					fields: ' . json_encode ($this->fields, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . '
+					fields: ' . json_encode ($this->fields, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ',
+					firstRunMessageHtml: \'' . $this->settings['firstRunMessageHtml'] . '\'
 				}
 				
 				$(function() {

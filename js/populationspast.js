@@ -71,7 +71,10 @@ var populationspast = (function ($) {
 			'#fab884',
 			'#ed7552',
 			'red'		// Red - most
-		]
+		],
+		
+		// Welcome message
+		firstRunMessageHtml: ''
 	};
 	
 	
@@ -490,6 +493,9 @@ var populationspast = (function ($) {
 		// Function to show a welcome message on first run
 		welcomeFirstRun: function ()
 		{
+			// End if no welcome message
+			if (!_settings.firstRunMessageHtml) {return;}
+			
 			// End if cookie already set
 			var name = 'welcome';
 			if (Cookies.get(name)) {return;}
@@ -498,10 +504,7 @@ var populationspast = (function ($) {
 			Cookies.set(name, '1', {expires: 14});
 			
 			// Define a welcome message
-			var message =
-			   '<p><strong>Welcome to Populations Past, from CAMPOP</strong></p>'
-			 + '<p>Populationspast.org, the Atlas of Victorian and Edwardian Population, enables you to explore demographic changes from 1851-1911.</p>'
-			 + '<p>Please note that various improvements are still being made to the site.</p>';
+			var message = _settings.firstRunMessageHtml;
 			
 			// Show the dialog
 			vex.dialog.alert ({unsafeMessage: message});
