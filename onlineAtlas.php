@@ -430,8 +430,11 @@ class onlineAtlas extends frontControllerApplication
 				unset ($feature['properties'][$fieldname]);
 			}
 			
+			# Filter properties for supported fields only
+			$properties = application::arrayFields ($feature['properties'], array_keys ($this->settings['fields']));
+			
 			# Add the properties
-			$insert += $feature['properties'];
+			$insert += $properties;
 			
 			# Add the geometry
 			$insert['geometry'] = "GeomFromText('" . geojson2spatial::geojsonGeometry2wkt ($feature['geometry']) . "')";
