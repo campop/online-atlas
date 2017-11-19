@@ -28,6 +28,7 @@ class onlineAtlas extends frontControllerApplication
 			'apiJsonPretty' => false,
 			'downloadFilenameBase' => 'onlineatlas',
 			'useTemplating' => true,
+			'bodyClass' => '',
 			'disableTabs' => true,
 			'authLinkVisibility' => false,
 			'h1' => '',
@@ -142,7 +143,8 @@ class onlineAtlas extends frontControllerApplication
 	# Additional processing
 	public function main ()
 	{
-		# Set the body class
+		# Set the body class and action
+		$this->template['bodyClass'] = $this->settings['bodyClass'];
 		$this->template['action'] = $this->action;
 		
 		# Set the SSO block
