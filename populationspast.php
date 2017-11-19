@@ -25,6 +25,7 @@ class populationspast extends frontControllerApplication
 			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down
 			'apiUsername' => true,
 			'apiJsonPretty' => false,
+			'downloadFilenameBase' => 'onlineatlas',
 			'useTemplating' => true,
 			'disableTabs' => true,
 			'authLinkVisibility' => false,
@@ -517,7 +518,7 @@ class populationspast extends frontControllerApplication
 		# If exporting, serve CSV and end
 		if ($export) {
 			$headings = $this->databaseConnection->getHeadings ($this->settings['database'], $this->settings['table']);
-			$filenameBase = "populationspast_{$field}_{$year}";
+			$filenameBase = "{$this->settings['downloadFilenameBase']}_{$field}_{$year}";
 			$this->databaseConnection->serveCsv ($query, array (), $filenameBase, $timestamp = true, $headings);
 			die;
 		}
