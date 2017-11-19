@@ -114,7 +114,7 @@ class onlineAtlas extends frontControllerApplication
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='System administrators';
 			
 			CREATE TABLE `data` (
-			  `id` INT(11) NOT NULL COMMENT 'Automatic key',
+			  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Automatic key' PRIMARY KEY,
 			  `year` INT(4) NOT NULL COMMENT 'Year',
 			  
 			  {$specificFields}
