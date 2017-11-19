@@ -385,6 +385,9 @@ class onlineAtlas extends frontControllerApplication
 			
 			# Import the GeoJSON contents into the database
 			$this->importGeojson ($geojson, $year, $truncate);
+			
+			# Remove the GeoJSON file after use
+			unlink ($geojson);
 		}
 		
 		# Return success
