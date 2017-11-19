@@ -256,10 +256,11 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# About page
-	public function about ()
+	public function about ($path = false)
 	{
 		# Load and show the HTML
-		$html = file_get_contents ($this->applicationRoot . '/about.html');
+		$file = ($path ? $path : $this->applicationRoot) . '/about.html';
+		$html = file_get_contents ($file);
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
@@ -271,10 +272,11 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Funders page
-	public function funders ()
+	public function funders ($path = false)
 	{
 		# Load and show the HTML
-		$html = file_get_contents ($this->applicationRoot . '/funders.html');
+		$file = ($path ? $path : $this->applicationRoot) . '/funders.html';
+		$html = file_get_contents ($file);
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
