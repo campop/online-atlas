@@ -702,22 +702,56 @@ var onlineatlas = (function ($) {
 			// Create a simpler variable for the intervals field
 			var intervals = _settings.fields[field].intervals;
 			
+			// Determine the colour to use for umatched
+			var unknownValueColour = _settings.colourStops[(intervals.length - 1)];		// Default to last in list
+			$.each (intervals, function (i, interval) {
+				if (interval == 'Unknown') {
+					unknownValueColour = _settings.colourStops[i];
+					return;		// Break the loop if found
+				}
+			});
+			
 			// If the intervals is an array, i.e. standard list of colour stops, loop until found
 			if (intervals[0]) {		// Simple, quick check
 				
-				// Loop through each colour downwards until found
+				// Compare as float
+				value = parseFloat (value);
+				
+				// Loop through until found
 				var interval;
-				for (var i = intervals.length; i >= 0; i--) {
+				var colourStop;
+				var matches;
+				for (var i = 0; i < intervals.length; i++) {
 					interval = intervals[i];
-					if (value >= interval) {
-						return _settings.colourStops[i];
+					colourStop = _settings.colourStops[i];
+					
+					// Exact value, e.g. '0'
+					if (matches = interval.match (/^([0-9\.]+)$/)) {
+						if (value == parseFloat(matches[1])) {
+							return colourStop;
+						}
+					}
+					
+					// Range, e.g. '5-10'
+					if (matches = interval.match (/^([0-9\.]+)-([0-9\.]+)$/)) {
+						if ((value >= parseFloat(matches[1])) && (value < parseFloat(matches[2]))) {	// 10 treated as matching in 10-20, not 5-10
+							return colourStop;
+						}
+					}
+					
+					// Excess value, e.g. '100+'
+					if (matches = interval.match (/^([0-9\.]+)\+$/)) {
+						if (value >= parseFloat(matches[1])) {
+							return colourStop;
+						}
 					}
 				}
 				
-				// Fall back to final colour in the list
-				return _settings.colourStops[0];
+				// Unknown/other, if other checks have not matched
+				console.log ('Unmatched value ' + value);
+				return unknownValueColour;
 				
-			// For pure key-value pair objects, read the value off
+			// For pure key-value pair definition objects, read the value off
 			} else {
 				return intervals[value];
 			}
@@ -808,17 +842,13 @@ var onlineatlas = (function ($) {
 			if (intervals[0]) {		// Simple, quick check
 				
 				// Loop through each colour until found
-				var from;
-				var to;
-				for (var i = 0; i < intervals.length; i++) {
-					from = intervals[i];
-					to = intervals[i + 1];
-					labels.push('<i style="background:' + _settings.colourStops[i] + '"></i> ' + from + (to ? '&ndash;' + to : '+'));
-				}
+				$.each (intervals, function (i, label) {
+					labels.push ('<i style="background: ' + _settings.colourStops[i] + '"></i> ' + onlineatlas.htmlspecialchars (label.replace('-', ' - ')));
+				});
 				labels = labels.reverse();	// Legends should be shown highest first
 			} else {
 				$.each (intervals, function (key, colour) {
-					labels.push('<i style="background:' + colour + '"></i> ' + onlineatlas.htmlspecialchars (onlineatlas.ucfirst (key)));
+					labels.push ('<i style="background: ' + colour + '"></i> ' + onlineatlas.htmlspecialchars (onlineatlas.ucfirst (key)));
 				});
 			}
 			
