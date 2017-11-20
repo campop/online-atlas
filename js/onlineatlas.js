@@ -709,6 +709,9 @@ var onlineatlas = (function ($) {
 				// Compare as float
 				value = parseFloat (value);
 				
+				// Last interval
+				var lastInterval = intervals.length - 1;
+				
 				// Loop through until found
 				var interval;
 				var colourStop;
@@ -728,6 +731,13 @@ var onlineatlas = (function ($) {
 					if (matches = interval.match (/^([0-9\.]+)-([0-9\.]+)$/)) {
 						if ((value >= parseFloat(matches[1])) && (value < parseFloat(matches[2]))) {	// 10 treated as matching in 10-20, not 5-10
 							return colourStop;
+						}
+						
+						// Deal with last, where (e.g.) 90-100 is implied to include 100
+						if (i == lastInterval) {
+							if ((value == parseFloat(matches[2]))) {
+								return colourStop;
+							}
 						}
 					}
 					
