@@ -171,6 +171,20 @@ class onlineAtlas extends frontControllerApplication
 		$this->template['title'] = $this->settings['applicationName'];
 		$this->template['pageHeader'] = $this->settings['pageHeader'];
 		
+		# Ensure the number of intervals in each field matches the number of colour stops
+		$totalColourStops = count ($this->settings['colourStops']);
+		foreach ($this->settings['fields'] as $id => $field) {
+			if ($field['intervals']) {
+				if (is_string ($field['intervals'])) {	// Array type has its own colour set, defined associatively, so only string type needs to be checked
+					$totalIntervals = count (explode (', ', $field['intervals']));
+					if ($totalIntervals != $totalColourStops) {
+						echo "\n<p class=\"error\">Setup error: the number of intervals defined for the <em>{$id}</em> field ({$totalIntervals}) does not match the number of colour stops defined ({$totalColourStops}).</p>";
+						return false;
+					}
+				}
+			}
+		}
+		
 	}
 	
 	
