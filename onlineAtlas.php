@@ -53,6 +53,15 @@ class onlineAtlas extends frontControllerApplication
 				),
 				// etc.
 			),
+			'colourStops' => array (	// Colour scales can be created at http://www.colorbrewer.org/
+				'#4575b5',	// Blue - least
+				'#849eb9',
+				'#c0ccbe',
+				'#ffffbf',	// Yellow
+				'#fab884',
+				'#ed7552',
+				'red'		// Red - most
+			),
 		);
 		
 		# Return the defaults
@@ -221,6 +230,7 @@ class onlineAtlas extends frontControllerApplication
 					datasets: ' . json_encode ($this->settings['datasets']) . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
 					fields: ' . json_encode ($this->settings['fields'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ',
+					colourStops: ' . json_encode ($this->settings['colourStops']) . ',
 					export: ' . ($this->settings['downloadFilenameBase'] ? 'true' : 'false') . ',
 					firstRunMessageHtml: \'' . $this->settings['firstRunMessageHtml'] . '\'
 				}

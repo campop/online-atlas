@@ -56,22 +56,14 @@ var onlineatlas = (function ($) {
 		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924',
 		
 		// Dataset years
-		datasets: [],	// Will be supplied from the database
+		datasets: [],	// Will be supplied
 		
 		// Fields and their labels
-		fields: {},		// Will be supplied from the database
+		fields: {},		// Will be supplied
 		defaultField: '',		// Will be supplied
 		
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
-		colourStops: [
-			'#4575b5',	// Blue - least
-			'#849eb9',
-			'#c0ccbe',
-			'#ffffbf',	// Yellow
-			'#fab884',
-			'#ed7552',
-			'red'		// Red - most
-		],
+		colourStops: [],		// Will be supplied
 		
 		// Export mode enabled
 		export: true,
