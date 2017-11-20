@@ -64,6 +64,7 @@ var onlineatlas = (function ($) {
 		
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
 		colourStops: [],		// Will be supplied
+		colourUnknown: 'gray',
 		
 		// Export mode enabled
 		export: true,
@@ -702,15 +703,6 @@ var onlineatlas = (function ($) {
 			// Create a simpler variable for the intervals field
 			var intervals = _settings.fields[field].intervals;
 			
-			// Determine the colour to use for umatched
-			var unknownValueColour = _settings.colourStops[(intervals.length - 1)];		// Default to last in list
-			$.each (intervals, function (i, interval) {
-				if (interval == 'Unknown') {
-					unknownValueColour = _settings.colourStops[i];
-					return;		// Break the loop if found
-				}
-			});
-			
 			// If the intervals is an array, i.e. standard list of colour stops, loop until found
 			if (intervals[0]) {		// Simple, quick check
 				
@@ -749,7 +741,7 @@ var onlineatlas = (function ($) {
 				
 				// Unknown/other, if other checks have not matched
 				console.log ('Unmatched value ' + value);
-				return unknownValueColour;
+				return _settings.colourUnknown;
 				
 			// For pure key-value pair definition objects, read the value off
 			} else {
@@ -845,6 +837,7 @@ var onlineatlas = (function ($) {
 				$.each (intervals, function (i, label) {
 					labels.push ('<i style="background: ' + _settings.colourStops[i] + '"></i> ' + onlineatlas.htmlspecialchars (label.replace('-', ' - ')));
 				});
+				labels.push ('<i style="background: ' + _settings.colourUnknown + '"></i> ' + 'Unknown');
 				labels = labels.reverse();	// Legends should be shown highest first
 			} else {
 				$.each (intervals, function (key, colour) {
