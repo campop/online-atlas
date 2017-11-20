@@ -5,6 +5,9 @@
 require_once ('frontControllerApplication.php');
 class onlineAtlas extends frontControllerApplication
 {
+	# Class properties
+	private $availableGeneralFields = array ('REGDIST', 'SUBDIST', 'year');	// Specified in sort order for export
+	
 	# Function to assign defaults additional to the general application defaults
 	public function defaults ()
 	{
@@ -36,6 +39,7 @@ class onlineAtlas extends frontControllerApplication
 			'firstRunMessageHtml' => false,
 			'defaultField' => NULL,
 			'fields' => array (
+				// NB General fields (general=true), several of which are likely to be present, are: REGCNTY, REGDIST, SUBDIST, year
 				'year' => array (
 					'label' => 'Year',
 					'description' => 'Year',
@@ -494,10 +498,13 @@ class onlineAtlas extends frontControllerApplication
 		# Determine the fields to obtain
 		$fields = array ();
 		if (!$zoomedOut || $export) {
-			$fields[] = 'REGDIST';
-			$fields[] = 'SUBDIST';
-			$fields[] = 'year';
+			foreach ($this->availableGeneralFields as $generalField) {
+				if (array_key_exists ($generalField, $this->settings['fields'])) {
+					$fields[] = $generalField;
+				}
+			}
 		}
+		$orderBy = $fields;		// Set order-by to the main fields defined
 		$fields[] = $field;
 		if (!$export) {
 			$fields[] = 'ST_AsText(geometry) AS geometry';
@@ -505,7 +512,7 @@ class onlineAtlas extends frontControllerApplication
 		$fields = implode (', ', $fields);
 		
 		# In export mode, order the data
-		$orderBySql = ($export ? 'ORDER BY REGDIST,SUBDIST,year' : '');
+		$orderBySql = ($export && $orderBy ? 'ORDER BY ' . implode (',', $orderBy) : '');
 		
 		# Construct the query
 		$query = "
