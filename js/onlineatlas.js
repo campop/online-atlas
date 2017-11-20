@@ -73,6 +73,9 @@ var onlineatlas = (function ($) {
 			'red'		// Red - most
 		],
 		
+		// Export mode enabled
+		export: true,
+		
 		// Welcome message
 		firstRunMessageHtml: ''
 	};
@@ -417,8 +420,10 @@ var onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId).append ('<form></form>');
 			
 			// Create an export link
-			var exportDivId = 'export' + mapUi.index;
-			$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a href="#" title="Export the current view (as shown on the map) as raw data"><img src="/images/icons/page_excel.png" alt="" /> Export</a></p>');
+			if (_settings.export) {
+				var exportDivId = 'export' + mapUi.index;
+				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a href="#" title="Export the current view (as shown on the map) as raw data"><img src="/images/icons/page_excel.png" alt="" /> Export</a></p>');
+			}
 			
 			// Construct a datalist for the year control
 			var datalistId = 'yearlist' + mapUi.index;
@@ -564,9 +569,11 @@ var onlineatlas = (function ($) {
 			apiData.year = _settings.datasets[yearIndex];
 			
 			// Update the export link with the new parameters
-			var requestSerialised = $.param(apiData);
-			var exportUrl = _baseUrl + '/data.csv?' + requestSerialised;
-			$('#' + mapUi.navDivId + ' p.export a').attr('href', exportUrl);
+			if (_settings.export) {
+				var requestSerialised = $.param(apiData);
+				var exportUrl = _baseUrl + '/data.csv?' + requestSerialised;
+				$('#' + mapUi.navDivId + ' p.export a').attr('href', exportUrl);
+			}
 			
 			// Start spinner, initially adding it to the page
 			if (!$('#' + mapUi.containerDivId + ' #loading').length) {

@@ -26,7 +26,7 @@ class onlineAtlas extends frontControllerApplication
 			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down
 			'apiUsername' => true,
 			'apiJsonPretty' => false,
-			'downloadFilenameBase' => 'onlineatlas',
+			'downloadFilenameBase' => 'onlineatlas',	// Or false to disable
 			'useTemplating' => true,
 			'bodyClass' => '',
 			'disableTabs' => true,
@@ -85,6 +85,7 @@ class onlineAtlas extends frontControllerApplication
 				'description' => false,
 				'url' => 'data.csv',
 				'export' => true,
+				'enableIf' => $this->settings['downloadFilenameBase'],
 			),
 			'import' => array (
 				'description' => false,
@@ -216,6 +217,7 @@ class onlineAtlas extends frontControllerApplication
 					datasets: ' . json_encode ($this->settings['datasets']) . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
 					fields: ' . json_encode ($this->settings['fields'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ',
+					export: ' . ($this->settings['downloadFilenameBase'] ? 'true' : 'false') . ',
 					firstRunMessageHtml: \'' . $this->settings['firstRunMessageHtml'] . '\'
 				}
 				
