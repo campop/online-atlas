@@ -735,8 +735,17 @@ var onlineatlas = (function ($) {
 		// Function to define popup content
 		popupHtml: function (feature /*, dataset */)
 		{
+			// Determine list of areas present in the data, to be shown in the title in hierarchical order
+			var availableAreaFields = ['SUBDIST', 'REGDIST'];	// More specific first, so that listing is e.g. "Kingston, Surrey, London"
+			var areaHierarchy = [];
+			$.each (availableAreaFields, function (index, areaField) {
+				if (feature.properties[areaField]) {
+					areaHierarchy.push (feature.properties[areaField]);
+				}
+			});
+			
 			// Start with the title
-			var html = '<p><strong>Displayed data for ' + feature.properties['SUBDIST'] + ', ' + feature.properties['REGDIST'] + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
+			var html = '<p><strong>Displayed data for ' + areaHierarchy.join (', ') + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
 			
 			// Add table
 			html += '<table id="chart" class="lines compressed">';
