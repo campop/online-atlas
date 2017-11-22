@@ -129,6 +129,12 @@ var onlineatlas = (function ($) {
 						_mapUis[1] = onlineatlas.mapUi (1);
 						_secondMapLoaded = true;
 						
+						// Clone the current year and field values to be the defaults for the new map
+						var yearIndex = $('#' + _mapUis[0].yearDivId).val();
+						$('#' + _mapUis[1].yearDivId).val(yearIndex);
+						var fieldValue = _mapUis[0].field;
+						$('#' + _mapUis[1].navDivId + ' form select').val(fieldValue);
+						
 						// Register handlers to keep the select and radiobuttons in sync, for each map
 						var value;
 						var fieldname;
