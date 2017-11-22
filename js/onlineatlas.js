@@ -157,13 +157,15 @@ var onlineatlas = (function ($) {
 					// Show the second map
 					$('#mapcontainer1').show ();
 					
+					// Re-centre the first map
+					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
+					
 					// Show the syncronisation button
 					$('#syncronisebutton').show ();
 					
 					// By default, syncronise the map positions
 					_mapUis[0].map.sync (_mapUis[1].map);
 					_mapUis[1].map.sync (_mapUis[0].map);
-					
 					$('#syncronise').on('click', function() {
 						if ( $(this).is(':checked') ) {
 							_mapUis[0].map.sync (_mapUis[1].map);
@@ -180,6 +182,9 @@ var onlineatlas = (function ($) {
 					
 					// Hide the second map
 					$('#mapcontainer1').hide ();
+					
+					// Re-centre the first map
+					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
 					
 					// Hide the syncronisation button
 					$('#syncronisebutton').hide ();
