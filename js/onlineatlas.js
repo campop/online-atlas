@@ -1,7 +1,7 @@
 // Online atlas application code
 
 /*jslint browser: true, white: true, single: true, for: true */
-/*global alert, console, window, $, jQuery, L, autocomplete, vex */
+/*global alert, console, window, Cookies, $, jQuery, L, autocomplete, vex */
 
 var onlineatlas = (function ($) {
 	
@@ -19,7 +19,7 @@ var onlineatlas = (function ($) {
 		defaultLocation: {
 			latitude: 53.035,
 			longitude: -1.082,
-			zoom: 7,
+			zoom: 7
 		},
 		
 		// Max bounds
@@ -114,9 +114,6 @@ var onlineatlas = (function ($) {
 			checkboxesHtml += '</p>';
 			$('#mapcontainers').prepend (checkboxesHtml);
 			
-			// Determine whether to syncronise maps
-			var syncroniseMaps = true;
-			
 			// Handle toggle
 			$('#compare').on('click', function() {
 				
@@ -205,7 +202,7 @@ var onlineatlas = (function ($) {
 			
 			// Create a div for this map UI within the mapcontainers section div
 			mapUi.index = mapUiIndex;
-			mapUi.containerDivId = 'mapcontainer' + mapUi.index
+			mapUi.containerDivId = 'mapcontainer' + mapUi.index;
 			$('#mapcontainers').append ('<div id="' + mapUi.containerDivId + '" class="mapcontainer"></div>');
 			
 			// Create the map
@@ -255,8 +252,8 @@ var onlineatlas = (function ($) {
 			// Add tooltips to the forms
 			onlineatlas.tooltips ();
 			
-			// Register a dialog dialog box handler, giving a link more information
-			onlineatlas.moreDetails (mapUi.field);
+			// Register a dialog dialog box handler, giving a link to more information
+			onlineatlas.moreDetails ();
 			
 			// Return the mapUi handle
 			return mapUi;
@@ -367,13 +364,13 @@ var onlineatlas = (function ($) {
 			urlParameters.defaultLocation = null;
 			urlParameters.defaultTileLayer = null;
 			if (window.location.hash) {
-				var hashParts = window.location.hash.match (/^#([0-9]{1,2})\/([-.0-9]+)\/([-.0-9]+)\/([a-z0-9]+)$/);	// E.g. #17/51.51137/-0.10498/bartholomew
+				var hashParts = window.location.hash.match (/^#([0-9]{1,2})\/([\-.0-9]+)\/([\-.0-9]+)\/([a-z0-9]+)$/);	// E.g. #17/51.51137/-0.10498/bartholomew
 				if (hashParts) {
 					urlParameters.defaultLocation = {
 						latitude: hashParts[2],
 						longitude: hashParts[3],
 						zoom: hashParts[1]
-					}
+					};
 					urlParameters.defaultTileLayer = hashParts[4];
 				}
 			}
@@ -434,7 +431,6 @@ var onlineatlas = (function ($) {
 			}
 			
 			// Construct a datalist for the year control
-			var datalistId = 'yearlist' + mapUi.index;
 			var datalistHtml = '<ul class="rangelabels">';
 			$.each (_settings.datasets, function (index, year) {
 				datalistHtml += '<li>' + year + '</li>';
@@ -492,11 +488,11 @@ var onlineatlas = (function ($) {
 			map.getPane('labels').style.pointerEvents = 'none';
 			
 			// Create a labels layer; see: https://carto.com/location-data-services/basemaps/
-//			var locationLabels = L.tileLayer('http://tiles.oobrien.com/shine_labels_cdrc/{z}/{x}/{y}.png', {
+			//var locationLabels = L.tileLayer('http://tiles.oobrien.com/shine_labels_cdrc/{z}/{x}/{y}.png', {
 			var locationLabels = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png', {
 				attribution: '&copy; OpenStreetMap, &copy; CartoDB',
 				pane: 'labels'
-			})
+			});
 			
 			// Add to the map
 			locationLabels.addTo(map);
@@ -525,7 +521,7 @@ var onlineatlas = (function ($) {
 		
 		
 		// Handler for a more details popup layer
-		moreDetails: function (field)
+		moreDetails: function ()
 		{
 			// Create popup when link clicked on
 			$('.moredetails').click (function (e) {
@@ -602,8 +598,8 @@ var onlineatlas = (function ($) {
 					
 					// Show error, unless deliberately aborted
 					if (jqXHR.statusText != 'abort') {
-						var data = $.parseJSON(jqXHR.responseText);
-						alert ('Error: ' + data.error);
+						var errorData = $.parseJSON(jqXHR.responseText);
+						alert ('Error: ' + errorData.error);
 					}
 				},
 				success: function (data, textStatus, jqXHR) {
@@ -647,16 +643,16 @@ var onlineatlas = (function ($) {
 						mouseover: function (e) {
 							
 							// Set the style for this feature
-							var layer = e.target;
-							layer.setStyle({
+							var thisLayer = e.target;
+							thisLayer.setStyle({
 								weight: 4
 							});
 							if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-								layer.bringToFront();
+								thisLayer.bringToFront();
 							}
 							
 							// Update the summary box
-							mapUi.summary.update (mapUi.field, layer.feature);
+							mapUi.summary.update (mapUi.field, thisLayer.feature);
 						},
 						
 						// Reset highlighting
@@ -734,33 +730,37 @@ var onlineatlas = (function ($) {
 				var interval;
 				var colourStop;
 				var matches;
-				for (var i = 0; i < intervals.length; i++) {
+				var i;
+				for (i = 0; i < intervals.length; i++) {
 					interval = intervals[i];
 					colourStop = _settings.colourStops[i];
 					
 					// Exact value, e.g. '0'
-					if (matches = interval.match (/^([0-9\.]+)$/)) {
+					matches = interval.match (/^([.0-9]+)$/);
+					if (matches) {
 						if (value == parseFloat(matches[1])) {
 							return colourStop;
 						}
 					}
 					
 					// Range, e.g. '5-10'
-					if (matches = interval.match (/^([0-9\.]+)-([0-9\.]+)$/)) {
+					matches = interval.match (/^([.0-9]+)-([.0-9]+)$/);
+					if (matches) {
 						if ((value >= parseFloat(matches[1])) && (value < parseFloat(matches[2]))) {	// 10 treated as matching in 10-20, not 5-10
 							return colourStop;
 						}
 						
 						// Deal with last, where (e.g.) 90-100 is implied to include 100
 						if (i == lastInterval) {
-							if ((value == parseFloat(matches[2]))) {
+							if (value == parseFloat(matches[2])) {
 								return colourStop;
 							}
 						}
 					}
 					
 					// Excess value, e.g. '100+'
-					if (matches = interval.match (/^([0-9\.]+)\+$/)) {
+					matches = interval.match (/^([.0-9]+)\+$/);
+					if (matches) {
 						if (value >= parseFloat(matches[1])) {
 							return colourStop;
 						}
@@ -827,7 +827,7 @@ var onlineatlas = (function ($) {
 		summaryHtml: function (field, feature)
 		{
 			// Assemble the HTML
-			var html = '<p>' + onlineatlas.htmlspecialchars (feature.properties['SUBDIST']) + ', in ' + feature.properties['year'] + ': <strong>' + feature.properties[field] + '</strong></p>';
+			var html = '<p>' + onlineatlas.htmlspecialchars (feature.properties.SUBDIST) + ', in ' + feature.properties.year + ': <strong>' + feature.properties[field] + '</strong></p>';
 			
 			// Return the HTML
 			return html;
@@ -891,7 +891,7 @@ var onlineatlas = (function ($) {
 			
 			// Define its contents
 			var map = mapUi.map;
-			mapUi.summary.onAdd = function (map) {
+			mapUi.summary.onAdd = function () {
 			    this._div = L.DomUtil.create('div', 'info summary'); // create a div with a classes 'info' and 'summary'
 			    this.update(mapUi.field, null);
 			    return this._div;
@@ -920,6 +920,6 @@ var onlineatlas = (function ($) {
 			});
 		}
 		
-	}
+	};
 	
 } (jQuery));
