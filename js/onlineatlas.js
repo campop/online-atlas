@@ -226,6 +226,7 @@ var onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
 				mapUi.field = onlineatlas.getField (mapUi.navDivId);
 			});
+			
 			// Create the legend for the current field, and update on changes
 			onlineatlas.createLegend (mapUi);
 			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
@@ -539,6 +540,9 @@ var onlineatlas = (function ($) {
 				if (!dialogBoxContentHtml) {
 					dialogBoxContentHtml = '<p><em>Sorry, no further details for this field available yet.</em></p>';
 				}
+				
+				// Wrap in a div
+				dialogBoxContentHtml = '<div id="moredetailsboxcontent">' + dialogBoxContentHtml + '</div>';
 				
 				// Create the dialog box
 				onlineatlas.dialogBox ('#moredetails', field, dialogBoxContentHtml);
