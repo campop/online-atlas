@@ -190,7 +190,7 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Welcome screen
-	public function home ()
+	public function home ($aboutPath = false)
 	{
 		# Start the HTML
 		$html = '
@@ -260,7 +260,8 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Add text for more details on each field into the page
 		$html .= "\n<div id=\"aboutfields\">";
-		$html .= file_get_contents ($this->applicationRoot . '/about.html');
+		$file = ($aboutPath ? $aboutPath : $this->applicationRoot) . '/about.html';
+		$html .= file_get_contents ($file);
 		$html .= "\n</div>";
 		
 		# Templatise
