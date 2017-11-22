@@ -440,7 +440,7 @@ var onlineatlas = (function ($) {
 			// Create the year control within the form and an associated datalist
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
 			mapUi.yearDivId = 'year' + mapUi.index;
-			$('#' + mapUi.navDivId + ' form').append (' <input id="' + mapUi.yearDivId + '" type="range" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" /> ');
+			$('#' + mapUi.navDivId + ' form').append (' <input type="range" id="' + mapUi.yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="1" /> ');
 			$('#' + mapUi.navDivId + ' form').append (datalistHtml);
 			
 			// Build radiobutton and select list options; both are created up-front, and the relevant one hidden according when changing to/from side-by-side mode
