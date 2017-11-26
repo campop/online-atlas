@@ -65,6 +65,7 @@ var onlineatlas = (function ($) {
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
 		colourStops: [],		// Will be supplied
 		colourUnknown: 'gray',
+		intervalsMode: false,
 		
 		// Export mode enabled
 		export: true,
@@ -720,8 +721,10 @@ var onlineatlas = (function ($) {
 			// If the intervals is an array, i.e. standard list of colour stops, loop until found
 			if (intervals[0]) {		// Simple, quick check
 				
-				// Compare as float
-				value = parseFloat (value);
+				// Compare as float, except in intervals mode
+				if (!_settings.intervalsMode) {
+					value = parseFloat (value);
+				}
 				
 				// Last interval
 				var lastInterval = intervals.length - 1;
@@ -735,34 +738,42 @@ var onlineatlas = (function ($) {
 					interval = intervals[i];
 					colourStop = _settings.colourStops[i];
 					
-					// Exact value, e.g. '0'
-					matches = interval.match (/^([.0-9]+)$/);
-					if (matches) {
-						if (value == parseFloat(matches[1])) {
+					// In intervals mode, match exact value
+					if (_settings.intervalsMode) {
+						if (value == interval) {
 							return colourStop;
 						}
-					}
-					
-					// Range, e.g. '5-10'
-					matches = interval.match (/^([.0-9]+)-([.0-9]+)$/);
-					if (matches) {
-						if ((value >= parseFloat(matches[1])) && (value < parseFloat(matches[2]))) {	// 10 treated as matching in 10-20, not 5-10
-							return colourStop;
-						}
+					} else {
 						
-						// Deal with last, where (e.g.) 90-100 is implied to include 100
-						if (i == lastInterval) {
-							if (value == parseFloat(matches[2])) {
+						// Exact value, e.g. '0'
+						matches = interval.match (/^([.0-9]+)$/);
+						if (matches) {
+							if (value == parseFloat(matches[1])) {
 								return colourStop;
 							}
 						}
-					}
-					
-					// Excess value, e.g. '100+'
-					matches = interval.match (/^([.0-9]+)\+$/);
-					if (matches) {
-						if (value >= parseFloat(matches[1])) {
-							return colourStop;
+						
+						// Range, e.g. '5-10'
+						matches = interval.match (/^([.0-9]+)-([.0-9]+)$/);
+						if (matches) {
+							if ((value >= parseFloat(matches[1])) && (value < parseFloat(matches[2]))) {	// 10 treated as matching in 10-20, not 5-10
+								return colourStop;
+							}
+							
+							// Deal with last, where (e.g.) 90-100 is implied to include 100
+							if (i == lastInterval) {
+								if (value == parseFloat(matches[2])) {
+									return colourStop;
+								}
+							}
+						}
+						
+						// Excess value, e.g. '100+'
+						matches = interval.match (/^([.0-9]+)\+$/);
+						if (matches) {
+							if (value >= parseFloat(matches[1])) {
+								return colourStop;
+							}
 						}
 					}
 				}

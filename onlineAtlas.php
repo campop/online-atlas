@@ -38,6 +38,7 @@ class onlineAtlas extends frontControllerApplication
 			'div' => false,
 			'firstRunMessageHtml' => false,
 			'defaultField' => NULL,
+			'intervalsMode' => false,
 			'fields' => array (
 				// NB General fields (general=true), several of which are likely to be present, are: REGCNTY, REGDIST, SUBDIST, year
 				'year' => array (
@@ -250,6 +251,7 @@ class onlineAtlas extends frontControllerApplication
 					defaultField: \'' . $this->settings['defaultField'] . '\',
 					fields: ' . json_encode ($this->settings['fields'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ',
 					colourStops: ' . json_encode ($this->settings['colourStops']) . ',
+					intervalsMode: ' . ($this->settings['intervalsMode'] ? 'true' : 'false') . ',
 					export: ' . ($this->settings['downloadFilenameBase'] ? 'true' : 'false') . ',
 					firstRunMessageHtml: \'' . $this->settings['firstRunMessageHtml'] . '\'
 				}
@@ -580,6 +582,11 @@ class onlineAtlas extends frontControllerApplication
 			}
 		}
 		
+		# If required, convert exact values to intervals
+		if ($this->settings['intervalsMode']) {
+			$data = $this->convertToIntervals ($data, $fields);
+		}
+		
 		# Convert to GeoJSON
 		require_once ('geojsonRenderer.class.php');
 		$geojsonRenderer = new geojsonRenderer ();
@@ -597,6 +604,72 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Return the data
 		return $data;
+	}
+	
+	
+	# Function to quantize a value to an interval, e.g. "2.3" with ranges "1-3, 3-5, 5-7" would become "3-5"
+	private function convertToIntervals ($data)
+	{
+		# Determine fields to quantize and their ranges
+		$quantizeFields = array ();
+		foreach ($this->settings['fields'] as $fieldId => $field) {
+			if ($field['intervals']) {
+				if (is_string ($field['intervals'])) {	// Array type has its own colour set, defined associatively, so only string type needs to be checked
+					$quantizeFields[$fieldId] = preg_split ('/,\s*/', $field['intervals']);	// Split by comma/comma-whitespace
+				}
+			}
+		}
+		
+		# Quantize to an interval for the specified field(s)
+		foreach ($data as $id => $location) {
+			foreach ($quantizeFields as $field => $intervals) {
+				$data[$id][$field] = $this->getInterval ($data[$id][$field], $intervals);
+			}
+		}
+		
+		# Return the modified dataset
+		return $data;
+	}
+	
+	
+	# Function to determine the interval; this is the server-side equivalent of the getColour algorithm in the javascript (but returning an interval, not the colour itself)
+	private function getInterval ($value, $intervals)
+	{
+		# Loop through to find the correct range
+		$lastInterval = count ($intervals) - 1;
+		foreach ($intervals as $index => $interval) {
+			
+			// Exact value, e.g. '0'
+			if (preg_match ('/^([.0-9]+)$/', $interval, $matches)) {
+				if ($value == $matches[1]) {
+					return $interval;
+				}
+			}
+			
+			// Range, e.g. '5-10'
+			if (preg_match ('/^([.0-9]+)-([.0-9]+)$/', $interval, $matches)) {
+				if (($value >= $matches[1]) && ($value < $matches[2])) {	// 10 treated as matching in 10-20, not 5-10
+					return $interval;
+				}
+				
+				// Deal with last, where (e.g.) 90-100 is implied to include 100
+				if ($index == $lastInterval) {
+					if ($value == $matches[2]) {
+						return $interval;
+					}
+				}
+			}
+			
+			// Excess value, e.g. '100+'
+			if (preg_match ('/^([.0-9]+)\+$/', $interval, $matches)) {
+				if ($value >= $matches[1]) {
+					return $interval;
+				}
+			}
+		}
+		
+		// Unknown/other, if other checks have not matched
+		return NULL;	// Unmatched value
 	}
 	
 	
