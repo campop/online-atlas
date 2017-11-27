@@ -538,7 +538,10 @@ class onlineAtlas extends frontControllerApplication
 		}
 		$orderBy = $fields;		// Set order-by to the main fields defined
 		$fields[] = $field;
-		if (!$export) {
+		if ($export) {
+			$fields[] = 'Y(ST_Centroid(geometry)) AS latitude';
+			$fields[] = 'X(ST_Centroid(geometry)) AS longitude';
+		} else {
 			$fields[] = 'ST_AsText(geometry) AS geometry';
 		}
 		$fields = implode (', ', $fields);
