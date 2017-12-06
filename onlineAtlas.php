@@ -568,23 +568,12 @@ class onlineAtlas extends frontControllerApplication
 		# Get the data
 		$data = $this->databaseConnection->getData ($query);
 		
-		# Determine fields that are DECIMAL so that trailing zeros are removed; also format to 2dp
-		#!# Ideally the trailing zeroes handling should be handled natively by the database library
-		$fields = $this->databaseConnection->getFields ($this->settings['database'], 'data');
-		foreach ($fields as $field => $attributes) {
-			if (substr_count (strtolower ($attributes['Type']), 'decimal')) {
-				foreach ($data as $index => $record) {
-					if (isSet ($data[$index][$field])) {
-						$data[$index][$field] = number_format ($data[$index][$field], 2, '.', '');
-						$data[$index][$field] = floatval ($data[$index][$field]);
-					}
-				}
-			}
-		}
+		# Format decimal fields, handling conversion to 2 decimal places, and removing trailing zeroes
+		$data = $this->formatDecimalFields ($data, $decimalPlaces = 2);
 		
 		# If required, convert exact values to intervals
 		if ($this->settings['intervalsMode']) {
-			$data = $this->convertToIntervals ($data, $fields);
+			$data = $this->convertToIntervals ($data);
 		}
 		
 		# Convert to GeoJSON
@@ -600,6 +589,36 @@ class onlineAtlas extends frontControllerApplication
 		# Simplify the lines to reduce data volume
 		if ($zoomedOut) {
 			$data = $this->simplifyLines ($data);
+		}
+		
+		# Return the data
+		return $data;
+	}
+	
+	
+	# Function to format numbers, handling conversion to 2 decimal places, and removing trailing zeroes
+	private function formatDecimalFields ($data, $decimalPlaces)
+	{
+		# Determine fields that are DECIMAL
+		$fields = $this->databaseConnection->getFields ($this->settings['database'], 'data');
+		$decimalFields = array ();
+		foreach ($fields as $field => $attributes) {
+			if (substr_count (strtolower ($attributes['Type']), 'decimal')) {
+				$decimalFields[] = $field;
+			}
+		}
+		
+		# Convert to decimal for supported fields
+		foreach ($data as $index => $record) {
+			foreach ($decimalFields as $field) {
+				if (isSet ($data[$index][$field])) {
+					
+					# Format numbers to specified decimal places, removing trailing zeroes
+					#!# Ideally the trailing zeroes handling would be handled natively by the database library
+					$data[$index][$field] = number_format ($data[$index][$field], $decimalPlaces, '.', '');
+					$data[$index][$field] = floatval ($data[$index][$field]);
+				}
+			}
 		}
 		
 		# Return the data
