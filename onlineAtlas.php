@@ -6,7 +6,7 @@ require_once ('frontControllerApplication.php');
 class onlineAtlas extends frontControllerApplication
 {
 	# Class properties
-	private $availableGeneralFields = array ('REGCNTY', 'REGDIST', 'SUBDIST', 'year');	// Specified in sort order for export
+	private $availableGeneralFields = array ('REGCNTY', 'REGDIST', 'SUBDIST', 'PARISH', 'year');	// Specified in sort order for export
 	
 	# Function to assign defaults additional to the general application defaults
 	public function defaults ()
