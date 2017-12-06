@@ -388,8 +388,10 @@ class onlineAtlas extends frontControllerApplication
 			return false;
 		}
 		
+		# Truncate the table for the first file; requires the DROP privilege
+		$this->databaseConnection->truncate ($this->settings['database'], $this->settings['table']);
+		
 		# Loop through each file
-		$i = 0;
 		foreach ($exportFiles as $dataset => $file) {
 			
 			# Extract the year
@@ -421,12 +423,8 @@ class onlineAtlas extends frontControllerApplication
 			array_map ('unlink', glob ("{$tempDir}/*.*"));	// http://php.net/unlink#109971
 			rmdir ($tempDir);
 			
-			# Determine whether to truncate
-			$truncate = ($i == 0);
-			$i++;
-			
 			# Import the GeoJSON contents into the database
-			$this->importGeojson ($geojson, $year, $truncate);
+			$this->importGeojson ($geojson, $year);
 			
 			# Remove the GeoJSON file after use
 			unlink ($geojson);
@@ -438,13 +436,8 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Function to import contents of a GeoJSON file into the database
-	private function importGeojson ($geojsonFilename, $year, $truncate)
+	private function importGeojson ($geojsonFilename, $year)
 	{
-		# Truncate the table for the first file; requires the DROP privilege
-		if ($truncate) {
-			$this->databaseConnection->truncate ($this->settings['database'], $this->settings['table']);
-		}
-		
 		# Read the file and decode to GeoJSON
 		$string = file_get_contents ($geojsonFilename);
 		$geojson = json_decode ($string, true);
