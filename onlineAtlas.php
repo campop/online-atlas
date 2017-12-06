@@ -575,7 +575,7 @@ class onlineAtlas extends frontControllerApplication
 			if (substr_count (strtolower ($attributes['Type']), 'decimal')) {
 				foreach ($data as $index => $record) {
 					if (isSet ($data[$index][$field])) {
-						$data[$index][$field] = number_format ($data[$index][$field], 2);
+						$data[$index][$field] = number_format ($data[$index][$field], 2, '.', '');
 						$data[$index][$field] = floatval ($data[$index][$field]);
 					}
 				}
