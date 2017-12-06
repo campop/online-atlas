@@ -135,7 +135,8 @@ class onlineAtlas extends frontControllerApplication
 			  
 			  {$specificFields}
 			  
-			  `geometry` GEOMETRY NOT NULL COMMENT 'Geometry'
+			  `geometry` GEOMETRY NOT NULL COMMENT 'Geometry',
+			  INDEX(`year`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Data';
 		";
 		
