@@ -39,6 +39,8 @@ class onlineAtlas extends frontControllerApplication
 			'firstRunMessageHtml' => false,
 			'defaultField' => NULL,
 			'intervalsMode' => false,
+			'valueUnknown' => false,	// For all decimal fields, special value which represents unknown data
+			'valueUnknownString' => 'Unknown',
 			'fields' => array (
 				// NB General fields (general=true), several of which are likely to be present, are: REGCNTY, REGDIST, SUBDIST, year
 				'year' => array (
@@ -253,6 +255,7 @@ class onlineAtlas extends frontControllerApplication
 					fields: ' . json_encode ($this->settings['fields'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ',
 					colourStops: ' . json_encode ($this->settings['colourStops']) . ',
 					intervalsMode: ' . ($this->settings['intervalsMode'] ? 'true' : 'false') . ',
+					valueUnknownString: ' . ($this->settings['valueUnknownString'] ? "'{$this->settings['valueUnknownString']}'" : 'false') . ',
 					export: ' . ($this->settings['downloadFilenameBase'] ? 'true' : 'false') . ',
 					firstRunMessageHtml: \'' . $this->settings['firstRunMessageHtml'] . '\'
 				}
@@ -568,7 +571,7 @@ class onlineAtlas extends frontControllerApplication
 		# Get the data
 		$data = $this->databaseConnection->getData ($query);
 		
-		# Format decimal fields, handling conversion to 2 decimal places, and removing trailing zeroes
+		# Format decimal fields, handling explicitly unknown values, conversion to 2 decimal places, and removing trailing zeroes
 		$data = $this->formatDecimalFields ($data, $decimalPlaces = 2);
 		
 		# If required, convert exact values to intervals
@@ -596,7 +599,7 @@ class onlineAtlas extends frontControllerApplication
 	}
 	
 	
-	# Function to format numbers, handling conversion to 2 decimal places, and removing trailing zeroes
+	# Function to format numbers, handling explicitly unknown values, conversion to 2 decimal places, and removing trailing zeroes
 	private function formatDecimalFields ($data, $decimalPlaces)
 	{
 		# Determine fields that are DECIMAL
@@ -612,6 +615,14 @@ class onlineAtlas extends frontControllerApplication
 		foreach ($data as $index => $record) {
 			foreach ($decimalFields as $field) {
 				if (isSet ($data[$index][$field])) {
+					
+					# Convert explicitly unknown values to the string symbol
+					if ($this->settings['valueUnknown']) {
+						if (floatval ($data[$index][$field]) == $this->settings['valueUnknown']) {
+							$data[$index][$field] = $this->settings['valueUnknownString'];
+						}
+						continue;
+					}
 					
 					# Format numbers to specified decimal places, removing trailing zeroes
 					#!# Ideally the trailing zeroes handling would be handled natively by the database library
@@ -654,6 +665,9 @@ class onlineAtlas extends frontControllerApplication
 	# Function to determine the interval; this is the server-side equivalent of the getColour algorithm in the javascript (but returning an interval, not the colour itself)
 	private function getInterval ($value, $intervals)
 	{
+		# Return non-numeric values unmodified
+		if (!is_numeric ($value)) {return $value;}
+		
 		# Loop through to find the correct range
 		$lastInterval = count ($intervals) - 1;
 		foreach ($intervals as $index => $interval) {

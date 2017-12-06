@@ -65,6 +65,7 @@ var onlineatlas = (function ($) {
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
 		colourStops: [],		// Will be supplied
 		colourUnknown: 'gray',
+		valueUnknownString: false,	// Will be supplied
 		intervalsMode: false,
 		
 		// Export mode enabled
@@ -737,6 +738,13 @@ var onlineatlas = (function ($) {
 				for (i = 0; i < intervals.length; i++) {
 					interval = intervals[i];
 					colourStop = _settings.colourStops[i];
+					
+					// Check for the value being explicitly unknown
+					if (_settings.valueUnknownString) {
+						if (value == _settings.valueUnknownString) {
+							return _settings.colourUnknown;
+						}
+					}
 					
 					// In intervals mode, match exact value
 					if (_settings.intervalsMode) {
