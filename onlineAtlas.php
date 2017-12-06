@@ -389,7 +389,10 @@ class onlineAtlas extends frontControllerApplication
 		}
 		
 		# Truncate the table for the first file; requires the DROP privilege
-		$this->databaseConnection->truncate ($this->settings['database'], $this->settings['table']);
+		if (!$this->databaseConnection->truncate ($this->settings['database'], $this->settings['table'])) {
+			$html = "\n<p class=\"warning\">ERROR: truncation of old data failed.</p>";
+			return false;
+		}
 		
 		# Loop through each file
 		foreach ($exportFiles as $dataset => $file) {
