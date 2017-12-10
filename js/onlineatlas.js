@@ -22,6 +22,9 @@ var onlineatlas = (function ($) {
 			zoom: 7
 		},
 		
+		// Max zoom
+		maxZoom: 13,
+		
 		// Max bounds
 		maxBounds: [[47, -14], [60, 7]],	// South, West ; East, North
 		
@@ -304,6 +307,7 @@ var onlineatlas = (function ($) {
 				center: [defaultLocation.latitude, defaultLocation.longitude],
 				zoom: defaultLocation.zoom,
 				layers: baseLayersById[defaultTileLayer],	// Documentation suggests tileLayers is all that is needed, but that shows all together
+				maxZoom: _settings.maxZoom,
 				maxBounds: _settings.maxBounds
 			}).setActiveArea('activearea');
 			
