@@ -26,6 +26,8 @@ class onlineAtlas extends frontControllerApplication
 			'geocoderApiKey' => NULL,
 			// 'importsSectionsMode' => true,
 			'datasets' => NULL,	// Must supply an array of datasets
+			'closeDatasets' => array (),
+			'closeName' => false,
 			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down
 			'apiUsername' => true,
 			'apiJsonPretty' => false,
@@ -134,11 +136,13 @@ class onlineAtlas extends frontControllerApplication
 			CREATE TABLE `data` (
 			  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Automatic key' PRIMARY KEY,
 			  `year` INT(4) NOT NULL COMMENT 'Year',
+			  " . ($this->settings['closeDatasets'] ? "`close` INT(1) NULL COMMENT 'Close'," : '') . "
 			  
 			  {$specificFields}
 			  
 			  `geometry` GEOMETRY NOT NULL COMMENT 'Geometry',
 			  INDEX(`year`)
+			  " . ($this->settings['closeDatasets'] ? ", INDEX(`close`)" : '') . "
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Data';
 		";
 		
@@ -354,9 +358,18 @@ class onlineAtlas extends frontControllerApplication
 			'full' => 'Full import'
 		);
 		
+		# If there are datasets for close in, merge those in
+		$datasets = $this->settings['datasets'];
+		if ($this->settings['closeDatasets']) {
+			foreach ($this->settings['closeDatasets'] as $dataset) {
+				$datasets[] = $dataset . $this->settings['closeName'];
+			}
+			natsort ($datasets);
+		}
+		
 		# Create the list of import files
 		$importFiles = array ();
-		foreach ($this->settings['datasets'] as $dataset) {
+		foreach ($datasets as $dataset) {
 			$importFiles[] = sprintf ('dataset_%s', $dataset);
 		}
 		
@@ -400,6 +413,15 @@ class onlineAtlas extends frontControllerApplication
 		# Loop through each file
 		foreach ($exportFiles as $dataset => $file) {
 			
+			# If support for close datasets is enabled, extract from the filename
+			$close = false;
+			if ($this->settings['closeDatasets']) {
+				if (preg_match ("/^(.+)({$this->settings['closeName']})$/", $dataset, $matches)) {
+					$close = true;
+					$dataset = $matches[1];
+				}
+			}
+			
 			# Extract the year
 			preg_match ('/([0-9]{4})/', $dataset, $matches);
 			$year = $matches[1];
@@ -430,7 +452,7 @@ class onlineAtlas extends frontControllerApplication
 			rmdir ($tempDir);
 			
 			# Import the GeoJSON contents into the database
-			$this->importGeojson ($geojson, $year);
+			$this->importGeojson ($geojson, $year, $close);
 			
 			# Remove the GeoJSON file after use
 			unlink ($geojson);
@@ -442,7 +464,7 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Function to import contents of a GeoJSON file into the database
-	private function importGeojson ($geojsonFilename, $year)
+	private function importGeojson ($geojsonFilename, $year, $close)
 	{
 		# Read the file and decode to GeoJSON
 		$string = file_get_contents ($geojsonFilename);
@@ -473,6 +495,11 @@ class onlineAtlas extends frontControllerApplication
 			
 			# Add the properties
 			$insert += $properties;
+			
+			# If support for close datasets is enabled, set the value
+			if ($this->settings['closeDatasets']) {
+				$insert['close'] = ($close ? 1 : NULL);
+			}
 			
 			# Add the geometry
 			$insert['geometry'] = "GeomFromText('" . geojson2spatial::geojsonGeometry2wkt ($feature['geometry']) . "')";
