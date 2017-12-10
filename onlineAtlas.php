@@ -28,6 +28,7 @@ class onlineAtlas extends frontControllerApplication
 			'datasets' => NULL,	// Must supply an array of datasets
 			'closeDatasets' => array (),
 			'closeName' => false,
+			'closeZoom' => false,
 			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down
 			'apiUsername' => true,
 			'apiJsonPretty' => false,
@@ -576,6 +577,16 @@ class onlineAtlas extends frontControllerApplication
 		# In export mode, order the data
 		$orderBySql = ($export && $orderBy ? 'ORDER BY ' . implode (',', $orderBy) : '');
 		
+		# Support close datasets for GeoJSON output; CSV export always gets the main dataset
+		$closeSql = '';
+		if (!$export) {
+			if ($this->settings['closeDatasets']) {
+				if (in_array ($year, $this->settings['closeDatasets'])) {
+					$closeSql = 'AND close ' . ($zoom >= $this->settings['closeZoom'] ? '= 1' : 'IS NULL');
+				}
+			}
+		}
+		
 		# Construct the query
 		$query = "
 			SELECT
@@ -584,6 +595,7 @@ class onlineAtlas extends frontControllerApplication
 			WHERE
 				MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
 				AND year = {$year}
+				{$closeSql}
 			{$orderBySql}
 		;";
 		
