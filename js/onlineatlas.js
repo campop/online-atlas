@@ -71,6 +71,9 @@ var onlineatlas = (function ($) {
 		valueUnknownString: false,	// Will be supplied
 		intervalsMode: false,
 		
+		// Zoomed out mode
+		zoomedOut: false,
+		
 		// Export mode enabled
 		export: true,
 		
