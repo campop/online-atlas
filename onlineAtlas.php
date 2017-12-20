@@ -723,7 +723,9 @@ class onlineAtlas extends frontControllerApplication
 		# Quantize to an interval for the specified field(s)
 		foreach ($data as $id => $location) {
 			foreach ($quantizeFields as $field => $intervals) {
-				$data[$id][$field] = $this->getInterval ($data[$id][$field], $intervals);
+				if (array_key_exists ($field, $data[$id])) {
+					$data[$id][$field] = $this->getInterval ($data[$id][$field], $intervals);
+				}
 			}
 		}
 		
