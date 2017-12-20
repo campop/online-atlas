@@ -261,6 +261,7 @@ class onlineAtlas extends frontControllerApplication
 				var config = {
 					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
 					zoomedOut: ' . ($this->settings['zoomedOut'] ? $this->settings['zoomedOut'] : 'false') . ',
+					closeZoom: ' . ($this->settings['closeZoom'] ? $this->settings['closeZoom'] : 'false') . ',
 					datasets: ' . json_encode ($this->settings['datasets']) . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
 					fields: ' . json_encode ($this->settings['fields'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ',

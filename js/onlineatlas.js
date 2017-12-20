@@ -74,6 +74,9 @@ var onlineatlas = (function ($) {
 		// Zoomed out mode
 		zoomedOut: false,
 		
+		// Close zoom mode
+		closeZoom: false,
+		
 		// Export mode enabled
 		export: true,
 		
@@ -241,7 +244,7 @@ var onlineatlas = (function ($) {
 			// Register an summary box control
 			onlineatlas.summaryControl (mapUi);
 			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
-				mapUi.summary.update (mapUi.field, null);
+				mapUi.summary.update (mapUi.field, null, mapUi.currentZoom);
 			});
 			
 			// Add the data via AJAX requests
@@ -676,7 +679,7 @@ var onlineatlas = (function ($) {
 							}
 							
 							// Update the summary box
-							mapUi.summary.update (mapUi.field, thisLayer.feature);
+							mapUi.summary.update (mapUi.field, thisLayer.feature, mapUi.currentZoom);
 						},
 						
 						// Reset highlighting
@@ -687,7 +690,7 @@ var onlineatlas = (function ($) {
 							mapUi.dataLayer.resetStyle (e.target);
 							
 							// Update the summary box
-							mapUi.summary.update (mapUi.field, null);
+							mapUi.summary.update (mapUi.field, null, mapUi.currentZoom);
 						}
 					});
 					
@@ -866,10 +869,18 @@ var onlineatlas = (function ($) {
 		
 		
 		// Function to define summary box content
-		summaryHtml: function (field, feature)
+		summaryHtml: function (field, feature, currentZoom)
 		{
+			// Determine the field to use, and a suffix
+			var geographicField = 'SUBDIST';
+			if (_settings.closeZoom) {
+				if (currentZoom >= _settings.closeZoom) {
+					geographicField = 'PARISH';		// #!# Currently hard-coded
+				}
+			}
+			
 			// Assemble the HTML
-			var html = '<p>' + onlineatlas.htmlspecialchars (feature.properties.SUBDIST) + ', in ' + feature.properties.year + ': <strong>' + feature.properties[field] + '</strong></p>';
+			var html = '<p>' + onlineatlas.htmlspecialchars (feature.properties[geographicField]) + ', in ' + feature.properties.year + ': <strong>' + feature.properties[field] + '</strong></p>';
 			
 			// Return the HTML
 			return html;
@@ -935,15 +946,15 @@ var onlineatlas = (function ($) {
 			var map = mapUi.map;
 			mapUi.summary.onAdd = function () {
 			    this._div = L.DomUtil.create('div', 'info summary'); // create a div with a classes 'info' and 'summary'
-			    this.update(mapUi.field, null);
+			    this.update(mapUi.field, null, mapUi.currentZoom);
 			    return this._div;
 			};
 			
 			// Register a method to update the control based on feature properties passed
-			mapUi.summary.update = function (field, feature) {
+			mapUi.summary.update = function (field, feature, currentZoom) {
 				var html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + '</h4>';
 				html += (feature ?
-					onlineatlas.summaryHtml (field, feature)
+					onlineatlas.summaryHtml (field, feature, currentZoom)
 					: 'Hover over an area to view details.');
 				this._div.innerHTML = html;
 			};
