@@ -29,7 +29,7 @@ class onlineAtlas extends frontControllerApplication
 			'closeDatasets' => array (),
 			'closeName' => false,
 			'closeZoom' => false,
-			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down
+			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down, or false to disable
 			'apiUsername' => true,
 			'apiJsonPretty' => false,
 			'downloadFilenameBase' => 'onlineatlas',	// Or false to disable
@@ -256,7 +256,7 @@ class onlineAtlas extends frontControllerApplication
 				
 				var config = {
 					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
-					zoomedOut: ' . $this->settings['zoomedOut'] . ',
+					zoomedOut: ' . ($this->settings['zoomedOut'] ? $this->settings['zoomedOut'] : 'false') . ',
 					datasets: ' . json_encode ($this->settings['datasets']) . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
 					fields: ' . json_encode ($this->settings['fields'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ',
@@ -540,7 +540,7 @@ class onlineAtlas extends frontControllerApplication
 		if (!$zoom) {
 			return array ('error' => 'A valid zoom must be supplied.');
 		}
-		$zoomedOut = ($zoom <= $this->settings['zoomedOut']);
+		$zoomedOut = ($this->settings['zoomedOut'] ? ($zoom <= $this->settings['zoomedOut']) : false);
 		
 		# Obtain the supplied year
 		$year = (isSet ($_GET['year']) && ctype_digit ($_GET['year']) ? $_GET['year'] : false);

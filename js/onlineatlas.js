@@ -319,21 +319,23 @@ var onlineatlas = (function ($) {
 			
 			// Set the zoom and determine whether the map is zoomed out too far, and set the mouse cursor
 			mapUi.currentZoom = map.getZoom();
-			mapUi.zoomedOut = (_settings.defaultZoom <= _settings.zoomedOut);
+			mapUi.zoomedOut = (_settings.zoomedOut ? (_settings.defaultZoom <= _settings.zoomedOut) : false);
 			map.on('zoomend', function() {
 				mapUi.currentZoom = map.getZoom();
-				mapUi.zoomedOut = (mapUi.currentZoom <= _settings.zoomedOut);
+				mapUi.zoomedOut = (_settings.zoomedOut ? (mapUi.currentZoom <= _settings.zoomedOut) : false);
 			});
 			
 			// Set mouse cursor based on zoom status
 			$('#map').css('cursor', (mapUi.zoomedOut ? 'zoom-in' : 'auto'));
 			
-			// Zoom in on single click if zoomed out
-			 map.on ('click', function (e) {
-				if (mapUi.zoomedOut) {
-					map.setZoomAround (e.latlng, (_settings.zoomedOut + 1));
-				}
-			});
+			// Zoom in on single click if zoomed out, if enabled
+			if (_settings.zoomedOut) {
+				map.on ('click', function (e) {
+					if (mapUi.zoomedOut) {
+						map.setZoomAround (e.latlng, (_settings.zoomedOut + 1));
+					}
+				});
+			}
 			
 			// Add the base (background) layer switcher
 			L.control.layers(baseLayers, null, {position: 'bottomright'}).addTo(map);
