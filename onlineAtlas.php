@@ -29,6 +29,7 @@ class onlineAtlas extends frontControllerApplication
 			'closeDatasets' => array (),
 			'closeName' => false,
 			'closeZoom' => false,
+			'closeModeSimplifyFar' => false,
 			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down, or false to disable
 			'apiUsername' => true,
 			'apiJsonPretty' => false,
@@ -442,10 +443,21 @@ class onlineAtlas extends frontControllerApplication
 			exec ($command, $output);
 			// application::dumpData ($output);
 			
+			# In close mode, simplify far-out items if required
+			#!# This should be moved to the API output stage when ST_Simplify is available
+			$simplify = '';
+			if ($this->settings['closeDatasets']) {
+				if ($this->settings['closeModeSimplifyFar']) {
+					if (!$close) {
+						$simplify = '-simplify ' . $this->settings['closeModeSimplifyFar'];
+					}
+				}
+			}
+			
 			# Convert to GeoJSON
 			$currentDirectory = getcwd ();
 			chdir ($tempDir);
-			$command = "ogr2ogr -f GeoJSON -lco COORDINATE_PRECISION=4 -t_srs EPSG:4326 {$geojson} *.shp";	// E.g.: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 1911.geojson RSD_1911.shp
+			$command = "ogr2ogr -f GeoJSON -lco COORDINATE_PRECISION=4 -t_srs EPSG:4326 {$simplify} {$geojson} *.shp";	// E.g.: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 1911.geojson RSD_1911.shp
 			exec ($command, $output);
 			// application::dumpData ($output);
 			chdir ($currentDirectory);	// Change back
@@ -634,6 +646,7 @@ class onlineAtlas extends frontControllerApplication
 		$data = $geojsonRenderer->getData ();
 		
 		# Simplify the lines to reduce data volume
+		#!# This should really be done before the GeoJSON stage (and closeModeSimplifyFar removed/modified), as geojsonRenderer::unpackPointsCSV function is very memory-intensive; though ultimately, ST_Simplify would avoid large amounts of data entirely
 		if ($zoomedOut) {
 			$data = $this->simplifyLines ($data);
 		}
