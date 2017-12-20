@@ -529,6 +529,9 @@ class onlineAtlas extends frontControllerApplication
 	# API call to retrieve data
 	public function apiCall_locations ($export = false)
 	{
+		# Start a timer
+		$timeStart = microtime (true);
+		
 		# Obtain the supplied BBOX (W,S,E,N)
 		$bbox = (isSet ($_GET['bbox']) && (substr_count ($_GET['bbox'], ',') == 3) && preg_match ('/^([-.,0-9]+)$/', $_GET['bbox']) ? explode (',', $_GET['bbox'], 4) : false);
 		if (!$bbox) {
@@ -634,6 +637,16 @@ class onlineAtlas extends frontControllerApplication
 		if ($zoomedOut) {
 			$data = $this->simplifyLines ($data);
 		}
+		
+		# Add timings in a top-level metadata field
+		$timeFinish = microtime (true);
+		$time = $timeFinish - $timeStart;
+		$metadata = array (
+			'properties' => array (
+				'time' => round ($time, 3),
+			)
+		);
+		$data = array_merge ($metadata, $data);
 		
 		# Return the data
 		return $data;
