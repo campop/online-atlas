@@ -231,10 +231,10 @@ class onlineAtlas extends frontControllerApplication
 			<script src="' . $this->baseUrl . '/js/lib/js-cookie/js.cookie.min.js"></script>
 			
 			<!-- Vex dialogs; see: http://github.hubspot.com/vex/ -->
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.0/js/vex.combined.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/js/vex.combined.min.js"></script>
 			<script>vex.defaultOptions.className = \'vex-theme-plain\'</script>
-			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.0/css/vex.min.css" />
-			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.0/css/vex-theme-plain.min.css" />
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex.min.css" />
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex-theme-plain.min.css" />
 			
 			<!-- Full screen control; see: https://github.com/Leaflet/Leaflet.fullscreen -->
 			<script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js"></script>
