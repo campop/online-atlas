@@ -67,7 +67,7 @@ var onlineatlas = (function ($) {
 		
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
 		colourStops: [],		// Will be supplied
-		colourUnknown: 'gray',
+		colourUnknown: '#c8c8c8',	// gray
 		valueUnknownString: false,	// Will be supplied
 		intervalsMode: false,
 		
