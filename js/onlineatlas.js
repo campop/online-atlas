@@ -699,6 +699,7 @@ var onlineatlas = (function ($) {
 				// NB this has to be inlined, and cannot be refactored to a 'setStyle' method, as the field is needed as a parameter
 				style: function (feature) {
 					return {
+						color: '#777',
 						fillColor: onlineatlas.getColour (feature.properties[mapUi.field], mapUi.field),
 						weight: (mapUi.zoomedOut ? 0 : 1),
 						fillOpacity: 0.7
