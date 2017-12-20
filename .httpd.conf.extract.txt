@@ -25,8 +25,8 @@
 	Use MacroFrontControllerApplication "$applicationBaseUrl/" "$name"
 	
 	# Application directives
-	RewriteRule ^$applicationBaseUrl/(about|funders|contacts|import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
-	RewriteRule ^$applicationBaseUrl/(about|funders|contacts|import)$ $applicationBaseUrl/$1/ [R]
+	RewriteRule ^$applicationBaseUrl/(about|acknowledgements|contacts|import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
+	RewriteRule ^$applicationBaseUrl/(about|acknowledgements|contacts|import)$ $applicationBaseUrl/$1/ [R]
 	RewriteRule ^$applicationBaseUrl/data.csv$ $applicationBaseUrl/index.html?action=export [L,QSA]
 	
 	<Location $applicationBaseUrl/>

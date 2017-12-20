@@ -92,10 +92,10 @@ class onlineAtlas extends frontControllerApplication
 				'url' => 'about/',
 				'tab' => 'About the Atlas',
 			),
-			'funders' => array (
+			'acknowledgements' => array (
 				'description' => false,
-				'url' => 'funders/',
-				'tab' => 'Funders',
+				'url' => 'acknowledgements/',
+				'tab' => 'Acknowledgements',
 			),
 			'contacts' => array (
 				'description' => false,
@@ -327,11 +327,11 @@ class onlineAtlas extends frontControllerApplication
 	}
 	
 	
-	# Funders page
-	public function funders ($path = false)
+	# Acknowledgements page
+	public function acknowledgements ($path = false)
 	{
 		# Load and show the HTML
-		$file = ($path ? $path : $this->applicationRoot) . '/funders.html';
+		$file = ($path ? $path : $this->applicationRoot) . '/acknowledgements.html';
 		$html = file_get_contents ($file);
 		
 		# Templatise
