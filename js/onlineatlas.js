@@ -824,7 +824,7 @@ var onlineatlas = (function ($) {
 		popupHtml: function (feature /*, dataset */)
 		{
 			// Determine list of areas present in the data, to be shown in the title in hierarchical order
-			var availableAreaFields = ['SUBDIST', 'REGDIST', 'REGCNTY'];	// More specific first, so that listing is e.g. "Kingston, Surrey, London"
+			var availableAreaFields = ['PARISH', 'SUBDIST', 'REGDIST', 'REGCNTY'];	// More specific first, so that listing is e.g. "Kingston, Surrey, London"
 			var areaHierarchy = [];
 			$.each (availableAreaFields, function (index, areaField) {
 				if (feature.properties[areaField]) {
