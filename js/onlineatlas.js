@@ -470,27 +470,52 @@ var onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form').append (' <input type="range" id="' + mapUi.yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="1" style="width: ' + sliderWidth + 'px; margin-left: ' + sliderMargin + 'px;" /> ');
 			$('#' + mapUi.navDivId + ' form').append (datalistHtml);
 			
+			// Group the fields
+			var fieldGroups = onlineatlas.groupFields (_settings.fields);
+			
 			// Build radiobutton and select list options; both are created up-front, and the relevant one hidden according when changing to/from side-by-side mode
 			var radiobuttonsHtml = '';
 			var selectHtml = '';
 			var fieldname;
-			$.each (_settings.fields, function (id, field) {
+			var heading;
+			var field;
+			$.each (fieldGroups, function (i, fieldGroup) {
 				
-				// Skip general fields, like year
-				if (field.general) {return /* i.e. continue */;}
+				// Determine the heading, if any
+				heading = (fieldGroup.name.match(/^_[0-9]+$/) ? false : fieldGroup.name);	// Virtual fields use _<number>, as per virtualGroupingIndex below
 				
-				// Construct the radiobutton list (for full mode)
-				fieldname = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (id);
-				radiobuttonsHtml += '<div title="' + onlineatlas.htmlspecialchars (field.description) + '">';
-				radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
-				radiobuttonsHtml += '<label for="' + fieldname + '">';
-				radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
-				radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#">[?]</a>';
-				radiobuttonsHtml += '</label>';
-				radiobuttonsHtml += '</div>';
+				// Add heading for this group if required
+				if (heading) {
+					radiobuttonsHtml += '<h4>' + onlineatlas.htmlspecialchars (heading) + ':</h4>';
+					selectHtml += '<optgroup label="' + onlineatlas.htmlspecialchars (heading) + ':">';
+				}
 				
-				// Select widget (for side-by-side mode)
-				selectHtml += '<option value="' + onlineatlas.htmlspecialchars (id) + '">' + onlineatlas.htmlspecialchars (field.label) + '</option>';
+				// Add each field
+				$.each (fieldGroup.fields, function (j, id) {
+					field = _settings.fields[id];
+					
+					// Skip general fields, like year
+					if (field.general) {return /* i.e. continue */;}
+					
+					// Construct the radiobutton list (for full mode)
+					fieldname = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (id);
+					radiobuttonsHtml += '<div title="' + onlineatlas.htmlspecialchars (field.description) + '">';
+					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
+					radiobuttonsHtml += '<label for="' + fieldname + '">';
+					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
+					radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#">[?]</a>';
+					radiobuttonsHtml += '</label>';
+					radiobuttonsHtml += '</div>';
+					
+					// Select widget (for side-by-side mode)
+					selectHtml += '<option value="' + onlineatlas.htmlspecialchars (id) + '">' + onlineatlas.htmlspecialchars (field.label) + '</option>';
+				});
+				
+				// End heading container for this group
+				if (heading) {
+					radiobuttonsHtml += '';
+					selectHtml += '</optgroup>';
+				}
 			});
 			
 			// Add a container for the radiobuttons
@@ -503,6 +528,39 @@ var onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Show:</h3>');
 			$('#' + mapUi.navDivId + ' form').append (radiobuttonsHtml);
 			$('#' + mapUi.navDivId + ' form').append (selectHtml);
+		},
+		
+		
+		// Function to create ordered group clusterings
+		groupFields: function (fields)
+		{
+			// Group fields, either by explicit grouping (which will have fold-out headings) or virtual grouping (which not have headings)
+			var groupings = {};
+			var grouping;
+			var virtualGroupingIndex = 0;
+			var orderingIndex = 0;
+			$.each (fields, function (id, field) {
+				if (field.grouping) {
+					grouping = field.grouping;
+				} else {
+					grouping = '_' + virtualGroupingIndex;	// E.g. _0, _1, etc.
+					virtualGroupingIndex++;
+				}
+				if (!groupings[grouping]) {		// Initialise container if not already present
+					groupings[grouping] = {ordering: orderingIndex, fields: []};
+					orderingIndex++;
+				}
+				groupings[grouping]['fields'].push (id);
+			});
+			
+			// Order the groupings
+			var fieldGroups = [];
+			$.each (groupings, function (name, grouping) {
+				fieldGroups[grouping.ordering] = {name: name, fields: grouping.fields};
+			});
+			
+			// Return the field groups
+			return fieldGroups;
 		},
 		
 		
