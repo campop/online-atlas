@@ -527,9 +527,14 @@ var onlineatlas = (function ($) {
 			// Assemble the select widget
 			selectHtml = '<select name="field">' + selectHtml + '</select>';
 			
+			// Create the year control within the form
+			$('#' + mapUi.navDivId + ' form').append ('<h3>Show:</h3>');
+			$('#' + mapUi.navDivId + ' form').append (radiobuttonsHtml);
+			$('#' + mapUi.navDivId + ' form').append (selectHtml);
+			
 			// Register a slide menu handler, if groupings are present
 			if (hasGroups) {
-				$('.mapcontainer nav form').on ('click', 'div.radiobuttons h4', function () {		// Delegated event, as elements are created dynamically
+				$('.mapcontainer nav form div.radiobuttons h4').click (function () {
 					
 					// Fold out menu
 					$(this).next('div').slideToggle();
@@ -542,11 +547,6 @@ var onlineatlas = (function ($) {
 					}
 				});
 			}
-			
-			// Create the year control within the form
-			$('#' + mapUi.navDivId + ' form').append ('<h3>Show:</h3>');
-			$('#' + mapUi.navDivId + ' form').append (radiobuttonsHtml);
-			$('#' + mapUi.navDivId + ' form').append (selectHtml);
 		},
 		
 		
