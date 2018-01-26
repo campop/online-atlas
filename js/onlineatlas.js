@@ -546,6 +546,12 @@ var onlineatlas = (function ($) {
 						$('i', this).css('transform', 'none');
 					}
 				});
+				
+				// Expand the heading for the default field if required
+				if (_settings.defaultField) {
+					var checkboxId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (_settings.defaultField);
+					$('#' + checkboxId).parent().parent().slideToggle();
+				}
 			}
 		},
 		
