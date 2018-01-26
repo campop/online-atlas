@@ -36,17 +36,20 @@ body .ui-front {z-index: 1000;}
 nav {position: absolute; right: 0; width: 330px; height: 100%; z-index: 1000; background-color: #333; opacity: 0.85; color: white;}
 .activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
 .leaflet-control-layers, .leaflet-control-attribution, .summary {right: 330px;}
-nav form { padding: 20px 10px 30px 15px;}
+nav form {padding: 20px 10px 30px 15px;}
 nav form h3 {margin: 10px 0 2px;}
 nav form a {color: white; text-decoration: none;}
 
 /* Controls */
 nav form div {padding-left: 3px; border-radius: 4px; width: 100%;}
-nav form div.radiobuttons div:hover {background-color: #666;}
+nav form div.radiobuttons div.field:hover {background-color: #666;}
 nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
 
-nav form div.radiobuttons {height: 550px; overflow-y: scroll; overflow-x: hidden;}
-nav form label {width: 240px;}
+/* Expandable menu */
+nav form div.radiobuttons {margin-top: 2em;}
+nav form div.radiobuttons .fieldgroup {display: none;}
+nav form div.radiobuttons h4 {margin-top: 1.2em; margin-bottom: 0.4em; cursor: pointer;}
+nav form div.radiobuttons h4 i {margin-left: 2px; transition-duration: 0.4s;}
 
 /* Year range */
 nav form input[type="range"] {/* width and margin-left calculated in js */}

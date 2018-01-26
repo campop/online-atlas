@@ -479,6 +479,7 @@ var onlineatlas = (function ($) {
 			var fieldname;
 			var heading;
 			var field;
+			var hasGroups = false;
 			$.each (fieldGroups, function (i, fieldGroup) {
 				
 				// Determine the heading, if any
@@ -486,8 +487,10 @@ var onlineatlas = (function ($) {
 				
 				// Add heading for this group if required
 				if (heading) {
-					radiobuttonsHtml += '<h4>' + onlineatlas.htmlspecialchars (heading) + ':</h4>';
+					radiobuttonsHtml += '<h4>' + onlineatlas.htmlspecialchars (heading) + ' <i class="fa fa-chevron-circle-right iconrotate"></i></h4>';
+					radiobuttonsHtml += '<div class="fieldgroup">';
 					selectHtml += '<optgroup label="' + onlineatlas.htmlspecialchars (heading) + ':">';
+					hasGroups = true;
 				}
 				
 				// Add each field
@@ -499,7 +502,7 @@ var onlineatlas = (function ($) {
 					
 					// Construct the radiobutton list (for full mode)
 					fieldname = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (id);
-					radiobuttonsHtml += '<div title="' + onlineatlas.htmlspecialchars (field.description) + '">';
+					radiobuttonsHtml += '<div class="field" title="' + onlineatlas.htmlspecialchars (field.description) + '">';
 					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
 					radiobuttonsHtml += '<label for="' + fieldname + '">';
 					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
@@ -513,7 +516,7 @@ var onlineatlas = (function ($) {
 				
 				// End heading container for this group
 				if (heading) {
-					radiobuttonsHtml += '';
+					radiobuttonsHtml += '</div>';	// .fieldgroup
 					selectHtml += '</optgroup>';
 				}
 			});
@@ -523,6 +526,22 @@ var onlineatlas = (function ($) {
 			
 			// Assemble the select widget
 			selectHtml = '<select name="field">' + selectHtml + '</select>';
+			
+			// Register a slide menu handler, if groupings are present
+			if (hasGroups) {
+				$('.mapcontainer nav form').on ('click', 'div.radiobuttons h4', function () {		// Delegated event, as elements are created dynamically
+					
+					// Fold out menu
+					$(this).next('div').slideToggle();
+					
+					// Rotate arrow
+					if ($('i', this).css('transform') == 'none') {
+						$('i', this).css('transform', 'rotate(90deg)');
+					} else {
+						$('i', this).css('transform', 'none');
+					}
+				});
+			}
 			
 			// Create the year control within the form
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Show:</h3>');
