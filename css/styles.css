@@ -71,7 +71,7 @@ p.export a:hover {text-decoration: none;}
 .summary {width: 300px;}
 
 /* More details box */
-a.moredetails {color: gray; font-size: 0.83em;}
+a.moredetails {color: white; background-color: #111; font-size: 0.83em; border-radius: 5px; padding: 2px;}
 #aboutfields {display: none;}
 .vex.vex-theme-plain.wider .vex-content {width: 75%; padding: 25px; min-height: 300px;}
 #moredetailsboxcontent {max-height: 500px; overflow-y: scroll;}

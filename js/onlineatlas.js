@@ -506,7 +506,7 @@ var onlineatlas = (function ($) {
 					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
 					radiobuttonsHtml += '<label for="' + fieldname + '">';
 					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
-					radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#">[?]</a>';
+					radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#">(?)</a>';
 					radiobuttonsHtml += '</label>';
 					radiobuttonsHtml += '</div>';
 					
