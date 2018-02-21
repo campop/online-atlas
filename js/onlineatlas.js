@@ -534,7 +534,7 @@ var onlineatlas = (function ($) {
 			
 			// Register a slide menu handler, if groupings are present
 			if (hasGroups) {
-				$('.mapcontainer nav form div.radiobuttons h4').click (function () {
+				$('.mapcontainer nav form div.radiobuttons h4').click (function (event) {
 					
 					// Fold out menu
 					$(this).next('div').slideToggle();
@@ -545,6 +545,9 @@ var onlineatlas = (function ($) {
 					} else {
 						$('i', this).css('transform', 'none');
 					}
+					
+					// Firefox: Prevent closing straight after opening; not sure why this is needed
+					event.preventDefault();
 				});
 				
 				// Expand the heading for the default field if required
