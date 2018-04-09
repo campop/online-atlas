@@ -222,7 +222,8 @@ class onlineAtlas extends frontControllerApplication
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/geocoder/geocoder.js"></script>
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-fullHash/leaflet-fullHash.js"></script>
+			<!--<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-fullHash/leaflet-fullHash.js"></script>-->
+			<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-hash/0.2.1/leaflet-hash.min.js"></script>
 			
 			<!-- Leaflet-active-area; see: https://github.com/Mappy/Leaflet-active-area -->
 			<script src="' . $this->baseUrl . '/js/lib/Leaflet-active-area/src/leaflet.activearea.js" charset="utf-8"></script>
