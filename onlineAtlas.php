@@ -34,6 +34,7 @@ class onlineAtlas extends frontControllerApplication
 			'apiUsername' => true,
 			'apiJsonPretty' => false,
 			'downloadFilenameBase' => 'onlineatlas',	// Or false to disable
+			'downloadInitialNotice' => false,
 			'useTemplating' => true,
 			'bodyClass' => '',
 			'disableTabs' => true,
@@ -630,7 +631,7 @@ class onlineAtlas extends frontControllerApplication
 		if ($export) {
 			$headings = $this->databaseConnection->getHeadings ($this->settings['database'], $this->settings['table']);
 			$filenameBase = "{$this->settings['downloadFilenameBase']}_{$field}_{$year}";
-			$this->databaseConnection->serveCsv ($query, array (), $filenameBase, $timestamp = true, $headings);
+			$this->databaseConnection->serveCsv ($query, array (), $filenameBase, $timestamp = true, $headings, false, false, true, 500, $this->settings['downloadInitialNotice']);
 			die;
 		}
 		
