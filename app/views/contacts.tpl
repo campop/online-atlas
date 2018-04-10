@@ -2,15 +2,7 @@
 {extends file="application.tpl"}
 {block name=body}
 
-<h1>Contact us</h1>
-
-<p>This site has been created by <a href="https://www.campop.geog.cam.ac.uk/">CAMPOP</a> (The Cambridge Group for the History of Population and Social Structure).</p>
-
-<h2>Contact details</h2>
-
-<div class="graybox">
-	<p>You can contact us via the <a href="https://www.campop.geog.cam.ac.uk/contacts/">contact details</a> on the CAMPOP website.</p>
-</div>
+{$contentHtml}
 
 <h2>Website feedback</h2>
 

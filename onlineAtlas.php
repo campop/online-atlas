@@ -346,12 +346,17 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Contact page
-	public function contacts ()
+	public function contacts ($path = false)
 	{
+		# Load and show the HTML
+		$file = ($path ? $path : $this->applicationRoot) . '/contacts.html';
+		$html = file_get_contents ($file);
+		
 		# Add the feedback form
 		$this->template['feedbackform'] = parent::feedback (NULL, NULL, $echoHtml = false);
 		
 		# Templatise
+		$this->template['contentHtml'] = $html;
 		$html = $this->templatise ();
 		
 		# Show the HTML
