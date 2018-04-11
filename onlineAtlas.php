@@ -46,6 +46,7 @@ class onlineAtlas extends frontControllerApplication
 			'intervalsMode' => false,
 			'valueUnknown' => false,	// For all decimal fields, special value which represents unknown data
 			'valueUnknownString' => 'Unknown',
+			'colourUnknown' => '#c8c8c8',
 			'fields' => array (
 				// NB General fields (general=true), several of which are likely to be present, are: REGCNTY, REGDIST, SUBDIST, year
 				'year' => array (
@@ -270,6 +271,7 @@ class onlineAtlas extends frontControllerApplication
 					colourStops: ' . json_encode ($this->settings['colourStops']) . ',
 					intervalsMode: ' . ($this->settings['intervalsMode'] ? 'true' : 'false') . ',
 					valueUnknownString: ' . ($this->settings['valueUnknownString'] ? "'{$this->settings['valueUnknownString']}'" : 'false') . ',
+					colourUnknown: ' . ($this->settings['colourUnknown'] ? "'{$this->settings['colourUnknown']}'" : 'false') . ',
 					export: ' . ($this->settings['downloadFilenameBase'] ? 'true' : 'false') . ',
 					firstRunMessageHtml: \'' . $this->settings['firstRunMessageHtml'] . '\'
 				}
