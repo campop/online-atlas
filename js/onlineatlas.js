@@ -929,6 +929,8 @@ var onlineatlas = (function ($) {
 			$.each (feature.properties, function (field, value) {
 				if (typeof value == 'string') {
 					value = onlineatlas.htmlspecialchars (value);
+				} else if (value == null) {
+					value = '<span class="faded">?</span>';
 				}
 				html += '<tr class="' + field + '"><td>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + ':</td><td><strong>' + value + '</strong></td></tr>';
 			});
