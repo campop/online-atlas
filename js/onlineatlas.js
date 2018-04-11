@@ -1004,9 +1004,9 @@ var onlineatlas = (function ($) {
 				
 				// Loop through each colour until found
 				$.each (intervals, function (i, label) {
-					labels.push ('<i style="background: ' + _settings.colourStops[i] + '"></i> ' + onlineatlas.htmlspecialchars (label.replace('-', ' - ')));
+					labels.push ('<i style="background-color: ' + _settings.colourStops[i] + '; border-color: ' + _settings.colourStops[i] + ';"></i> ' + onlineatlas.htmlspecialchars (label.replace('-', ' - ')));
 				});
-				labels.push ('<i style="background: ' + _settings.colourUnknown + '"></i> ' + 'Unknown');
+				labels.push ('<i style="background-color: ' + _settings.colourUnknown + '; border: 1px dashed gray;"></i> ' + 'Unknown');
 				labels = labels.reverse();	// Legends should be shown highest first
 			} else {
 				$.each (intervals, function (key, colour) {
