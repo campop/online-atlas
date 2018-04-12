@@ -446,31 +446,14 @@ var onlineatlas = (function ($) {
 				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a href="#" title="Export the current view (as shown on the map) as raw data"><img src="/images/icons/page_excel.png" alt="" /> Export</a></p>');
 			}
 			
-			// Determine the width for the labels
+			// Create the year range control
 			// #!# Doesn't yet account for side-by-side mode when resize of first panel doesn't result in re-calculation
-			var maxBoxWidth = $('#' + mapUi.navDivId).width () - 30;	// Maximum size of slider
-			var totalLabels = _settings.datasets.length;
-			var labelWidth = Math.floor (maxBoxWidth / totalLabels);
-			var sliderWidth = maxBoxWidth - labelWidth;		// Remove one, because there needs to be a half-width space at each end
-			var sliderMargin = Math.floor (labelWidth / 2);		// Half-width space at each end
-			var smallLabelWidthThreshold = 40;
-			var rangeClass = (labelWidth < smallLabelWidthThreshold ? ' smalllabels' : '');
-			if (labelWidth < smallLabelWidthThreshold) {
-				labelWidth = labelWidth - 1;
-			}
-			
-			// Construct a datalist for the year control
-			var datalistHtml = '<ul class="rangelabels' + rangeClass + '">';
-			$.each (_settings.datasets, function (index, year) {
-				datalistHtml += '<li style="width: ' + labelWidth + 'px;">' + year + '</li>';
-			});
-			datalistHtml += '</ul>';
-			
-			// Create the year control within the form and an associated datalist
-			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
 			mapUi.yearDivId = 'year' + mapUi.index;
-			$('#' + mapUi.navDivId + ' form').append (' <input type="range" id="' + mapUi.yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="1" style="width: ' + sliderWidth + 'px; margin-left: ' + sliderMargin + 'px;" /> ');
-			$('#' + mapUi.navDivId + ' form').append (datalistHtml);
+			var yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId);
+			
+			// Add the year control to the form
+			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
+			$('#' + mapUi.navDivId + ' form').append (yearRangeControl);
 			
 			// Group the fields
 			var fieldGroups = onlineatlas.groupFields (_settings.fields);
@@ -558,6 +541,37 @@ var onlineatlas = (function ($) {
 					$('#' + checkboxId).parent().parent().slideToggle();
 				}
 			}
+		},
+		
+		
+		// Function to create a year range control, including labels
+		yearRangeControl: function (navDivId, yearDivId)
+		{
+			// Determine the width for the labels
+			var maxBoxWidth = $('#' + navDivId).width () - 30;	// Maximum size of slider
+			var totalLabels = _settings.datasets.length;
+			var labelWidth = Math.floor (maxBoxWidth / totalLabels);
+			var sliderWidth = maxBoxWidth - labelWidth;		// Remove one, because there needs to be a half-width space at each end
+			var sliderMargin = Math.floor (labelWidth / 2);		// Half-width space at each end
+			var smallLabelWidthThreshold = 40;
+			var rangeClass = (labelWidth < smallLabelWidthThreshold ? ' smalllabels' : '');
+			if (labelWidth < smallLabelWidthThreshold) {
+				labelWidth = labelWidth - 1;
+			}
+			
+			// Construct a datalist for the year control
+			var datalistHtml = '<ul class="rangelabels' + rangeClass + '">';
+			$.each (_settings.datasets, function (index, year) {
+				datalistHtml += '<li style="width: ' + labelWidth + 'px;">' + year + '</li>';
+			});
+			datalistHtml += '</ul>';
+			
+			// Combine the range slider and the associated datalist
+			var html = ' <input type="range" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="1" style="width: ' + sliderWidth + 'px; margin-left: ' + sliderMargin + 'px;" /> ';
+			html += datalistHtml;
+			
+			// Return the HTML
+			return html;
 		},
 		
 		
