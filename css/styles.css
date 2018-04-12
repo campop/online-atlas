@@ -9,12 +9,12 @@
 #comparebox label, #comparebox input[type=checkbox] {position: relative; vertical-align: middle;}
 #comparebox #syncronisebutton {display: none;}
 #mapcontainers.sidebyside .mapcontainer {width: 49%;}
+#mapcontainers.sidebyside #mapcontainer0 {float: left;}
+#mapcontainers.sidebyside #mapcontainer1 {float: right;}
 #mapcontainers.sidebyside .mapcontainer .activearea {right: 0;}
 #mapcontainers.sidebyside .mapcontainer .leaflet-control-layers, #mapcontainers.sidebyside .mapcontainer .leaflet-control-attribution {right: 0;}
 #mapcontainers.sidebyside .mapcontainer .summary {position: absolute; top: 0; right: 0; margin: 60px 320px 0 0; width: 157px;}
 #mapcontainers.sidebyside .mapcontainer .geocoder input {width: 170px;}
-#mapcontainers.sidebyside #mapcontainer0 {float: left;}
-#mapcontainers.sidebyside #mapcontainer1 {float: right; margin-left: 20px;}
 #mapcontainers.sidebyside nav {height: 170px; width: 310px;}
 #mapcontainers.sidebyside nav .radiobuttons {display: none;}
 #mapcontainers nav select {display: none;}
