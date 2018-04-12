@@ -898,8 +898,14 @@ var onlineatlas = (function ($) {
 							}
 						}
 						
-						// Excess value, e.g. '100+'
+						// Excess value, e.g. '100+' or '≥100'
 						matches = interval.match (/^([.0-9]+)\+$/);
+						if (matches) {
+							if (value >= parseFloat(matches[1])) {
+								return colourStop;
+							}
+						}
+						matches = interval.match (/^≥([.0-9]+)$/);
 						if (matches) {
 							if (value >= parseFloat(matches[1])) {
 								return colourStop;
@@ -909,7 +915,7 @@ var onlineatlas = (function ($) {
 				}
 				
 				// Unknown/other, if other checks have not matched
-				console.log ('Unmatched value ' + value);
+				console.log ('Unmatched value: ' + value);
 				return _settings.colourUnknown;
 				
 			// For pure key-value pair definition objects, read the value off

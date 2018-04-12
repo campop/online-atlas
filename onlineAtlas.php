@@ -784,13 +784,13 @@ class onlineAtlas extends frontControllerApplication
 				}
 			}
 			
-			// Range, e.g. '5-10' or '5 - <10'
+			# Range, e.g. '5-10' or '5 - <10'
 			if (preg_match ('/^([.0-9]+)(-| - <)([.0-9]+)$/', $interval, $matches)) {
 				if (($value >= $matches[1]) && ($value < $matches[3])) {	// 10 treated as matching in 10-20, not 5-10
 					return $interval;
 				}
 				
-				// Deal with last, where (e.g.) 90-100 is implied to include 100
+				# Deal with last, where (e.g.) 90-100 is implied to include 100
 				if ($index == $lastInterval) {
 					if ($value == $matches[2]) {
 						return $interval;
@@ -798,15 +798,15 @@ class onlineAtlas extends frontControllerApplication
 				}
 			}
 			
-			// Excess value, e.g. '100+'
-			if (preg_match ('/^([.0-9]+)\+$/', $interval, $matches)) {
+			# Excess value, e.g. '100+' or '≥100'
+			if (preg_match ('/^([.0-9]+)\+$/', $interval, $matches) || preg_match ('/^≥([.0-9]+)$/', $interval, $matches)) {
 				if ($value >= $matches[1]) {
 					return $interval;
 				}
 			}
 		}
 		
-		// Unknown/other, if other checks have not matched
+		# Unknown/other, if other checks have not matched
 		return NULL;	// Unmatched value
 	}
 	
