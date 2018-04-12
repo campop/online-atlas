@@ -790,12 +790,22 @@ var onlineatlas = (function ($) {
 				// Style: base the colour on the specified colour field
 				// NB this has to be inlined, and cannot be refactored to a 'setStyle' method, as the field is needed as a parameter
 				style: function (feature) {
-					return {
-						color: '#777',
-						fillColor: onlineatlas.getColour (feature.properties[mapUi.field], mapUi.field),
-						weight: (mapUi.zoomedOut ? 0 : 1),
-						fillOpacity: 0.7
-					};
+					if (feature.properties[mapUi.field] == null) {
+						return {
+							color: 'black',
+							dashArray: '5, 5',
+							fillColor: 'white',
+							weight: (mapUi.zoomedOut ? 0 : 1),
+							fillOpacity: 0.25
+						};
+					} else {
+						return {
+							color: '#777',
+							fillColor: onlineatlas.getColour (feature.properties[mapUi.field], mapUi.field),
+							weight: (mapUi.zoomedOut ? 0 : 1),
+							fillOpacity: 0.7
+						};
+					}
 				},
 						
 				// Interactivity
