@@ -22,8 +22,9 @@ var onlineatlas = (function ($) {
 			zoom: 7
 		},
 		
-		// Max zoom
-		maxZoom: 13,
+		// Max/min zoom
+		maxZoom: 13,	// Zoomed in
+		minZoom: 6,		// Zoomed out
 		
 		// Max bounds
 		maxBounds: [[47, -14], [60, 7]],	// South, West ; East, North
@@ -179,6 +180,10 @@ var onlineatlas = (function ($) {
 					// Show the syncronisation button
 					$('#syncronisebutton').show ();
 					
+					// Prevent far-out zoom, as a workaround for side-by-side interacting with maxBounds, which causes looping in Chrome and memory issues in Firefox
+					var sideBySideAcceptableZoom = 7;
+					_mapUis[0].map.options.minZoom = sideBySideAcceptableZoom;
+					
 					// By default, syncronise the map positions
 					_mapUis[0].map.sync (_mapUis[1].map);
 					_mapUis[1].map.sync (_mapUis[0].map);
@@ -208,6 +213,9 @@ var onlineatlas = (function ($) {
 					
 					// Hide the syncronisation button
 					$('#syncronisebutton').hide ();
+					
+					// Reset the min zoom level
+					_mapUis[0].map.options.minZoom = _settings.minZoom;
 					
 					// Unsyncronise the map positions
 					_mapUis[0].map.unsync (_mapUis[1].map);
@@ -326,6 +334,7 @@ var onlineatlas = (function ($) {
 				zoom: defaultLocation.zoom,
 				layers: baseLayersById[defaultTileLayer],	// Documentation suggests tileLayers is all that is needed, but that shows all together
 				maxZoom: _settings.maxZoom,
+				minZoom: _settings.minZoom,
 				maxBounds: _settings.maxBounds
 			}).setActiveArea('activearea');
 			
