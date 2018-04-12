@@ -80,7 +80,7 @@ a.moredetails {color: white; background-color: #111; font-size: 0.83em; border-r
 .map .leaflet-popup {min-width: 350px;}
 table#chart {table-layout: fixed; width: 100%;}
 table#chart tr:first-child td {padding-bottom: 1em;}
-table#chart td:first-child {width: 200px;}
+table#chart td:first-child {width: 170px;}
 table#chart tr.RAW_TFR td {padding-top: 1em;}
 table#chart tr.RAW_TFR td, table#chart tr.EBS_TFR td {color: #603;}
 
