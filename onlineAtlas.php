@@ -30,6 +30,7 @@ class onlineAtlas extends frontControllerApplication
 			'closeName' => false,
 			'closeZoom' => false,
 			'closeField' => false,
+			'farField' => NULL,
 			'closeModeSimplifyFar' => false,
 			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down, or false to disable
 			'apiUsername' => true,
@@ -272,6 +273,7 @@ class onlineAtlas extends frontControllerApplication
 					zoomedOut: ' . ($this->settings['zoomedOut'] ? $this->settings['zoomedOut'] : 'false') . ',
 					closeZoom: ' . ($this->settings['closeZoom'] ? $this->settings['closeZoom'] : 'false') . ',
 					closeField: ' . ($this->settings['closeField'] ? "'{$this->settings['closeField']}'" : 'false') . ',
+					farField: ' . ($this->settings['farField'] ? "'{$this->settings['farField']}'" : 'false') . ',
 					datasets: ' . json_encode ($this->settings['datasets']) . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
 					fields: ' . json_encode ($this->settings['fields'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ',
