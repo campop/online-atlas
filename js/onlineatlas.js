@@ -506,7 +506,7 @@ var onlineatlas = (function ($) {
 					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
 					radiobuttonsHtml += '<label for="' + fieldname + '">';
 					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
-					radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="READ FULL DESCRIPTION FOR: ' + onlineatlas.htmlspecialchars (field.description) + '">(?)</a>';
+					radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for: ' + onlineatlas.htmlspecialchars (field.description) + '">(?)</a>';
 					radiobuttonsHtml += '</label>';
 					radiobuttonsHtml += '</div>';
 					
@@ -1058,6 +1058,10 @@ var onlineatlas = (function ($) {
 			// Use jQuery tooltips; see: https://jqueryui.com/tooltip/
 			$('form .radiobuttons, .export').tooltip ({
 				track: true
+			});
+			$('form .radiobuttons a.moredetails').tooltip ({
+				track: true,
+				classes: {'ui-tooltip': 'moredetails'}
 			});
 		}
 		
