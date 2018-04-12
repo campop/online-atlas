@@ -72,6 +72,9 @@ var onlineatlas = (function ($) {
 		valueUnknownString: false,	// Will be supplied
 		intervalsMode: false,
 		
+		// Null data values
+		nullDataMessage: '[Data not available]',
+		
 		// Zoomed out mode
 		zoomedOut: false,
 		
@@ -989,7 +992,7 @@ var onlineatlas = (function ($) {
 				if (typeof value == 'string') {
 					value = onlineatlas.htmlspecialchars (value);
 				} else if (value == null) {
-					value = '<span class="faded">[Data not available]</span>';
+					value = '<span class="faded">' + _settings['nullDataMessage'] + '</span>';
 				}
 				html += '<tr class="' + field + '"><td>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + ':</td><td><strong>' + value + '</strong></td></tr>';
 			});
@@ -1026,8 +1029,14 @@ var onlineatlas = (function ($) {
 				}
 			}
 			
+			// Set the value, rewriting NULL to the specified message
+			var value = '<strong>' + feature.properties[field] + '</strong>';
+			if (feature.properties[field] == null) {
+				value = _settings['nullDataMessage'];
+			}
+			
 			// Assemble the HTML
-			var html = '<p>' + onlineatlas.htmlspecialchars (feature.properties[geographicField]) + ', in ' + feature.properties.year + ': <strong>' + feature.properties[field] + '</strong></p>';
+			var html = '<p>' + onlineatlas.htmlspecialchars (feature.properties[geographicField]) + ', in ' + feature.properties.year + ': ' + value + '</p>';
 			
 			// Return the HTML
 			return html;
