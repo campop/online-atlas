@@ -18,7 +18,7 @@
 #mapcontainers.sidebyside nav {height: 170px; width: 310px;}
 #mapcontainers.sidebyside nav .radiobuttons {display: none;}
 #mapcontainers nav select {display: none;}
-#mapcontainers.sidebyside nav select {display: block;}
+#mapcontainers.sidebyside nav select {display: block; max-width: 100%;}
 
 /* Geocoder */
 .geocoder {position: absolute; top: 10px; left: 55px; z-index: 500;}
