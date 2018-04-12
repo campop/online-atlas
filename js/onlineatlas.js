@@ -167,6 +167,10 @@ var onlineatlas = (function ($) {
 					// Show the second map
 					$('#mapcontainer1').show ();
 					
+					// Redraw the year control in the first form, to reset the layout sizing
+					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId);
+					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').html (yearRangeControl);
+					
 					// Re-centre the first map
 					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
 					
@@ -192,6 +196,10 @@ var onlineatlas = (function ($) {
 					
 					// Hide the second map
 					$('#mapcontainer1').hide ();
+					
+					// Redraw the year control, to reset the layout sizing
+					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId);
+					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').html (yearRangeControl);
 					
 					// Re-centre the first map
 					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
@@ -447,13 +455,13 @@ var onlineatlas = (function ($) {
 			}
 			
 			// Create the year range control
-			// #!# Doesn't yet account for side-by-side mode when resize of first panel doesn't result in re-calculation
 			mapUi.yearDivId = 'year' + mapUi.index;
 			var yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId);
 			
 			// Add the year control to the form
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
-			$('#' + mapUi.navDivId + ' form').append (yearRangeControl);
+			$('#' + mapUi.navDivId + ' form').append ('<div class="yearrangecontrol"></div>');
+			$('#' + mapUi.navDivId + ' form .yearrangecontrol').append (yearRangeControl);
 			
 			// Group the fields
 			var fieldGroups = onlineatlas.groupFields (_settings.fields);
