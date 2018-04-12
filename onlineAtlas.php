@@ -94,6 +94,11 @@ class onlineAtlas extends frontControllerApplication
 				'url' => 'about/',
 				'tab' => 'About the Atlas',
 			),
+			'resources' => array (
+				'description' => false,
+				'url' => 'resources/',
+				'tab' => 'Resources',
+			),
 			'acknowledgements' => array (
 				'description' => false,
 				'url' => 'acknowledgements/',
@@ -321,6 +326,22 @@ class onlineAtlas extends frontControllerApplication
 	{
 		# Load and show the HTML
 		$file = ($path ? $path : $this->applicationRoot) . '/about.html';
+		$html = file_get_contents ($file);
+		
+		# Templatise
+		$this->template['contentHtml'] = $html;
+		$html = $this->templatise ();
+		
+		# Show the HTML
+		echo $html;
+	}
+	
+	
+	# Resources page
+	public function resources ($path = false)
+	{
+		# Load and show the HTML
+		$file = ($path ? $path : $this->applicationRoot) . '/resources.html';
 		$html = file_get_contents ($file);
 		
 		# Templatise
