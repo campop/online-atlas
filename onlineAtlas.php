@@ -628,10 +628,12 @@ class onlineAtlas extends frontControllerApplication
 		# In export mode, order the data
 		$orderBySql = ($export && $orderBy ? 'ORDER BY ' . implode (',', $orderBy) : '');
 		
-		# Support close datasets for GeoJSON output; CSV export always gets the main dataset
+		# Support close datasets for GeoJSON output when zoomed in; CSV export gets the close dataset
 		$closeSql = '';
-		if (!$export) {
-			if ($this->settings['closeDatasets']) {
+		if ($this->settings['closeDatasets']) {
+			if ($export) {
+				$closeSql = 'AND close IS NOT NULL';
+			} else {
 				if (in_array ($year, $this->settings['closeDatasets'])) {
 					$closeSql = 'AND close ' . ($zoom >= $this->settings['closeZoom'] ? '= 1' : 'IS NULL');
 				}
