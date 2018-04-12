@@ -873,10 +873,10 @@ var onlineatlas = (function ($) {
 							}
 						}
 						
-						// Range, e.g. '5-10'
-						matches = interval.match (/^([.0-9]+)-([.0-9]+)$/);
+						// Range, e.g. '5-10' or '5 - <10'
+						matches = interval.match (/^([.0-9]+)(-| - <)([.0-9]+)$/);
 						if (matches) {
-							if ((value >= parseFloat(matches[1])) && (value < parseFloat(matches[2]))) {	// 10 treated as matching in 10-20, not 5-10
+							if ((value >= parseFloat(matches[1])) && (value < parseFloat(matches[3]))) {	// 10 treated as matching in 10-20, not 5-10
 								return colourStop;
 							}
 							
