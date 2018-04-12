@@ -110,7 +110,7 @@ var onlineatlas = (function ($) {
 			_baseUrl = baseUrl;
 			
 			// Create the map panel and associated controls
-			_mapUis[0] = onlineatlas.mapUi (0);
+			_mapUis[0] = onlineatlas.createMapUi (0);
 			
 			// Add support for side-by-side comparison
 			onlineatlas.sideBySide ();
@@ -136,7 +136,7 @@ var onlineatlas = (function ($) {
 					
 					// Load the second map UI if not already loaded
 					if (!_secondMapLoaded) {
-						_mapUis[1] = onlineatlas.mapUi (1);
+						_mapUis[1] = onlineatlas.createMapUi (1);
 						_secondMapLoaded = true;
 						
 						// Clone the current radiobutton value to be the new select value
@@ -208,7 +208,7 @@ var onlineatlas = (function ($) {
 		
 		
 		// Main function to create a map panel
-		mapUi: function (mapUiIndex)
+		createMapUi: function (mapUiIndex)
 		{
 			// Create a map UI collection object
 			var mapUi = {};
