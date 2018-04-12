@@ -76,6 +76,7 @@ var onlineatlas = (function ($) {
 		
 		// Close zoom mode
 		closeZoom: false,
+		closeField: false,
 		
 		// Export mode enabled
 		export: true,
@@ -985,9 +986,9 @@ var onlineatlas = (function ($) {
 		{
 			// Determine the field to use, and a suffix
 			var geographicField = 'SUBDIST';
-			if (_settings.closeZoom) {
+			if (_settings.closeZoom && _settings.closeField) {
 				if (currentZoom >= _settings.closeZoom) {
-					geographicField = 'PARISH';		// #!# Currently hard-coded
+					geographicField = _settings.closeField;
 				}
 			}
 			
