@@ -883,6 +883,14 @@ var onlineatlas = (function ($) {
 							}
 						}
 						
+						// Up-to range, e.g. '<10'
+						matches = interval.match (/^<([.0-9]+)$/);
+						if (matches) {
+							if (value < parseFloat(matches[1])) {
+								return colourStop;
+							}
+						}
+						
 						// Range, e.g. '5-10' or '5 - <10'
 						matches = interval.match (/^([.0-9]+)(-| - <)([.0-9]+)$/);
 						if (matches) {

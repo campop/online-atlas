@@ -784,6 +784,13 @@ class onlineAtlas extends frontControllerApplication
 				}
 			}
 			
+			# Up-to range, e.g. '<10'
+			if (preg_match ('/^<([.0-9]+)$/', $interval, $matches)) {
+				if ($value < $matches[1]) {
+					return $interval;
+				}
+			}
+			
 			# Range, e.g. '5-10' or '5 - <10'
 			if (preg_match ('/^([.0-9]+)(-| - <)([.0-9]+)$/', $interval, $matches)) {
 				if (($value >= $matches[1]) && ($value < $matches[3])) {	// 10 treated as matching in 10-20, not 5-10
