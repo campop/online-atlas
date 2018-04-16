@@ -264,7 +264,7 @@ var onlineatlas = (function ($) {
 				onlineatlas.setLegend (mapUi);
 			});
 			
-			// Register an summary box control
+			// Register a summary box control
 			onlineatlas.summaryControl (mapUi);
 			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
 				mapUi.summary.update (mapUi.field, null, mapUi.currentZoom);
@@ -483,7 +483,7 @@ var onlineatlas = (function ($) {
 			// Build radiobutton and select list options; both are created up-front, and the relevant one hidden according when changing to/from side-by-side mode
 			var radiobuttonsHtml = '';
 			var selectHtml = '';
-			var fieldname;
+			var fieldId;
 			var heading;
 			var field;
 			var hasGroups = false;
@@ -508,10 +508,10 @@ var onlineatlas = (function ($) {
 					if (field.general) {return /* i.e. continue */;}
 					
 					// Construct the radiobutton list (for full mode)
-					fieldname = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (id);
+					fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (id);
 					radiobuttonsHtml += '<div class="field" title="' + onlineatlas.htmlspecialchars (field.description) + '">';
-					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldname + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
-					radiobuttonsHtml += '<label for="' + fieldname + '">';
+					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldId + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
+					radiobuttonsHtml += '<label for="' + fieldId + '">';
 					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
 					radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars (field.description) + '">(?)</a>';
 					radiobuttonsHtml += '</label>';
