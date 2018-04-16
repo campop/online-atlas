@@ -168,6 +168,9 @@ var onlineatlas = (function ($) {
 								$('#' + fieldname).prop('checked', true);
 							});
 						});
+						
+						// Register a handler to dim out options which are not available for the selected year
+						onlineatlas.dimUnavailableHandlerWrapper (_mapUis[1]);
 					}
 					
 					// Show the second map
@@ -176,6 +179,9 @@ var onlineatlas = (function ($) {
 					// Redraw the year control in the first form, to reset the layout sizing
 					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, yearIndex);
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').html (yearRangeControl);
+					
+					// Register a handler to dim out options which are not available for the selected year
+					onlineatlas.dimUnavailableHandlerWrapper (_mapUis[0]);
 					
 					// Re-centre the first map
 					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
@@ -535,7 +541,7 @@ var onlineatlas = (function ($) {
 			radiobuttonsHtml = '<div class="radiobuttons">' + radiobuttonsHtml + '</div>';
 			
 			// Assemble the select widget
-			selectHtml = '<select name="field">' + selectHtml + '</select>';
+			selectHtml = '<select name="field" id="field' + mapUi.index + '">' + selectHtml + '</select>';
 			
 			// Create the year control within the form
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Show:</h3>');
@@ -596,7 +602,7 @@ var onlineatlas = (function ($) {
 			$.each (_settings.fields, function (fieldKey, field) {
 				if (field.unavailable) {
 					fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (fieldKey);
-					paths = 'input#' + fieldId + ', label[for="' + fieldId + '"]';
+					paths = 'input#' + fieldId + ', label[for="' + fieldId + '"], select[id="field' + mapUi.index + '"] option[value="' + fieldKey + '"]';
 					if ($.inArray (yearValue, field.unavailable) != -1) {	// https://api.jquery.com/jQuery.inArray/
 						$(paths).addClass ('unavailable');
 						//$('input#' + fieldId).prop('title', '[Not available for this year]');

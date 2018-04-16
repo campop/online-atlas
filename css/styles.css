@@ -46,7 +46,8 @@ nav form div.radiobuttons div.field:hover {background-color: #666;}
 nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
 
 /* Unavailable entries */
-.unavailable {opacity: 0.5;}
+input[type="radio"].unavailable, label.unavailable {opacity: 0.5;}
+option.unavailable {color: #bbb;}
 
 /* Expandable menu */
 nav form div.radiobuttons {margin-top: 2em;}
