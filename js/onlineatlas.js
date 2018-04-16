@@ -211,6 +211,9 @@ var onlineatlas = (function ($) {
 					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, yearIndex);
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').html (yearRangeControl);
 					
+					// Register a handler to dim out options which are not available for the selected year
+					onlineatlas.dimUnavailableHandlerWrapper (_mapUis[0]);
+					
 					// Re-centre the first map
 					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
 					
@@ -563,6 +566,46 @@ var onlineatlas = (function ($) {
 					$('#' + checkboxId).parent().parent().slideToggle();
 				}
 			}
+			
+			// Register a handler to dim out options which are not available for the selected year
+			onlineatlas.dimUnavailableHandlerWrapper (mapUi);
+		},
+		
+		
+		// Wrapper for dimUnavailableHandler
+		dimUnavailableHandlerWrapper: function (mapUi)
+		{
+			// Scan for year value on load and on change
+			onlineatlas.dimUnavailableHandler (mapUi);
+			$('#' + mapUi.navDivId + ' form input[type="range"]').on('change', function() {
+				onlineatlas.dimUnavailableHandler (mapUi);
+			});
+		},
+		
+		
+		// Function to provide a handler to dim out options which are not available for the selected year
+		dimUnavailableHandler: function (mapUi)
+		{
+			// Obtain the year value
+			var yearIndex = $('#' + mapUi.yearDivId).val();
+			var yearValue = _settings.datasets[yearIndex];
+			
+			// Loop through each field, and determine the years which are unavailable
+			var fieldId;
+			var paths;
+			$.each (_settings.fields, function (fieldKey, field) {
+				if (field.unavailable) {
+					fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (fieldKey);
+					paths = 'input#' + fieldId + ', label[for="' + fieldId + '"]';
+					if ($.inArray (yearValue, field.unavailable) != -1) {	// https://api.jquery.com/jQuery.inArray/
+						$(paths).addClass ('unavailable');
+						//$('input#' + fieldId).prop('title', '[Not available for this year]');
+					} else {
+						$(paths).removeClass ('unavailable');
+						//$('input#' + fieldId).removeAttr('title');
+					}
+				}
+			});
 		},
 		
 		
