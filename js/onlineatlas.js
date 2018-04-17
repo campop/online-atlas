@@ -550,7 +550,7 @@ var onlineatlas = (function ($) {
 			
 			// Register a slide menu handler, if groupings are present
 			if (hasGroups) {
-				$('.mapcontainer nav form div.radiobuttons h4').click (function (event) {
+				$('.mapcontainer nav#' + mapUi.navDivId + ' form div.radiobuttons h4').click (function (event) {
 					
 					// Fold out menu
 					$(this).next('div').slideToggle();
