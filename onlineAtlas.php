@@ -328,9 +328,12 @@ class onlineAtlas extends frontControllerApplication
 	# About page
 	public function about ($path = false)
 	{
+		# Add the stylesheet
+		$html = '<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css" />';
+		
 		# Load and show the HTML
 		$file = ($path ? $path : $this->applicationRoot) . '/about.html';
-		$html = file_get_contents ($file);
+		$html .= file_get_contents ($file);
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
@@ -344,9 +347,12 @@ class onlineAtlas extends frontControllerApplication
 	# Resources page
 	public function resources ($path = false)
 	{
+		# Add the stylesheet
+		$html = '<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css" />';
+		
 		# Load and show the HTML
 		$file = ($path ? $path : $this->applicationRoot) . '/resources.html';
-		$html = file_get_contents ($file);
+		$html .= file_get_contents ($file);
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
@@ -360,9 +366,12 @@ class onlineAtlas extends frontControllerApplication
 	# Acknowledgements page
 	public function acknowledgements ($path = false)
 	{
+		# Add the stylesheet
+		$html = '<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css" />';
+		
 		# Load and show the HTML
 		$file = ($path ? $path : $this->applicationRoot) . '/acknowledgements.html';
-		$html = file_get_contents ($file);
+		$html .= file_get_contents ($file);
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
@@ -376,9 +385,12 @@ class onlineAtlas extends frontControllerApplication
 	# Contact page
 	public function contacts ($path = false)
 	{
+		# Add the stylesheet
+		$html = '<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css" />';
+		
 		# Load and show the HTML
 		$file = ($path ? $path : $this->applicationRoot) . '/contacts.html';
-		$html = file_get_contents ($file);
+		$html .= file_get_contents ($file);
 		
 		# Add the feedback form
 		$this->template['feedbackform'] = parent::feedback (NULL, NULL, $echoHtml = false);
