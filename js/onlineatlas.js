@@ -616,7 +616,7 @@ var onlineatlas = (function ($) {
 		
 		
 		// Function to create a year range control, including labels
-		yearRangeControl: function (navDivId, yearDivId, value = 1)
+		yearRangeControl: function (navDivId, yearDivId, value)
 		{
 			// Determine the width for the labels
 			var maxBoxWidth = $('#' + navDivId).width () - 30;	// Maximum size of slider
