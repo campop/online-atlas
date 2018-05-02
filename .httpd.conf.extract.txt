@@ -27,7 +27,8 @@
 	# Application directives
 	RewriteRule ^$applicationBaseUrl/(about|resources|acknowledgements|contacts|import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
 	RewriteRule ^$applicationBaseUrl/(about|resources|acknowledgements|contacts|import)$ $applicationBaseUrl/$1/ [R]
-	RewriteRule ^$applicationBaseUrl/data.csv$ $applicationBaseUrl/index.html?action=export [L,QSA]
+	RewriteRule ^$applicationBaseUrl/data.csv$ $applicationBaseUrl/index.html?action=exportcsv [L,QSA]
+	RewriteRule ^$applicationBaseUrl/data.geojson$ $applicationBaseUrl/index.html?action=exportgeojson [L,QSA]
 	
 	<Location $applicationBaseUrl/>
 		php_value memory_limit 100M

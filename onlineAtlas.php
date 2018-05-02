@@ -111,9 +111,15 @@ class onlineAtlas extends frontControllerApplication
 				'url' => 'contacts/',
 				'tab' => 'Contacts',
 			),
-			'export' => array (
+			'exportcsv' => array (
 				'description' => false,
 				'url' => 'data.csv',
+				'export' => true,
+				'enableIf' => $this->settings['downloadFilenameBase'],
+			),
+			'exportgeojson' => array (
+				'description' => false,
+				'url' => 'data.geojson',
 				'export' => true,
 				'enableIf' => $this->settings['downloadFilenameBase'],
 			),
@@ -581,15 +587,22 @@ class onlineAtlas extends frontControllerApplication
 	}
 	
 	
-	# Export, essentially just a nicer URL to the API
-	public function export ()
+	# Export as CSV, essentially just a nicer URL to the API
+	public function exportcsv ()
 	{
 		return $this->apiCall_locations (true);
 	}
 	
 	
+	# Export as GeoJSON, essentially just a nicer URL to the API
+	public function exportgeojson ()
+	{
+		return $this->apiCall_locations (false, true);
+	}
+	
+	
 	# API call to retrieve data
-	public function apiCall_locations ($export = false)
+	public function apiCall_locations ($exportCsv = false, $exportGeojson = false)
 	{
 		# Start a timer
 		$timeStart = microtime (true);
@@ -624,7 +637,7 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Determine the fields to obtain
 		$fields = array ();
-		if (!$zoomedOut || $export) {
+		if (!$zoomedOut || $exportCsv) {
 			foreach ($this->availableGeneralFields as $generalField) {
 				if (array_key_exists ($generalField, $this->settings['fields'])) {
 					$fields[] = $generalField;
@@ -633,7 +646,7 @@ class onlineAtlas extends frontControllerApplication
 		}
 		$orderBy = $fields;		// Set order-by to the main fields defined
 		$fields[] = $field;
-		if ($export) {
+		if ($exportCsv) {
 			$fields[] = 'Y(ST_Centroid(geometry)) AS latitude';
 			$fields[] = 'X(ST_Centroid(geometry)) AS longitude';
 		} else {
@@ -642,12 +655,12 @@ class onlineAtlas extends frontControllerApplication
 		$fields = implode (', ', $fields);
 		
 		# In export mode, order the data
-		$orderBySql = ($export && $orderBy ? 'ORDER BY ' . implode (',', $orderBy) : '');
+		$orderBySql = ($exportCsv && $orderBy ? 'ORDER BY ' . implode (',', $orderBy) : '');
 		
 		# Support close datasets for GeoJSON output when zoomed in; CSV export gets the close dataset
 		$closeSql = '';
 		if ($this->settings['closeDatasets']) {
-			if ($export) {
+			if ($exportCsv) {
 				$closeSql = 'AND close IS NOT NULL';
 			} else {
 				if (in_array ($year, $this->settings['closeDatasets'])) {
@@ -669,9 +682,9 @@ class onlineAtlas extends frontControllerApplication
 		;";
 		
 		# If exporting, serve CSV and end
-		if ($export) {
+		$filenameBase = "{$this->settings['downloadFilenameBase']}_{$field}_{$year}";
+		if ($exportCsv) {
 			$headings = $this->databaseConnection->getHeadings ($this->settings['database'], $this->settings['table']);
-			$filenameBase = "{$this->settings['downloadFilenameBase']}_{$field}_{$year}";
 			$this->databaseConnection->serveCsv ($query, array (), $filenameBase, $timestamp = true, $headings, false, false, true, 500, $this->settings['downloadInitialNotice']);
 			die;
 		}
@@ -701,6 +714,25 @@ class onlineAtlas extends frontControllerApplication
 		#!# This should really be done before the GeoJSON stage (and closeModeSimplifyFar removed/modified), as geojsonRenderer::unpackPointsCSV function is very memory-intensive; though ultimately, ST_Simplify would avoid large amounts of data entirely
 		if ($zoomedOut) {
 			$data = $this->simplifyLines ($data);
+		}
+		
+		# GeoJSON export; essentially a standard GeoJSON API output but with Content-Disposition to push as file
+		if ($exportGeojson) {
+			$filenameBase .= '_savedAt' . date ('Ymd-His');
+			$filename = $filenameBase . '.geojson';
+			header ('Content-Disposition: attachment; filename="' . $filename . '"');
+			
+			# Encode the JSON
+			$flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+			if ($this->settings['apiJsonPretty']) {
+				$flags = JSON_PRETTY_PRINT | $flags;
+			}
+			$json = json_encode ($data, $flags);	// Enable pretty-print; see: http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api#pretty-print-gzip
+			
+			# Send the data
+			header ('Content-type: application/json; charset=UTF-8');
+			echo $json;
+			die;
 		}
 		
 		# Add timings in a top-level metadata field
