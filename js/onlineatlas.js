@@ -179,6 +179,9 @@ var onlineatlas = (function ($) {
 					// Redraw the year control in the first form, to reset the layout sizing
 					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, yearIndex);
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').html (yearRangeControl);
+					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').on('change', function() {	// Re-register to refresh data on any form field change
+						onlineatlas.getData (_mapUis[0]);
+					});
 					
 					// Register a handler to dim out options which are not available for the selected year
 					onlineatlas.dimUnavailableHandlerWrapper (_mapUis[0]);
