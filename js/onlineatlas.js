@@ -477,7 +477,7 @@ var onlineatlas = (function ($) {
 			// Create an export link
 			if (_settings.export) {
 				var exportDivId = 'export' + mapUi.index;
-				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a href="#" title="Export the current view (as shown on the map) as raw data"><img src="/images/icons/page_excel.png" alt="" /> Export</a></p>');
+				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a class="exportcsv" href="#" title="Export the current view (as shown on the map) as raw data in CSV format">Exports: <img src="/images/icons/page_excel.png" alt="" /></a> <a class="exportgeojson" href="#" title="Export the current view (as shown on the map) as raw data in GeoJSON format (for GIS)"><img src="/images/icons/page_code.png" alt="" /></a></p>');
 			}
 			
 			// Create the year range control
@@ -781,8 +781,10 @@ var onlineatlas = (function ($) {
 			// Update the export link with the new parameters
 			if (_settings.export) {
 				var requestSerialised = $.param(apiData);
-				var exportUrl = _baseUrl + '/data.csv?' + requestSerialised;
-				$('#' + mapUi.navDivId + ' p.export a').attr('href', exportUrl);
+				var csvExportUrl = _baseUrl + '/data.csv?' + requestSerialised;
+				$('#' + mapUi.navDivId + ' p.export a.exportcsv').attr('href', csvExportUrl);
+				var geojsonExportUrl = _baseUrl + '/data.geojson?' + requestSerialised;
+				$('#' + mapUi.navDivId + ' p.export a.exportgeojson').attr('href', geojsonExportUrl);
 			}
 			
 			// Start spinner, initially adding it to the page
