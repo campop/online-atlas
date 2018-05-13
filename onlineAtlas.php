@@ -43,6 +43,7 @@ class onlineAtlas extends frontControllerApplication
 			'authLinkVisibility' => false,
 			'h1' => '',
 			'div' => false,
+			'ogPreview' => '/images/preview.png',
 			'firstRunMessageHtml' => false,
 			'defaultField' => NULL,
 			'intervalsMode' => false,
@@ -191,6 +192,9 @@ class onlineAtlas extends frontControllerApplication
 		# Set the SSO block
 		$this->template['sso'] = pureContent::ssoLinks ('Raven');
 		
+		# Set Open Graph tags
+		$this->template['ogTags'] = $this->ogTags ();
+		
 		# Set the admin
 		$this->template['userIsAdministrator'] = $this->userIsAdministrator;
 		
@@ -216,6 +220,25 @@ class onlineAtlas extends frontControllerApplication
 			}
 		}
 		
+	}
+	
+	
+	# Open Graph tags
+	private function ogTags ()
+	{
+		# Return empty string if not enabled
+		if (!$this->settings['ogPreview']) {return '';}
+		
+		# Return the assembled HTML
+		return $html = '
+			<!-- OpenGraph/Twitter attributes -->
+			<meta property="og:type" content="website" />
+			<meta name="twitter:card" content="summary_large_image" />
+			<meta property="og:site_name" content="' . htmlspecialchars ($this->settings['applicationName']) . '" />
+			<meta property="og:title" content="' . htmlspecialchars ($this->settings['applicationName']) . '" />
+			<meta property="og:image" content="' . $_SERVER['_SITE_URL'] . $this->settings['ogPreview'] . '" />
+			<meta property="og:url" content="' . $_SERVER['_SITE_URL'] . '/" />
+		';
 	}
 	
 	
