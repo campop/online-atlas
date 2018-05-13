@@ -61,6 +61,7 @@ var onlineatlas = (function ($) {
 		
 		// Dataset years
 		datasets: [],	// Will be supplied
+		defaultYearId: 1,
 		
 		// Fields and their labels
 		fields: {},		// Will be supplied
@@ -483,7 +484,7 @@ var onlineatlas = (function ($) {
 			
 			// Create the year range control
 			mapUi.yearDivId = 'year' + mapUi.index;
-			var yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId, 1);
+			var yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultYearId);
 			
 			// Add the year control to the form
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
