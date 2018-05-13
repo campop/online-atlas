@@ -579,8 +579,10 @@ var onlineatlas = (function ($) {
 				
 				// Expand the heading for the default field if required
 				if (_settings.defaultField) {
-					var checkboxId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (_settings.defaultField);
-					$('#' + checkboxId).parent().parent().slideToggle();
+					if (_settings.fields[_settings.defaultField].grouping) {
+						var checkboxId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (_settings.defaultField);
+						$('#' + checkboxId).parent().parent().slideToggle();
+					}
 				}
 			}
 			
