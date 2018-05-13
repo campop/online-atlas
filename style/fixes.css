@@ -10,6 +10,9 @@
 /* Tables have a line underneath them by default */
 #content .campl-column12 .campl-content-container table {border-bottom: 0; margin-bottom: 1.5em;}
 
+/* Ensure navigation always appears above content, e.g. maps */
+.js .campl-local-navigation {z-index: 9999;}
+
 /* Textarea widgets are set to be very small by default */
 input,textarea {width: auto;}
 select,
