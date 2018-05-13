@@ -250,7 +250,7 @@ class onlineAtlas extends frontControllerApplication
 		$html = '
 			
 			<!-- Main stylesheet -->
-			<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css?4" type="text/css">
+			<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css?5" type="text/css">
 			
 			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -296,7 +296,7 @@ class onlineAtlas extends frontControllerApplication
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/onlineatlas.js?4"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/onlineatlas.js?5"></script>
 			<script type="text/javascript">
 				
 				var config = {
