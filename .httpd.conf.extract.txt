@@ -30,6 +30,11 @@
 	RewriteRule ^$applicationBaseUrl/data.csv$ $applicationBaseUrl/index.html?action=exportcsv [L,QSA]
 	RewriteRule ^$applicationBaseUrl/data.geojson$ $applicationBaseUrl/index.html?action=exportgeojson [L,QSA]
 	
+	# Route all virtual requests arising from HTML5 pushState URLs to main page
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^/([_a-z0-9]+)/([0-9]{4})/$ /index.html?field=$1&year=$2 [L,QSA]
+	
 	<Location $applicationBaseUrl/>
 		php_value memory_limit 100M
 	</Location>

@@ -11,6 +11,7 @@ var onlineatlas = (function ($) {
 	var _baseUrl;
 	var _mapUis = {};
 	var _secondMapLoaded = false;
+	var _title = false;
 	
 	// Settings
 	var _settings = {
@@ -114,6 +115,19 @@ var onlineatlas = (function ($) {
 			
 			// Obtain the base URL
 			_baseUrl = baseUrl;
+			
+			// If a URL path is supplied, set the initial form value on first load (so is not applicable to a second side-by-side map)
+			var urlParts = window.location.pathname.split('/');
+			if (urlParts[1] && urlParts[2]) {
+				var field = urlParts[1].toUpperCase ();
+				var year = parseInt (urlParts[2]);
+				if (_settings.fields[field]) {
+					if ($.inArray (year, _settings.datasets) != -1) {	// https://api.jquery.com/jQuery.inArray/
+						_settings.defaultField = field;
+						_settings.defaultYearId = _settings.datasets.indexOf (year);
+					}
+				}
+			}
 			
 			// Create the map panel and associated controls
 			_mapUis[0] = onlineatlas.createMapUi (0);
@@ -788,6 +802,11 @@ var onlineatlas = (function ($) {
 			var yearIndex = $('#' + mapUi.yearDivId).val();
 			apiData.year = _settings.datasets[yearIndex];
 			
+			// Update the URL
+			if (mapUi.index == 0) {		// Apply to left only in side-by-side
+				onlineatlas.updateUrl (apiData.field, apiData.year);
+			}
+			
 			// Update the export link with the new parameters
 			if (_settings.export) {
 				var requestSerialised = $.param(apiData);
@@ -834,6 +853,32 @@ var onlineatlas = (function ($) {
 					onlineatlas.showCurrentData (mapUi, data);
 				}
 			});
+		},
+		
+		
+		// Function to update the URL, to provide persistency when a link is circulated
+		// Format is /<baseUrl>/<layerId>/<year>/#<mapHashWithStyle> ; side-by-side is not supported
+		updateUrl: function (field, year)
+		{
+			// End if not supported, e.g. IE9
+			if (!history.pushState) {return;}
+			
+			// Set the URL slug
+			var urlSlug = '/' + field.toLowerCase() + '/' + year + '/';
+			
+			// Construct the URL
+			var url = _baseUrl;	// Absolute URL
+			url += urlSlug;
+			url += window.location.hash;
+			
+			// Construct the page title, based on the enabled layers
+			if (!_title) {_title = document.title;}		// Obtain and cache the original page title
+			var title = _title;
+			title += ': ' + _settings.fields[field].label + ', ' + year;
+			
+			// Push the URL state
+			history.pushState (urlSlug, title, url);
+			document.title = title;		// Workaround for poor browser support; see: https://stackoverflow.com/questions/13955520/
 		},
 		
 		
