@@ -1120,26 +1120,26 @@ var onlineatlas = (function ($) {
 		setLegend: function (mapUi)
 		{
 			// If the intervals is an array, i.e. standard list of colour stops, loop until found
-			var labels = [];
+			var labelsRows = [];
 			var intervals = _settings.fields[mapUi.field].intervals;
 			if (intervals[0]) {		// Simple, quick check
 				
 				// Loop through each colour until found
 				$.each (intervals, function (i, label) {
-					labels.push ('<i style="background-color: ' + _settings.colourStops[i] + '; border-color: ' + _settings.colourStops[i] + ';"></i> ' + onlineatlas.htmlspecialchars (label.replace('-', ' - ')));
+					labelsRows.push ('<tr><td>' + '<i style="background-color: ' + _settings.colourStops[i] + '; border-color: ' + _settings.colourStops[i] + ';"></i>' + '</td><td>' + onlineatlas.htmlspecialchars (label.replace('-', ' - ')) + '</td></tr>');
 				});
-				labels.push ('<i style="background-color: ' + _settings.colourUnknown + '; border: 1px dashed gray;"></i> ' + 'Unknown');
-				labels = labels.reverse();	// Legends should be shown highest first
+				labelsRows.push ('<tr><td>' + '<i style="background-color: ' + _settings.colourUnknown + '; border: 1px dashed gray;"></i>' + '</td><td>' + 'Unknown' + '</td></tr>');
+				labelsRows = labelsRows.reverse();	// Legends should be shown highest first
 			} else {
 				$.each (intervals, function (key, colour) {
-					labels.push ('<i style="background: ' + colour + '"></i> ' + onlineatlas.htmlspecialchars (onlineatlas.ucfirst (key)));
+					labelsRows.push ('<tr><td>' + '<i style="background: ' + colour + '"></i>' + '</td><td>' + onlineatlas.htmlspecialchars (onlineatlas.ucfirst (key)) + '</td></tr>');
 				});
 			}
 			
 			// Compile the HTML
 			var html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].label) + '</h4>';
 			html += '<p>' + onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].description) + '</p>';
-			html += labels.join ('<br />');
+			html += '<table>' + labelsRows.join ('\n') + '</table>';
 			
 			// Set the HTML
 			$('#' + mapUi.mapDivId + ' .legend').html (html);
