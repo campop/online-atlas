@@ -49,6 +49,10 @@ nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 
 input[type="radio"].unavailable, label.unavailable {opacity: 0.5;}
 option.unavailable {color: #bbb;}
 
+/* Overflow for nav */
+.mapcontainer nav {overflow-y: auto;}
+.mapcontainer nav .radiobuttons label {width: 90%;}
+
 /* Expandable menu */
 nav form div.radiobuttons {margin-top: 2em;}
 nav form div.radiobuttons .fieldgroup {display: none;}

@@ -698,7 +698,7 @@ var onlineatlas = (function ($) {
 		yearRangeControl: function (navDivId, yearDivId, value)
 		{
 			// Determine the width for the labels
-			var maxBoxWidth = $('#' + navDivId).width () - 30;	// Maximum size of slider
+			var maxBoxWidth = $('#' + navDivId).width () - 20 /* scroll bar allowance */ - 30;	// Maximum size of slider
 			var totalLabels = _settings.datasets.length;
 			var labelWidth = Math.floor (maxBoxWidth / totalLabels);
 			var sliderWidth = maxBoxWidth - labelWidth;		// Remove one, because there needs to be a half-width space at each end
