@@ -64,6 +64,7 @@ class onlineAtlas extends frontControllerApplication
 				),
 				// etc.
 			),
+			'nullField' => '_',		// ID for 'field' which just shows the map background, i.e. no data
 			'colourStopsIntervalsConsistent' => true,	// Whether the number of colour stops is required to be consistent with the intervals; if not, the first N colours will be used
 			'colourStops' => array (	// Colour scales can be created at http://www.colorbrewer.org/
 				'#4575b5',	// Blue - least
@@ -288,7 +289,8 @@ class onlineAtlas extends frontControllerApplication
 					valueUnknownString: ' . ($this->settings['valueUnknownString'] ? "'{$this->settings['valueUnknownString']}'" : 'false') . ',
 					colourUnknown: ' . ($this->settings['colourUnknown'] ? "'{$this->settings['colourUnknown']}'" : 'false') . ',
 					export: ' . ($this->settings['downloadFilenameBase'] ? 'true' : 'false') . ',
-					firstRunMessageHtml: \'' . $this->settings['firstRunMessageHtml'] . '\'
+					firstRunMessageHtml: \'' . $this->settings['firstRunMessageHtml'] . '\',
+					nullField: ' . ($this->settings['nullField'] ? "'{$this->settings['nullField']}'" : 'false') . '
 				}
 				
 				$(function() {
@@ -689,8 +691,12 @@ class onlineAtlas extends frontControllerApplication
 			die;
 		}
 		
-		# Get the data
-		$data = $this->databaseConnection->getData ($query);
+		# Get the data, except for no-variable option
+		if ($field == '_') {
+			$data = array ();
+		} else {
+			$data = $this->databaseConnection->getData ($query);
+		}
 		
 		# Format decimal fields, handling explicitly unknown values, conversion to 2 decimal places, and removing trailing zeroes
 		$data = $this->formatDecimalFields ($data, $decimalPlaces = 2);

@@ -65,6 +65,7 @@ var onlineatlas = (function ($) {
 		// Fields and their labels
 		fields: {},		// Will be supplied
 		defaultField: '',		// Will be supplied
+		nullField: '',
 		
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
 		colourStops: [],		// Will be supplied
@@ -513,11 +514,15 @@ var onlineatlas = (function ($) {
 				}
 				
 				// Add each field
+				var isNullField;
 				$.each (fieldGroup.fields, function (j, id) {
 					field = _settings.fields[id];
 					
 					// Skip general fields, like year
 					if (field.general) {return /* i.e. continue */;}
+					
+					// Determine if this is the null field, if enabled
+					isNullField = (_settings.nullField && (id == _settings.nullField));
 					
 					// Construct the radiobutton list (for full mode)
 					fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (id);
@@ -525,7 +530,9 @@ var onlineatlas = (function ($) {
 					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldId + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
 					radiobuttonsHtml += '<label for="' + fieldId + '">';
 					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
-					radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars (field.description) + '">(?)</a>';
+					if (!isNullField) {
+						radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars (field.description) + '">(?)</a>';
+					}
 					radiobuttonsHtml += '</label>';
 					radiobuttonsHtml += '</div>';
 					
@@ -1075,6 +1082,13 @@ var onlineatlas = (function ($) {
 		// Function to define summary box content
 		summaryHtml: function (field, feature, currentZoom)
 		{
+			// If the field is the null field, show nothing
+			if (_settings.nullField) {
+				if (field == _settings.nullField) {
+					return '';
+				}
+			}
+			
 			// Determine the field to use, and a suffix
 			var geographicField = _settings.farField;
 			if (_settings.closeZoom && _settings.closeField) {
@@ -1119,6 +1133,18 @@ var onlineatlas = (function ($) {
 		// Function to set the legend contents
 		setLegend: function (mapUi)
 		{
+			// Handle null field
+			if (_settings.nullField) {
+				if (mapUi.field == _settings.nullField) {
+					$('#' + mapUi.mapDivId + ' .legend').html ('');
+					$('#' + mapUi.mapDivId + ' .legend').hide ();
+					return;
+				}
+			}
+			
+			// Show if hidden
+			$('#' + mapUi.mapDivId + ' .legend').show ();
+			
 			// If the intervals is an array, i.e. standard list of colour stops, loop until found
 			var labelsRows = [];
 			var intervals = _settings.fields[mapUi.field].intervals;
