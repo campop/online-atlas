@@ -132,8 +132,60 @@ var onlineatlas = (function ($) {
 			// Create the map panel and associated controls
 			_mapUis[0] = onlineatlas.createMapUi (0);
 			
+			// Create mobile navigation
+			onlineatlas.createMobileNavigation ();
+			
 			// Add support for side-by-side comparison
 			onlineatlas.sideBySide ();
+		},
+		
+		
+		// Create mobile navigation
+		createMobileNavigation: function ()
+		{
+			// Add hamburger menu
+			$('#map0').append ('<div id="nav-mobile"></div>');
+			
+			// Toggle visibility clickable
+			$('#nav-mobile').click(function () {
+				if ($('nav').is(':visible')) {
+					$('nav').hide ('slide', {direction: 'right'}, 250);
+				} else {
+					$('nav').animate ({width:'toggle'}, 250);
+				}
+			});
+			
+			// Disable title tooltips
+			$('#nav-mobile').click(function () {
+				if ($('nav').is(':visible')) {
+					$('.radiobuttons .field').removeAttr ('title');
+				}
+			});
+			
+			/*
+			// Enable implicit click/touch on map as close menu
+			if ($('#nav-mobile').is(':visible')) {
+				if (!$('nav').is(':visible')) {
+					$('.map').click(function () {
+						$('nav').hide ('slide', {direction: 'right'}, 250);
+					});
+				};
+			};
+			*/
+			
+			// Enable closing menu on slide right
+			if ($('#nav-mobile').is(':visible')) {
+				$('nav').on('swiperight', function () {
+					$('nav').hide ('slide', {direction: 'right'}, 250);
+				});
+				
+				// Exempt swiperight from range control; see: https://stackoverflow.com/a/48006174/180733
+				$(document).on('mousedown touchstart', 'input[type=range]',
+					function(e) {
+						e.stopPropagation();
+					}
+				);
+			};
 		},
 		
 		
@@ -1264,7 +1316,6 @@ var onlineatlas = (function ($) {
 				}
 			});
 		}
-		
 	};
 	
 } (jQuery));

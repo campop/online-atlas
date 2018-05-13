@@ -255,6 +255,7 @@ class onlineAtlas extends frontControllerApplication
 			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 			<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css">
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-touch-events/1.0.9/jquery.mobile-events.js"></script>
 			
 			<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
 			<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
