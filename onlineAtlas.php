@@ -714,6 +714,10 @@ class onlineAtlas extends frontControllerApplication
 		# If exporting, serve CSV and end
 		$filenameBase = "{$this->settings['downloadFilenameBase']}_{$field}_{$year}";
 		if ($exportCsv) {
+			if ($this->settings['downloadInitialNotice']) {
+				$updateNotice = $this->databaseConnection->getTableComment ($this->settings['database'], $this->settings['table']);
+				$this->settings['downloadInitialNotice'] .= ' ' . $updateNotice . '.';
+			}
 			$headings = $this->databaseConnection->getHeadings ($this->settings['database'], $this->settings['table']);
 			$this->databaseConnection->serveCsv ($query, array (), $filenameBase, $timestamp = true, $headings, false, false, true, 500, $this->settings['downloadInitialNotice']);
 			die;
