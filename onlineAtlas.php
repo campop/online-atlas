@@ -475,7 +475,7 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Function to do the actual import
-	public function doImport ($exportFiles, $importType, &$html)
+	public function doImport ($exportFiles, $importType, &$html, $date)
 	{
 		# Start the HTML
 		$html = '';
@@ -554,6 +554,10 @@ class onlineAtlas extends frontControllerApplication
 			# Remove the GeoJSON file after use
 			unlink ($geojson);
 		}
+		
+		# Set the update date
+		$tableComment = 'Dataset last updated: ' . DateTime::createFromFormat ('Ymd H:i:s', $date . ' 12:00:00')->format ('jS F Y');
+		$this->databaseConnection->setTableComment ($this->settings['database'], $this->settings['table'], $tableComment);
 		
 		# Return success
 		return true;
