@@ -611,7 +611,7 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Insert the data, showing any error
 		if (!$this->databaseConnection->insertMany ($this->settings['database'], $this->settings['table'], $inserts, $chunking = 500)) {
-			echo "\n<p class=\"warning\">ERROR:</p>";
+			echo "\n<p class=\"warning\">ERROR while processing {$year}" . ($this->settings['closeDatasets'] ? ($close ? ' in close mode' : '') : '') . ':</p>';
 			application::dumpData ($this->databaseConnection->error ());
 		}
 	}
