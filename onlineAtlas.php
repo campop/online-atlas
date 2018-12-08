@@ -724,7 +724,7 @@ class onlineAtlas extends frontControllerApplication
 		}
 		
 		# Get the data, except for no-variable option
-		if ($field == '_') {
+		if ($field == $this->settings['nullField']) {
 			$data = array ();
 		} else {
 			$data = $this->databaseConnection->getData ($query);
