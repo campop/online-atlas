@@ -65,8 +65,10 @@ var onlineatlas = (function ($) {
 		defaultYearId: 1,
 		
 		// Fields and their labels
+		variations: {},	// Will be supplied
 		fields: {},		// Will be supplied
 		defaultField: '',		// Will be supplied
+		defaultVariation: '',		// Will be supplied
 		nullField: '',
 		
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
@@ -334,9 +336,17 @@ var onlineatlas = (function ($) {
 			
 			// Determine the active field, and create a handler for changes
 			mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.
-			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
-				mapUi.field = onlineatlas.getField (mapUi.navDivId);
+			$('#' + mapUi.navDivId + ' form input[name="field"], #' + mapUi.navDivId + ' form select').on('change', function() {
+				mapUi.field = onlineatlas.getField (mapUi.navDivId, 'field');
 			});
+			
+			// If enabled, determine the active variation, and create a handler for changes
+			if (!$.isEmptyObject (_settings.variations)) {
+				mapUi.variation = _settings.defaultVariation;	// E.g. _F, _M, etc.
+				$('#' + mapUi.navDivId + ' form input[name="variation"]').on('change', function() {
+					mapUi.variation = onlineatlas.getField (mapUi.navDivId, 'variation');
+				});
+			}
 			
 			// Create the legend for the current field, and update on changes
 			onlineatlas.createLegend (mapUi);
@@ -375,13 +385,13 @@ var onlineatlas = (function ($) {
 		
 		
 		// Function to determine the field from the form value
-		getField: function (navDivId)
+		getField: function (navDivId, inputName)
 		{
 			// Switch between radiobuttons (full mode) and select (side-by-side mode)
 			if ( $('#' + navDivId + ' select').is(':visible') ) {
 				return $('#' + navDivId + ' form select').val();
 			} else {
-				return $('#' + navDivId + ' form input[type="radio"]:checked').val();
+				return $('#' + navDivId + ' form input[name="' + inputName + '"]:checked').val();
 			}
 		},
 		
@@ -556,6 +566,25 @@ var onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
 			$('#' + mapUi.navDivId + ' form').append ('<div class="yearrangecontrol"></div>');
 			$('#' + mapUi.navDivId + ' form .yearrangecontrol').append (yearRangeControl);
+			
+			// Build variations controls
+			var variationsHtml = '';
+			if (!$.isEmptyObject (_settings.variations)) {
+				$('#' + mapUi.navDivId + ' form').append ('<h3>' + onlineatlas.htmlspecialchars (_settings.variationsLabel) + ':</h3>');
+				variationsHtml += '<p id="variations">';
+				var variationId;
+				$.each (_settings.variations, function (variation, label) {
+					variationId = 'variation' + variation;	// Prepend 'variation' to ensure valid ID
+					variationsHtml += '<span>';
+					variationsHtml += '<input type="radio" name="variation" value="' + variation + '" id="' + variationId + '"' + (variation == _settings.defaultVariation ? ' checked="checked"' : '') + ' />';
+					variationsHtml += '<label for="' + variationId + '">';
+					variationsHtml += onlineatlas.htmlspecialchars (label);
+					variationsHtml += '</label>';
+					variationsHtml += '</span>';
+				});
+				variationsHtml += '</p>';
+				$('#' + mapUi.navDivId + ' form').append (variationsHtml);
+			}
 			
 			// Group the fields
 			var fieldGroups = onlineatlas.groupFields (_settings.fields);
@@ -874,6 +903,11 @@ var onlineatlas = (function ($) {
 				$('#' + mapUi.containerDivId).append('<img id="loading" src="' + _baseUrl + '/images/spinner.svg" />');
 			}
 			$('#' + mapUi.containerDivId + ' #loading').show();
+			
+			// Append the variation, if supported
+			if (!$.isEmptyObject (_settings.variations)) {
+				apiData.variation = mapUi.variation;
+			}
 			
 			// Fetch data
 			$.ajax({

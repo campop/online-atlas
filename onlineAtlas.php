@@ -46,10 +46,13 @@ class onlineAtlas extends frontControllerApplication
 			'ogPreview' => '/images/preview.png',
 			'firstRunMessageHtml' => false,
 			'defaultField' => NULL,
+			'defaultVariation' => false,
 			'intervalsMode' => false,
 			'valueUnknown' => false,	// For all decimal fields, special value which represents unknown data
 			'valueUnknownString' => 'Unknown',
 			'colourUnknown' => '#c8c8c8',
+			'variationsLabel' => false,
+			'variations' => array (),
 			'fields' => array (
 				// NB General fields (general=true), several of which are likely to be present, are: REGCNTY, REGDIST, SUBDIST, year
 				'year' => array (
@@ -202,11 +205,14 @@ class onlineAtlas extends frontControllerApplication
 		$this->template['title'] = $this->settings['applicationName'];
 		$this->template['pageHeader'] = $this->settings['pageHeader'];
 		
+		# Set the fields after expansion to deal with variations, which represents the actual database fields
+		$this->fieldsExpanded = $this->fieldsVariationsProcessed ();
+		
 		# Ensure the number of intervals in each field matches the number of colour stops
 		if ($this->settings['colourStopsIntervalsConsistent']) {
 			if ($this->action != 'api') {
 				$totalColourStops = count ($this->settings['colourStops']);
-				foreach ($this->settings['fields'] as $fieldId => $field) {
+				foreach ($this->fieldsExpanded as $fieldId => $field) {
 					if ($field['intervals']) {
 						if (is_string ($field['intervals'])) {	// Array type has its own colour set, defined associatively, so only string type needs to be checked
 							$totalIntervals = count (explode (', ', $field['intervals']));
@@ -220,6 +226,52 @@ class onlineAtlas extends frontControllerApplication
 			}
 		}
 		
+	}
+	
+	
+	# Function to return the fields, having processed variations
+	private function fieldsVariationsProcessed ()
+	{
+		# If there are no variations, return fields as-is
+		if (!$this->settings['variations']) {
+			return $this->settings['fields'];
+		}
+		
+		# Loop through each field
+		$fields = array ();
+		foreach ($this->settings['fields'] as $fieldId => $field) {
+			
+			# Determine if the field is a data field, or a general/null field
+			$isDataField = (!isSet ($field['general']) && $fieldId != $this->settings['nullField']);
+			
+			# If a general/null field, copy the data without change
+			if (!$isDataField) {
+				$fields[$fieldId] = $field;
+				continue;
+			}
+			
+			# For data fields, turn the single field into each variation, e.g. A with variations _F, _M, _B becomes A_F, A_M, A_B
+			foreach ($this->settings['variations'] as $variationSuffix => $variationLabel) {
+				$newFieldId = $fieldId . $variationSuffix;
+				$fields[$newFieldId] = $field;
+				
+				# If the field has unavailability data, pick out the relevant index if present, else remove
+				if ($field['unavailable']) {
+					if (application::isMultidimensionalArray ($field['unavailable'])) {		// i.e. an array of arrays, e.g. array (_F => array (dataset1, dataset2, ...), _M => ..., ...)
+						if (isSet ($field['unavailable'][$variationSuffix])) {
+							$fields[$newFieldId]['unavailable'] = $field['unavailable'][$variationSuffix];
+						} else {
+							unset ($fields[$newFieldId]['unavailable']);
+						}
+					} else {
+						// Will be a single-dimensional array of datasets, so retain as-is
+					}
+				}
+			}
+		}
+		
+		# Return the fields
+		return $fields;
 	}
 	
 	
@@ -307,6 +359,9 @@ class onlineAtlas extends frontControllerApplication
 					farField: ' . ($this->settings['farField'] ? "'{$this->settings['farField']}'" : 'false') . ',
 					datasets: ' . json_encode ($this->settings['datasets']) . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
+					defaultVariation: ' . ($this->settings['defaultVariation'] ? "'{$this->settings['defaultVariation']}'" : 'false') . ',
+					variationsLabel: ' . ($this->settings['variationsLabel'] ? "'{$this->settings['variationsLabel']}'" : 'false') . ',
+					variations: ' . json_encode ($this->settings['variations']) . ',
 					fields: ' . json_encode ($this->settings['fields'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ',
 					colourStops: ' . json_encode ($this->settings['colourStops']) . ',
 					intervalsMode: ' . ($this->settings['intervalsMode'] ? 'true' : 'false') . ',
@@ -592,7 +647,7 @@ class onlineAtlas extends frontControllerApplication
 			}
 			
 			# Filter properties for supported fields only
-			$properties = application::arrayFields ($feature['properties'], array_keys ($this->settings['fields']));
+			$properties = application::arrayFields ($feature['properties'], array_keys ($this->fieldsExpanded));
 			
 			# Add the properties
 			$insert += $properties;
@@ -662,6 +717,15 @@ class onlineAtlas extends frontControllerApplication
 			return array ('error' => 'A valid field must be supplied.');
 		}
 		
+		# Obtain the supplied field
+		$variation = NULL;
+		if ($this->settings['variations']) {
+			$variation = (isSet ($_GET['variation']) && array_key_exists ($_GET['variation'], $this->settings['variations']) ? $_GET['variation'] : false);
+			if (!$variation) {
+				return array ('error' => 'A valid variation must be supplied.');
+			}
+		}
+		
 		# Construct the BBOX WKT string
 		$bboxGeom = "Polygon(({$bbox[0]} {$bbox[1]},{$bbox[2]} {$bbox[1]},{$bbox[2]} {$bbox[3]},{$bbox[0]} {$bbox[3]},{$bbox[0]} {$bbox[1]}))";
 		
@@ -669,13 +733,13 @@ class onlineAtlas extends frontControllerApplication
 		$fields = array ();
 		if (!$zoomedOut || $exportCsv) {
 			foreach ($this->availableGeneralFields as $generalField) {
-				if (array_key_exists ($generalField, $this->settings['fields'])) {
+				if (array_key_exists ($generalField, $this->fieldsExpanded)) {
 					$fields[] = $generalField;
 				}
 			}
 		}
 		$orderBy = $fields;		// Set order-by to the main fields defined
-		$fields[] = $field;
+		$fields[] = $field . ($this->settings['variations'] ? "{$variation} AS {$field}" : '');
 		if ($exportCsv) {
 			$fields[] = 'Y(ST_Centroid(geometry)) AS latitude';
 			$fields[] = 'X(ST_Centroid(geometry)) AS longitude';
