@@ -867,7 +867,10 @@ class onlineAtlas extends frontControllerApplication
 		# Convert to decimal for supported fields
 		foreach ($data as $index => $record) {
 			foreach ($decimalFields as $field) {
-				if (isSet ($data[$index][$field])) {
+				if (array_key_exists ($field, $data[$index])) {		// array_key_exists used as value may be NULL
+					
+					# Do not change values that are explicitly NULL
+					if ($data[$index][$field] === NULL) {continue;}
 					
 					# Convert explicitly unknown values to the string symbol
 					if ($this->settings['valueUnknown']) {
