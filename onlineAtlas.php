@@ -856,7 +856,7 @@ class onlineAtlas extends frontControllerApplication
 	private function formatDecimalFields ($data, $decimalPlaces)
 	{
 		# Determine fields that are DECIMAL
-		$fields = $this->databaseConnection->getFields ($this->settings['database'], 'data');
+		$fields = $this->databaseConnection->getFields ($this->settings['database'], $this->settings['table']);
 		$decimalFields = array ();
 		foreach ($fields as $field => $attributes) {
 			if (substr_count (strtolower ($attributes['Type']), 'decimal')) {
