@@ -795,7 +795,7 @@ class onlineAtlas extends frontControllerApplication
 		}
 		
 		# Format decimal fields, handling explicitly unknown values, conversion to 2 decimal places, and removing trailing zeroes
-		$data = $this->formatDecimalFields ($data, $decimalPlaces = 2);
+		$data = $this->formatDecimalFields ($data, $variation, $decimalPlaces = 2);
 		
 		# If required, convert exact values to intervals
 		if ($this->settings['intervalsMode']) {
@@ -853,7 +853,7 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Function to format numbers, handling explicitly unknown values, conversion to 2 decimal places, and removing trailing zeroes
-	private function formatDecimalFields ($data, $decimalPlaces)
+	private function formatDecimalFields ($data, $variation = false, $decimalPlaces)
 	{
 		# Determine fields that are DECIMAL
 		$fields = $this->databaseConnection->getFields ($this->settings['database'], $this->settings['table']);
@@ -866,8 +866,16 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Convert to decimal for supported fields
 		foreach ($data as $index => $record) {
-			foreach ($decimalFields as $field) {
-				if (array_key_exists ($field, $data[$index])) {		// array_key_exists used as value may be NULL
+			foreach ($record as $field => $value) {
+				
+				# Determine the actual database field (e.g. for public field 'Mine' with variation '_F', this would be 'Mine_F')
+				$databaseField = $field;
+				if ($this->settings['variations']) {
+					$databaseField .= $variation;
+				}
+				
+				# If the database field is present in the supported DECIMAL fields list (e.g. 'Mine_F'), convert the emitted data field (e.g. 'Mine')
+				if (in_array ($databaseField, $decimalFields)) {
 					
 					# Do not change values that are explicitly NULL
 					if ($data[$index][$field] === NULL) {continue;}
