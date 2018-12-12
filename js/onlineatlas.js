@@ -119,6 +119,22 @@ var onlineatlas = (function ($) {
 			_baseUrl = baseUrl;
 			
 			// If a URL path is supplied, set the initial form value on first load (so is not applicable to a second side-by-side map)
+			onlineatlas.defaultsFromUrl ();
+			
+			// Create the map panel and associated controls
+			_mapUis[0] = onlineatlas.createMapUi (0);
+			
+			// Create mobile navigation
+			onlineatlas.createMobileNavigation ();
+			
+			// Add support for side-by-side comparison
+			onlineatlas.sideBySide ();
+		},
+		
+		
+		// Function to set defaults from the URL
+		defaultsFromUrl: function ()
+		{
 			var urlParts = window.location.pathname.split('/');
 			if (urlParts[1] && urlParts[2]) {
 				
@@ -134,15 +150,6 @@ var onlineatlas = (function ($) {
 					}
 				}
 			}
-			
-			// Create the map panel and associated controls
-			_mapUis[0] = onlineatlas.createMapUi (0);
-			
-			// Create mobile navigation
-			onlineatlas.createMobileNavigation ();
-			
-			// Add support for side-by-side comparison
-			onlineatlas.sideBySide ();
 		},
 		
 		
