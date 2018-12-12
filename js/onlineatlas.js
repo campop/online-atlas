@@ -121,9 +121,13 @@ var onlineatlas = (function ($) {
 			// If a URL path is supplied, set the initial form value on first load (so is not applicable to a second side-by-side map)
 			var urlParts = window.location.pathname.split('/');
 			if (urlParts[1] && urlParts[2]) {
-				var field = urlParts[1].toUpperCase ();
-				var year = parseInt (urlParts[2]);
-				if (_settings.fields[field]) {
+				
+				// Check if field is present
+				var field = onlineatlas.fieldPresent (urlParts[1]);
+				if (field) {
+				
+					// If the year is also present, i.e. there is a proper match of field and year, set the default field and year
+					var year = parseInt (urlParts[2]);
 					if ($.inArray (year, _settings.datasets) != -1) {	// https://api.jquery.com/jQuery.inArray/
 						_settings.defaultField = field;
 						_settings.defaultYearId = _settings.datasets.indexOf (year);
@@ -139,6 +143,23 @@ var onlineatlas = (function ($) {
 			
 			// Add support for side-by-side comparison
 			onlineatlas.sideBySide ();
+		},
+		
+		
+		// Determine if the field is present, on a case-insensitive basis
+		fieldPresent: function (fieldFromUrl /* expected to be lower-case */)
+		{
+			// Attempt to match the field by casting both the supplied field and each field in the supported fields to lower case
+			var fieldFound = false;
+			$.each (_settings.fields, function (field, value) {
+				if (fieldFromUrl == field.toLowerCase ()) {
+					fieldFound = field;
+					return;		// Break out of loop; can't use 'return' with $.each to return from the whole function
+				}
+			});
+			
+			// Return the result, whether the field as found, or false
+			return fieldFound;
 		},
 		
 		
