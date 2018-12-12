@@ -148,9 +148,20 @@ var onlineatlas = (function ($) {
 			var year = parseInt (urlParts[2]);
 			if ($.inArray (year, _settings.datasets) == -1) {return false;}	// https://api.jquery.com/jQuery.inArray/
 			
+			// If variations are enabled, check variation is present and valid
+			var variation = false;
+			if (!$.isEmptyObject (_settings.variations)) {
+				if (!urlParts[3]) {return false;}
+				variation = onlineatlas.variationPresent (urlParts[3]);
+				if (!variation) {return false;}
+			}
+			
 			// Set the default field and year
 			_settings.defaultField = field;
 			_settings.defaultYearId = _settings.datasets.indexOf (year);
+			if (variation) {
+				_settings.defaultVariation = variation;
+			}
 		},
 		
 		
@@ -166,8 +177,25 @@ var onlineatlas = (function ($) {
 				}
 			});
 			
-			// Return the result, whether the field as found, or false
+			// Return the result, either the field as found, or false
 			return fieldFound;
+		},
+		
+		
+		// Determine if the variation is present
+		variationPresent: function (variationFromUrl)
+		{
+			// Attempt to match the variation
+			var variationFound = false;
+			$.each (_settings.variations, function (variation, label) {
+				if (variationFromUrl == label.toLowerCase ()) {
+					variationFound = variation;
+					return;		// Break out of loop; can't use 'return' with $.each to return from the whole function
+				}
+			});
+			
+			// Return the result, either the variation as found, or false
+			return variationFound;
 		},
 		
 		
@@ -913,9 +941,14 @@ var onlineatlas = (function ($) {
 			var yearIndex = $('#' + mapUi.yearDivId).val();
 			apiData.year = _settings.datasets[yearIndex];
 			
+			// Append the variation, if supported
+			if (!$.isEmptyObject (_settings.variations)) {
+				apiData.variation = mapUi.variation;
+			}
+			
 			// Update the URL
 			if (mapUi.index == 0) {		// Apply to left only in side-by-side
-				onlineatlas.updateUrl (apiData.field, apiData.year);
+				onlineatlas.updateUrl (apiData);
 			}
 			
 			// Update the export link with the new parameters
@@ -932,11 +965,6 @@ var onlineatlas = (function ($) {
 				$('#' + mapUi.containerDivId).append('<img id="loading" src="' + _baseUrl + '/images/spinner.svg" />');
 			}
 			$('#' + mapUi.containerDivId + ' #loading').show();
-			
-			// Append the variation, if supported
-			if (!$.isEmptyObject (_settings.variations)) {
-				apiData.variation = mapUi.variation;
-			}
 			
 			// Fetch data
 			$.ajax({
@@ -974,13 +1002,18 @@ var onlineatlas = (function ($) {
 		
 		// Function to update the URL, to provide persistency when a link is circulated
 		// Format is /<baseUrl>/<layerId>/<year>/#<mapHashWithStyle> ; side-by-side is not supported
-		updateUrl: function (field, year)
+		updateUrl: function (parameters)
 		{
 			// End if not supported, e.g. IE9
 			if (!history.pushState) {return;}
 			
-			// Set the URL slug
+			// Construct the URL slug
+			var field = parameters.field;
+			var year = parameters.year;
 			var urlSlug = '/' + field.toLowerCase() + '/' + year + '/';
+			if (parameters.variation) {
+				urlSlug += _settings.variations[parameters.variation].toLowerCase() + '/';	// e.g. 'femmale'
+			}
 			
 			// Construct the URL
 			var url = _baseUrl;	// Absolute URL
