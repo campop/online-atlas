@@ -135,21 +135,22 @@ var onlineatlas = (function ($) {
 		// Function to set defaults from the URL
 		defaultsFromUrl: function ()
 		{
+			// Extract the URL into parts
 			var urlParts = window.location.pathname.split('/');
-			if (urlParts[1] && urlParts[2]) {
-				
-				// Check if field is present
-				var field = onlineatlas.fieldPresent (urlParts[1]);
-				if (field) {
-				
-					// If the year is also present, i.e. there is a proper match of field and year, set the default field and year
-					var year = parseInt (urlParts[2]);
-					if ($.inArray (year, _settings.datasets) != -1) {	// https://api.jquery.com/jQuery.inArray/
-						_settings.defaultField = field;
-						_settings.defaultYearId = _settings.datasets.indexOf (year);
-					}
-				}
-			}
+			
+			// Check if field is present and valid
+			if (!urlParts[1]) {return false;}
+			var field = onlineatlas.fieldPresent (urlParts[1]);
+			if (!field) {return false;}
+			
+			// Check the year is also present and valid
+			if (!urlParts[2]) {return false;}
+			var year = parseInt (urlParts[2]);
+			if ($.inArray (year, _settings.datasets) == -1) {return false;}	// https://api.jquery.com/jQuery.inArray/
+			
+			// Set the default field and year
+			_settings.defaultField = field;
+			_settings.defaultYearId = _settings.datasets.indexOf (year);
 		},
 		
 		
