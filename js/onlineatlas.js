@@ -62,7 +62,7 @@ var onlineatlas = (function ($) {
 		
 		// Dataset years
 		datasets: [],	// Will be supplied
-		defaultYearId: 1,
+		defaultDataset: false,
 		
 		// Fields and their labels
 		variations: {},	// Will be supplied
@@ -158,7 +158,7 @@ var onlineatlas = (function ($) {
 			
 			// Set the default field and year
 			_settings.defaultField = field;
-			_settings.defaultYearId = _settings.datasets.indexOf (year);
+			_settings.defaultDataset = year;
 			if (variation) {
 				_settings.defaultVariation = variation;
 			}
@@ -304,7 +304,7 @@ var onlineatlas = (function ($) {
 					$('#mapcontainer1').show ();
 					
 					// Redraw the year control in the first form, to reset the layout sizing
-					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, yearIndex);
+					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').html (yearRangeControl);
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').on('change', function() {	// Re-register to refresh data on any form field change
 						onlineatlas.getData (_mapUis[0]);
@@ -344,7 +344,7 @@ var onlineatlas = (function ($) {
 					$('#mapcontainer1').hide ();
 					
 					// Redraw the year control, to reset the layout sizing
-					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, yearIndex);
+					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').html (yearRangeControl);
 					
 					// Register a handler to dim out options which are not available for the selected year
@@ -617,7 +617,7 @@ var onlineatlas = (function ($) {
 			
 			// Create the year range control
 			mapUi.yearDivId = 'year' + mapUi.index;
-			var yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultYearId);
+			var yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultDataset);
 			
 			// Add the year control to the form
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
@@ -782,8 +782,12 @@ var onlineatlas = (function ($) {
 		
 		
 		// Function to create a year range control, including labels
-		yearRangeControl: function (navDivId, yearDivId, value)
+		yearRangeControl: function (navDivId, yearDivId, defaultDataset)
 		{
+			// Determine the default value
+			if (!defaultDataset) {defaultDataset = _settings.datasets[1];}	// Second by default
+			var value = _settings.datasets.indexOf (defaultDataset);
+			
 			// Determine the width for the labels
 			var maxBoxWidth = $('#' + navDivId).width () - 20 /* scroll bar allowance */ - 30;	// Maximum size of slider
 			var totalLabels = _settings.datasets.length;
