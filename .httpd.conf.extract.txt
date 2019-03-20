@@ -40,6 +40,12 @@
 		php_value memory_limit 100M
 	</Location>
 	
+	# Large file uploads for import page
+	<Location $applicationBaseUrl/import/>
+		php_value upload_max_filesize 100M
+		php_value post_max_size 100M
+	</Location>
+	
 	# Export
 	<Location $applicationBaseUrl/data.csv>
 		php_value auto_prepend_file none
