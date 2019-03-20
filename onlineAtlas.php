@@ -538,7 +538,7 @@ class onlineAtlas extends frontControllerApplication
 		$html = '';
 		
 		# Enable high memory due to GeoJSON size in json_decode
-		ini_set ('memory_limit','400M');
+		ini_set ('memory_limit','500M');
 		
 		# Ensure the temp directory is writable
 		$exportsTmpDir = "{$this->applicationRoot}/exports-tmp";
