@@ -603,6 +603,7 @@ class onlineAtlas extends frontControllerApplication
 			
 			# Remove the shapefile files and containing directory
 			array_map ('unlink', glob ("{$tempDir}/*.*"));	// http://php.net/unlink#109971
+			array_map ('unlink', glob ("{$tempDir}/.*.*"));	// E.g. .esri.gz file
 			rmdir ($tempDir);
 			
 			# Import the GeoJSON contents into the database
