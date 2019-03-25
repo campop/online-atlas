@@ -11,6 +11,7 @@ var onlineatlas = (function ($) {
 	var _baseUrl;
 	var _mapUis = {};
 	var _secondMapLoaded = false;
+	var _variationIds = {};
 	var _title = false;
 	
 	// Settings
@@ -65,11 +66,12 @@ var onlineatlas = (function ($) {
 		defaultDataset: false,
 		
 		// Fields and their labels
-		variations: {},	// Will be supplied
 		fields: {},		// Will be supplied
 		defaultField: '',		// Will be supplied
-		defaultVariation: '',		// Will be supplied
 		nullField: '',
+		variations: {},	// Will be supplied
+		variationsFlattened: {},	// Will be supplied
+		defaultVariations: {},		// Will be supplied
 		
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
 		colourStops: [],		// Will be supplied
@@ -118,6 +120,12 @@ var onlineatlas = (function ($) {
 			// Obtain the base URL
 			_baseUrl = baseUrl;
 			
+			// Create a list of normalised variation form IDs, e.g. 'Some field' becomes 'Somefield', or 'Gender' stays as 'Gender'
+			// #!# Needs to be supplied from server-side to ensure consistency; see equivalent function in onlineAtlas.php
+			if (!$.isEmptyObject (_settings.variations)) {
+				_variationIds = onlineatlas.normaliseVariationIds ();
+			};
+			
 			// If a URL path is supplied, set the initial form value on first load (so is not applicable to a second side-by-side map)
 			onlineatlas.defaultsFromUrl ();
 			
@@ -129,6 +137,20 @@ var onlineatlas = (function ($) {
 			
 			// Add support for side-by-side comparison
 			onlineatlas.sideBySide ();
+		},
+		
+		
+		// Function to create a list of normalised variation form IDs, e.g. 'Some field' becomes 'Somefield', or 'Gender' stays as 'Gender'
+		normaliseVariationIds: function ()
+		{
+			// Normalise each
+			var variationIds = {};
+			$.each (_settings.variations, function (variationsLabel, variations) {
+				variationIds[variationsLabel] = onlineatlas.ucfirst (variationsLabel.toLowerCase().replace (/\W/g, ''));	// See: https://stackoverflow.com/a/9364527/180733
+			});
+			
+			// Return the IDs
+			return variationIds;
 		},
 		
 		
@@ -399,9 +421,14 @@ var onlineatlas = (function ($) {
 			
 			// If enabled, determine the active variation, and create a handler for changes
 			if (!$.isEmptyObject (_settings.variations)) {
-				mapUi.variation = _settings.defaultVariation;	// E.g. _F, _M, etc.
-				$('#' + mapUi.navDivId + ' form input[name="variation"]').on('change', function() {
-					mapUi.variation = onlineatlas.getField (mapUi.navDivId, 'variation');
+				var fieldname;
+				mapUi.variations = [];
+				$.each (_settings.variations, function (variationsLabel, variations) {
+					fieldname = _variationIds[variationsLabel].toLowerCase();
+					mapUi.variations[fieldname] = _settings.defaultVariations[variationsLabel];	// E.g. F, M, etc.
+					$('#' + mapUi.navDivId + ' form input[name="' + fieldname + '"]').on('change', function() {
+						mapUi.variations[fieldname] = onlineatlas.getField (mapUi.navDivId, fieldname);
+					});
 				});
 			}
 			
@@ -625,22 +652,24 @@ var onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form .yearrangecontrol').append (yearRangeControl);
 			
 			// Build variations controls
-			var variationsHtml = '';
 			if (!$.isEmptyObject (_settings.variations)) {
-				$('#' + mapUi.navDivId + ' form').append ('<h3>' + onlineatlas.htmlspecialchars (_settings.variationsLabel) + ':</h3>');
-				variationsHtml += '<p id="variations">';
-				var variationId;
-				$.each (_settings.variations, function (variation, label) {
-					variationId = 'variation' + variation;	// Prepend 'variation' to ensure valid ID
-					variationsHtml += '<span>';
-					variationsHtml += '<input type="radio" name="variation" value="' + variation + '" id="' + variationId + '"' + (variation == _settings.defaultVariation ? ' checked="checked"' : '') + ' />';
-					variationsHtml += '<label for="' + variationId + '">';
-					variationsHtml += onlineatlas.htmlspecialchars (label);
-					variationsHtml += '</label>';
-					variationsHtml += '</span>';
+				$.each (_settings.variations, function (variationsLabel, variations) {
+					var variationsHtml = '';
+					$('#' + mapUi.navDivId + ' form').append ('<h3>' + onlineatlas.htmlspecialchars (variationsLabel) + ':</h3>');
+					variationsHtml += '<p id="variations">';
+					var variationId;
+					$.each (variations, function (variation, label) {
+						variationId = 'variation' + _variationIds[variationsLabel] + variation;	// Prepend 'variation' to ensure valid ID
+						variationsHtml += '<span>';
+						variationsHtml += '<input type="radio" name="' + _variationIds[variationsLabel].toLowerCase() + '" value="' + variation + '" id="' + variationId + '"' + (variation == _settings.defaultVariations[variationsLabel] ? ' checked="checked"' : '') + ' />';
+						variationsHtml += '<label for="' + variationId + '">';
+						variationsHtml += onlineatlas.htmlspecialchars (label);
+						variationsHtml += '</label>';
+						variationsHtml += '</span>';
+					});
+					variationsHtml += '</p>';
+					$('#' + mapUi.navDivId + ' form').append (variationsHtml);
 				});
-				variationsHtml += '</p>';
-				$('#' + mapUi.navDivId + ' form').append (variationsHtml);
 			}
 			
 			// Group the fields
@@ -947,7 +976,11 @@ var onlineatlas = (function ($) {
 			
 			// Append the variation, if supported
 			if (!$.isEmptyObject (_settings.variations)) {
-				apiData.variation = mapUi.variation;
+				var fieldname;
+				$.each (_settings.variations, function (variationsLabel, variations) {
+					fieldname = _variationIds[variationsLabel].toLowerCase();
+					apiData[fieldname] = mapUi.variations[fieldname];
+				});
 			}
 			
 			// Update the URL

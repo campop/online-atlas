@@ -47,13 +47,12 @@ class onlineAtlas extends frontControllerApplication
 			'firstRunMessageHtml' => false,
 			'defaultDataset' => false,
 			'defaultField' => NULL,
-			'defaultVariation' => false,
+			'defaultVariations' => array (),
 			'intervalsMode' => false,
 			'valueUnknown' => false,	// For all decimal fields, special value which represents unknown data
 			'valueUnknownString' => 'Unknown',
 			'colourUnknown' => '#c8c8c8',
-			'variationsLabel' => false,
-			'variations' => array (),
+			'variations' => array (),	// As variation-label => array (field => label), variation-label...
 			'fields' => array (
 				// NB General fields (general=true), several of which are likely to be present, are: REGCNTY, REGDIST, SUBDIST, year
 				'year' => array (
@@ -206,6 +205,9 @@ class onlineAtlas extends frontControllerApplication
 		$this->template['title'] = $this->settings['applicationName'];
 		$this->template['pageHeader'] = $this->settings['pageHeader'];
 		
+		# Flatten variations to create a list to which the main fields will be multiplexed
+		$this->settings['variationsFlattened'] = application::array_key_combinations ($this->settings['variations']);
+		
 		# Set the fields after expansion to deal with variations, which represents the actual database fields
 		$this->fieldsExpanded = $this->fieldsVariationsProcessed ();
 		
@@ -233,8 +235,8 @@ class onlineAtlas extends frontControllerApplication
 	# Function to return the fields, having processed variations
 	private function fieldsVariationsProcessed ()
 	{
-		# If there are no variations, return fields as-is
-		if (!$this->settings['variations']) {
+		# If there are no variations (as flattened), return fields as-is
+		if (!$this->settings['variationsFlattened']) {
 			return $this->settings['fields'];
 		}
 		
@@ -251,9 +253,9 @@ class onlineAtlas extends frontControllerApplication
 				continue;
 			}
 			
-			# For data fields, turn the single field into each variation, e.g. A with variations _F, _M, _B becomes A_F, A_M, A_B
-			foreach ($this->settings['variations'] as $variationSuffix => $variationLabel) {
-				$newFieldId = $fieldId . $variationSuffix;
+			# For data fields, turn the single field into each variation, e.g. A with variations F, M, B becomes A_F, A_M, A_B
+			foreach ($this->settings['variationsFlattened'] as $variationSuffix => $variationLabel) {
+				$newFieldId = $fieldId . '_' . $variationSuffix;
 				$fields[$newFieldId] = $field;
 				
 				# If the field has unavailability data, pick out the relevant index if present, else remove
@@ -361,9 +363,9 @@ class onlineAtlas extends frontControllerApplication
 					datasets: ' . json_encode ($this->settings['datasets']) . ',
 					defaultDataset: ' . ($this->settings['defaultDataset'] ? (is_numeric ($this->settings['defaultDataset']) ? $this->settings['defaultDataset'] : "'{$this->settings['defaultDataset']}'") : 'false') . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
-					defaultVariation: ' . ($this->settings['defaultVariation'] ? "'{$this->settings['defaultVariation']}'" : 'false') . ',
-					variationsLabel: ' . ($this->settings['variationsLabel'] ? "'{$this->settings['variationsLabel']}'" : 'false') . ',
+					defaultVariations: ' . json_encode ($this->settings['defaultVariations']) . ',
 					variations: ' . json_encode ($this->settings['variations']) . ',
+					variationsFlattened: ' . json_encode ($this->settings['variationsFlattened']) . ',
 					fields: ' . json_encode ($this->settings['fields'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ',
 					colourStops: ' . json_encode ($this->settings['colourStops']) . ',
 					intervalsMode: ' . ($this->settings['intervalsMode'] ? 'true' : 'false') . ',
@@ -723,10 +725,22 @@ class onlineAtlas extends frontControllerApplication
 		# Obtain the supplied field
 		$variation = NULL;
 		if ($this->settings['variations']) {
-			$variation = (isSet ($_GET['variation']) && array_key_exists ($_GET['variation'], $this->settings['variations']) ? $_GET['variation'] : false);
-			if (!$variation) {
-				return array ('error' => 'A valid variation must be supplied.');
+			
+			# Determine normalised variation variable names
+			$variationIds = $this->normaliseVariationIds ();
+			
+			# Obtain the variations data
+			$variationsValues = array ();
+			foreach ($variationIds as $variationsLabel => $variationId) {
+				$variationField = strtolower ($variationId);	// E.g. 'gender'
+				if (!isSet ($_GET[$variationField])) {
+					return array ('error' => 'A valid variation must be supplied.');
+				}
+				$variationsValues[$variationsLabel] = (isSet ($_GET[$variationField]) ? $_GET[$variationField] : false);
 			}
+			
+			# Compile the variation values to a single extension
+			$variation = '_' . implode ('_', $variationsValues);
 		}
 		
 		# Construct the BBOX WKT string
@@ -852,6 +866,20 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Return the data
 		return $data;
+	}
+	
+	
+	# Function to create a list of normalised variation form IDs, e.g. 'Some field' becomes 'Somefield', or 'Gender' stays as 'Gender'; PHP equivalent of onlineatlas.js: normaliseVariationIds()
+	private function normaliseVariationIds ()
+	{
+		# Normalise each
+		$variationIds = array ();
+		foreach ($this->settings['variations'] as $variationsLabel => $variations) {
+			$variationIds[$variationsLabel] = ucfirst (preg_replace ('/[\W]+/', '', strtolower ($variationsLabel)));
+		}
+		
+		# Return the IDs
+		return $variationIds;
 	}
 	
 	
