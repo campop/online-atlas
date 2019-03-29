@@ -58,7 +58,7 @@ option.unavailable {color: #bbb;}
 .mapcontainer nav .radiobuttons label {width: 90%;}
 
 /* Expandable menu */
-nav form div.radiobuttons {margin-top: 2em;}
+nav form div.radiobuttons {margin-top: 1em;}
 nav form div.radiobuttons .fieldgroup {display: none;}
 nav form div.radiobuttons h4 {margin-top: 1.2em; margin-bottom: 0.4em; cursor: pointer;}
 nav form div.radiobuttons h4 i {margin-left: 2px; transition-duration: 0.4s;}
