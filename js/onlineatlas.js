@@ -713,7 +713,7 @@ var onlineatlas = (function ($) {
 					radiobuttonsHtml += '<label for="' + fieldId + '">';
 					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
 					if (!isNullField) {
-						radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars (field.description) + '">(?)</a>';
+						radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars ((field.description ? field.description : field.label)) + '">(?)</a>';
 					}
 					radiobuttonsHtml += '</label>';
 					radiobuttonsHtml += '</div>';
