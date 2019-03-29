@@ -299,7 +299,7 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Welcome screen
-	public function home ($aboutPath = false)
+	public function home ($aboutPath = false, $additionalCss = false)
 	{
 		# Start the HTML
 		$html = '
@@ -384,6 +384,13 @@ class onlineAtlas extends frontControllerApplication
 			
 			<div id="mapcontainers"></div>
 		';
+		
+		# Add additional CSS if required
+		if ($additionalCss) {
+			$html .= "\n" . '<style type="text/css">';
+			$html .= "\n" . $additionalCss;
+			$html .= "\n" . '</style>';
+		}
 		
 		# Add text for more details on each field into the page
 		$html .= "\n<div id=\"aboutfields\">";
