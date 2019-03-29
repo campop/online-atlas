@@ -69,6 +69,7 @@ var onlineatlas = (function ($) {
 		fields: {},		// Will be supplied
 		defaultField: '',		// Will be supplied
 		nullField: '',
+		expandableHeadings: false,
 		variations: {},	// Will be supplied
 		variationsFlattened: {},	// Will be supplied
 		defaultVariations: {},		// Will be supplied
@@ -689,7 +690,13 @@ var onlineatlas = (function ($) {
 				
 				// Add heading for this group if required
 				if (heading) {
-					radiobuttonsHtml += '<h4>' + onlineatlas.htmlspecialchars (heading) + ' <i class="fa fa-chevron-circle-right iconrotate"></i></h4>';
+					radiobuttonsHtml += '<h4>' + onlineatlas.htmlspecialchars (heading);
+					if (_settings.expandableHeadings) {
+						radiobuttonsHtml += ' <i class="fa fa-chevron-circle-right iconrotate"></i>';
+					} else {
+						radiobuttonsHtml += ':';
+					}
+					radiobuttonsHtml += '</h4>';
 					radiobuttonsHtml += '<div class="fieldgroup">';
 					selectHtml += '<optgroup label="' + onlineatlas.htmlspecialchars (heading) + ':">';
 					hasGroups = true;
@@ -730,7 +737,7 @@ var onlineatlas = (function ($) {
 			});
 			
 			// Add a container for the radiobuttons
-			radiobuttonsHtml = '<div class="radiobuttons">' + radiobuttonsHtml + '</div>';
+			radiobuttonsHtml = '<div class="radiobuttons' + (_settings.expandableHeadings ? ' expandable' : '') + '">' + radiobuttonsHtml + '</div>';
 			
 			// Assemble the select widget
 			selectHtml = '<select name="field" id="field' + mapUi.index + '">' + selectHtml + '</select>';
@@ -741,7 +748,7 @@ var onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form').append (selectHtml);
 			
 			// Register a slide menu handler, if groupings are present
-			if (hasGroups) {
+			if (_settings.expandableHeadings && hasGroups) {
 				$('.mapcontainer nav#' + mapUi.navDivId + ' form div.radiobuttons h4').click (function (event) {
 					
 					// Fold out menu
@@ -758,7 +765,7 @@ var onlineatlas = (function ($) {
 					event.preventDefault();
 				});
 				
-				// Expand the heading for the default field if required
+				// Expand the heading containing the default field if required
 				if (_settings.defaultField) {
 					if (_settings.fields[_settings.defaultField].grouping) {
 						var radiobuttonId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (_settings.defaultField);

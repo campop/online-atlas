@@ -53,6 +53,7 @@ class onlineAtlas extends frontControllerApplication
 			'valueUnknownString' => 'Unknown',
 			'colourUnknown' => '#c8c8c8',
 			'variations' => array (),	// As variation-label => array (field => label), variation-label...
+			'expandableHeadings' => false,
 			'fields' => array (
 				// NB General fields (general=true), several of which are likely to be present, are: REGCNTY, REGDIST, SUBDIST, year
 				'year' => array (
@@ -363,6 +364,7 @@ class onlineAtlas extends frontControllerApplication
 					datasets: ' . json_encode ($this->settings['datasets']) . ',
 					defaultDataset: ' . ($this->settings['defaultDataset'] ? (is_numeric ($this->settings['defaultDataset']) ? $this->settings['defaultDataset'] : "'{$this->settings['defaultDataset']}'") : 'false') . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
+					expandableHeadings: ' . ($this->settings['expandableHeadings'] ? 'true' : 'false') . ',
 					defaultVariations: ' . json_encode ($this->settings['defaultVariations']) . ',
 					variations: ' . json_encode ($this->settings['variations']) . ',
 					variationsFlattened: ' . json_encode ($this->settings['variationsFlattened']) . ',
