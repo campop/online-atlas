@@ -40,6 +40,7 @@ nav {position: absolute; right: 0; width: 330px; height: 100%; z-index: 1000; ba
 nav form {padding: 20px 10px 30px 15px;}
 nav form h3 {margin: 10px 0 2px;}
 nav form a {color: white; text-decoration: none;}
+nav form #variations {margin-top: 5px;}
 nav form #variations span {display: inline; padding: 4px 6px; border: 1px solid #666; margin-right: 10px; white-space: nowrap;}
 nav form #variations span input, nav form #variations span label {display: inline;}
 
