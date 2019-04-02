@@ -423,11 +423,12 @@ var onlineatlas = (function ($) {
 			// If enabled, determine the active variation, and create a handler for changes
 			if (!$.isEmptyObject (_settings.variations)) {
 				var fieldname;
-				mapUi.variations = [];
+				mapUi.variations = {};
 				$.each (_settings.variations, function (variationsLabel, variations) {
 					fieldname = _variationIds[variationsLabel].toLowerCase();
 					mapUi.variations[fieldname] = _settings.defaultVariations[variationsLabel];	// E.g. F, M, etc.
-					$('#' + mapUi.navDivId + ' form input[name="' + fieldname + '"]').on('change', function() {
+					$('#' + mapUi.navDivId + ' form input[name="' + fieldname + '"]').on('change', function(e) {
+						var fieldname = e.target.name;
 						mapUi.variations[fieldname] = onlineatlas.getField (mapUi.navDivId, fieldname);
 					});
 				});
