@@ -1144,7 +1144,7 @@ var onlineatlas = (function ($) {
 							color: '#777',
 							fillColor: onlineatlas.getColour (feature.properties[mapUi.field], mapUi.field),
 							weight: (mapUi.zoomedOut ? 0 : 1),
-							fillOpacity: 0.7
+							fillOpacity: 0.85
 						};
 					}
 				},
