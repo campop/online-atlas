@@ -1406,8 +1406,16 @@ var onlineatlas = (function ($) {
 			
 			// Compile the HTML
 			var html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].label) + '</h4>';
-			html += '<p>' + onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].description) + '</p>';
+			html += '<p>' + (_settings.fields[mapUi.field].descriptionLegendHtml ? _settings.fields[mapUi.field].descriptionLegendHtml : onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].description)) + '</p>';
 			html += '<table>' + labelsRows.join ('\n') + '</table>';
+			
+			// Add tooltips if <abbr> present in legend extended description
+			if (_settings.fields[mapUi.field].descriptionLegendHtml && (_settings.fields[mapUi.field].descriptionLegendHtml.indexOf ('<abbr>') >= 0)) {
+				$('body').tooltip ({
+					selector: '.legend p abbr',		// Late binding equivalent; see: https://stackoverflow.com/a/10420203/180733
+					track: true
+				});
+			}
 			
 			// Set the HTML
 			$('#' + mapUi.mapDivId + ' .legend').html (html);
