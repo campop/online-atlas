@@ -37,7 +37,7 @@ body .ui-front {z-index: 1000;}
 nav {position: absolute; right: 0; width: 330px; height: 100%; z-index: 1000; background-color: #333; opacity: 0.85; color: white;}
 .activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
 .leaflet-control-layers, .leaflet-control-attribution, .summary {right: 330px;}
-nav form {padding: 20px 10px 30px 15px;}
+nav form {padding: 10px 10px 20px 15px;}
 nav form h3 {margin: 10px 0 2px;}
 nav form a {color: white; text-decoration: none;}
 nav form #variations {margin-top: 5px;}
@@ -54,7 +54,7 @@ input[type="radio"].unavailable, label.unavailable {opacity: 0.5;}
 option.unavailable {color: #bbb;}
 
 /* Overflow for nav */
-.mapcontainer nav {overflow-y: auto;}
+.mapcontainer nav {overflow-y: auto; overflow-x: hidden;}
 .mapcontainer nav .radiobuttons label {width: 90%;}
 
 /* Expandable menu */
