@@ -1396,7 +1396,7 @@ var onlineatlas = (function ($) {
 				$.each (intervals, function (i, label) {
 					labelsRows.push ('<tr><td>' + '<i style="background-color: ' + _settings.colourStops[i] + '; border-color: ' + _settings.colourStops[i] + ';"></i>' + '</td><td>' + onlineatlas.htmlspecialchars (label.replace('-', ' - ')) + '</td></tr>');
 				});
-				labelsRows.push ('<tr><td>' + '<i style="background-color: ' + _settings.colourUnknown + '; border: 1px dashed gray;"></i>' + '</td><td>' + 'Unknown' + '</td></tr>');
+				labelsRows.push ('<tr><td>' + '<i style="background-color: ' + _settings.colourUnknown + '; border: 1px dashed gray;"></i>' + '</td><td>' + onlineatlas.htmlspecialchars (_settings.valueUnknownString) + '</td></tr>');
 				labelsRows = labelsRows.reverse();	// Legends should be shown highest first
 			} else {
 				$.each (intervals, function (key, colour) {
