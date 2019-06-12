@@ -73,7 +73,7 @@ ul.rangelabels.smalllabels li:last-child {border-right: 0;}
 
 /* Export */
 p.export {float: right; border: 1px solid #ccc; border-radius: 4px;}
-p.export a {color: white; display: inline-block; padding: 3px 2px 5px 6px;}
+p.export a {color: white; display: inline-block; padding: 3px 2px 5px 6px !important;}
 p.export a:last-child {padding-left: 0px; padding-right: 6px;}
 p.export a:hover {text-decoration: none;}
 

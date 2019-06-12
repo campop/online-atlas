@@ -93,6 +93,7 @@ var onlineatlas = (function ($) {
 		
 		// Export mode enabled
 		export: true,
+		pdfLink: false,
 		
 		// Welcome message
 		firstRunMessageHtml: ''
@@ -644,6 +645,12 @@ var onlineatlas = (function ($) {
 				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a class="exportcsv" href="#" title="Export the current view (as shown on the map) as raw data in CSV format">Exports: <img src="/images/icons/page_excel.png" alt="" /></a> <a class="exportgeojson" href="#" title="Export the current view (as shown on the map) as raw data in GeoJSON format (for GIS)"><img src="/images/icons/page_code.png" alt="" /></a></p>');
 			}
 			
+			// Create an export link
+			if (_settings.pdfLink) {
+				var exportDivId = 'pdf' + mapUi.index;
+				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a class="pdfmap noautoicon" href="#" title="Download a PDF of this data">Download: <img src="/images/icons/page_white_acrobat.png" alt="" /></a></p>');
+			}
+			
 			// Create the year range control
 			mapUi.yearDivId = 'year' + mapUi.index;
 			var yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultDataset);
@@ -1005,6 +1012,22 @@ var onlineatlas = (function ($) {
 				$('#' + mapUi.navDivId + ' p.export a.exportgeojson').attr('href', geojsonExportUrl);
 			}
 			
+			// Update the PDF link with the new parameters
+			if (_settings.pdfLink) {
+				var requestSerialised = $.param(apiData);
+				var variationsSlug = '';
+				if (!$.isEmptyObject (_settings.variations)) {
+					var variationsComponents = [];
+					$.each (_settings.variations, function (variationsLabel, variations) {
+						fieldname = _variationIds[variationsLabel].toLowerCase();
+						variationsComponents.push (mapUi.variations[fieldname].toLowerCase());
+					});
+					variationsSlug = variationsComponents.join ('_') + '_';
+				}
+				var pdfMapUrl = _baseUrl + '/resources/' + apiData.field.toLowerCase() + '_' + variationsSlug + apiData.year + '.pdf';	// E.g. /resources/bld_m_a_1851.pdf
+				$('#' + mapUi.navDivId + ' p.export a.pdfmap').attr('href', pdfMapUrl);
+			}
+			
 			// Start spinner, initially adding it to the page
 			if (!$('#' + mapUi.containerDivId + ' #loading').length) {
 				$('#' + mapUi.containerDivId).append('<img id="loading" src="' + _baseUrl + '/images/spinner.svg" />');
@@ -1057,7 +1080,7 @@ var onlineatlas = (function ($) {
 			var year = parameters.year;
 			var urlSlug = '/' + field.toLowerCase() + '/' + year + '/';
 			if (parameters.variation) {
-				urlSlug += _settings.variations[parameters.variation].toLowerCase() + '/';	// e.g. 'femmale'
+				urlSlug += _settings.variations[parameters.variation].toLowerCase() + '/';	// e.g. 'female'
 			}
 			
 			// Construct the URL
