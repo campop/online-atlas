@@ -4,10 +4,10 @@
 #   
 #   # Online atlas
 #   Include /path/to/online-atlas/.httpd.conf.extract.txt
-#   Use MacroOnlineAtlas "/public-url/onlineatlas" "/path/to/online-atlas/:/path/to/smarty/:/path/to/php/libraries/" "/path/to/online-atlas" "Online atlas"
+#   Use MacroOnlineAtlas "/public-url/onlineatlas" "/path/to/online-atlas" "Online atlas" "/path/to/online-atlas/:/path/to/smarty/:/path/to/php/libraries/"
 
 
-<Macro MacroOnlineAtlas $applicationBaseUrl $includePath $repoPath $name>
+<Macro MacroOnlineAtlas $applicationBaseUrl $repoPath $name $includePath>
 	
 	<Location $applicationBaseUrl/>
 		php_value include_path "$includePath"
