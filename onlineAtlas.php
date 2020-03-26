@@ -23,6 +23,8 @@ class onlineAtlas extends frontControllerApplication
 			'databaseStrictWhere' => true,
 			'nativeTypes' => true,
 			'administrators' => true,
+			'styleHeader' => '/style/header.html',
+			'styleFooter' => '/style/footer.html',
 			'geocoderApiKey' => NULL,
 			// 'importsSectionsMode' => true,
 			'datasets' => NULL,	// Must supply an array of datasets
@@ -190,6 +192,10 @@ class onlineAtlas extends frontControllerApplication
 	# Additional processing
 	public function main ()
 	{
+		# Set the style
+		$this->template['styleHeader'] = $this->settings['styleHeader'];
+		$this->template['styleFooter'] = $this->settings['styleFooter'];
+		
 		# Set the body class and action
 		$this->template['bodyClass'] = $this->settings['bodyClass'];
 		$this->template['action'] = $this->action;

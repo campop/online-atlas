@@ -1,4 +1,4 @@
-{include file="../../style/header.html"}
+{include file="../..{$styleHeader}"}
 
 
 
@@ -9,5 +9,5 @@
 
 
 
+{include file="../..{$styleFooter}"}
 
-{include file="../../style/footer.html"}
