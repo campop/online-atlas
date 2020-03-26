@@ -1,4 +1,6 @@
-{include file="../..{$styleHeader}"}
+{if ($styleHeader)}
+	{include file="../..{$styleHeader}"}
+{/if}
 
 
 
@@ -8,6 +10,6 @@
 
 
 
-
-{include file="../..{$styleFooter}"}
-
+{if ($styleFooter)}
+	{include file="../..{$styleFooter}"}
+{/if}
