@@ -33,8 +33,8 @@
 	# Route all virtual requests arising from HTML5 pushState URLs to main page
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^/([_a-z0-9]+)/([0-9]{4})/$ /index.html?field=$1&year=$2 [L,QSA]
-	RewriteRule ^/([_a-z0-9]+)/([0-9]{4})/([a-z]+)/$ /index.html?field=$1&year=$2&variation=$3 [L,QSA]
+	RewriteRule ^$applicationBaseUrl/([_a-z0-9]+)/([0-9]{4})/$ $applicationBaseUrl/index.html?field=$1&year=$2 [L,QSA]
+	RewriteRule ^$applicationBaseUrl/([_a-z0-9]+)/([0-9]{4})/([a-z]+)/$ $applicationBaseUrl/index.html?field=$1&year=$2&variation=$3 [L,QSA]
 	
 	<Location $applicationBaseUrl/>
 		php_value memory_limit 100M
