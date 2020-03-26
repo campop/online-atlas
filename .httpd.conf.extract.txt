@@ -7,13 +7,19 @@
 #   Use MacroOnlineAtlas "/public-url/onlineatlas" "/path/to/online-atlas" "Online atlas" "/path/to/online-atlas/:/path/to/smarty/:/path/to/php/libraries/"
 
 
-<Macro MacroOnlineAtlas $applicationBaseUrl $repoPath $name $includePath>
+<Macro MacroOnlineAtlas $applicationBaseUrl $localRepoPath $repoPath $name $includePath>
 	
 	<Location $applicationBaseUrl/>
 		php_value include_path "$includePath"
 	</Location>
 	
-	# Enable assets
+	# Local assets
+	Alias $applicationBaseUrl/images/about/ $localRepoPath/images/about/
+	Alias $applicationBaseUrl/images/logos/ $localRepoPath/images/logos/
+	Alias $applicationBaseUrl/images/preview.png $localRepoPath/images/preview.png
+	Alias $applicationBaseUrl/resources/ $localRepoPath/resources/
+	
+	# Central assets
 	#!# Move to an htdocs/ folder
 	Alias $applicationBaseUrl/robots.txt $repoPath/robots.txt
 	Alias $applicationBaseUrl/css/ $repoPath/css/
