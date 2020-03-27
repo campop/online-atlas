@@ -57,6 +57,7 @@ class onlineAtlas extends frontControllerApplication
 			'colourUnknown' => '#c8c8c8',
 			'variations' => array (),	// As variation-label => array (field => label), variation-label...
 			'expandableHeadings' => false,
+			'enableFullDescriptions' => true,
 			'fields' => array (
 				// NB General fields (general=true), several of which are likely to be present, are: REGCNTY, REGDIST, SUBDIST, year
 				'year' => array (
@@ -383,7 +384,8 @@ class onlineAtlas extends frontControllerApplication
 					export: ' . ($this->settings['downloadFilenameBase'] ? 'true' : 'false') . ',
 					pdfLink: ' . ($this->settings['pdfLink'] ? 'true' : 'false') . ',
 					firstRunMessageHtml: \'' . $this->settings['firstRunMessageHtml'] . '\',
-					nullField: ' . ($this->settings['nullField'] ? "'{$this->settings['nullField']}'" : 'false') . '
+					nullField: ' . ($this->settings['nullField'] ? "'{$this->settings['nullField']}'" : 'false') . ',
+					enableFullDescriptions: ' . ($this->settings['enableFullDescriptions'] ? 'true' : 'false') . '
 				}
 				
 				$(function() {

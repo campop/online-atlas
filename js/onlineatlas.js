@@ -74,6 +74,9 @@ var onlineatlas = (function ($) {
 		variationsFlattened: {},	// Will be supplied
 		defaultVariations: {},		// Will be supplied
 		
+		// Full descriptions
+		enableFullDescriptions: true,
+		
 		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
 		colourStops: [],		// Will be supplied
 		colourUnknown: false,	// Will be supplied
@@ -727,8 +730,10 @@ var onlineatlas = (function ($) {
 					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldId + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
 					radiobuttonsHtml += '<label for="' + fieldId + '">';
 					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
-					if (!isNullField) {
-						radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars ((field.description ? field.description : field.label)) + '">(?)</a>';
+					if (_settings.enableFullDescriptions) {
+						if (!isNullField) {
+							radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars ((field.description ? field.description : field.label)) + '">(?)</a>';
+						}
 					}
 					radiobuttonsHtml += '</label>';
 					radiobuttonsHtml += '</div>';
