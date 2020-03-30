@@ -941,8 +941,8 @@ class onlineAtlas extends frontControllerApplication
 					if ($this->settings['valueUnknown']) {
 						if (floatval ($data[$index][$field]) == $this->settings['valueUnknown']) {
 							$data[$index][$field] = $this->settings['valueUnknownString'];
+							continue;
 						}
-						continue;
 					}
 					
 					# Format numbers to specified decimal places, removing trailing zeroes
