@@ -1373,6 +1373,11 @@ var onlineatlas = (function ($) {
 				}
 			}
 			
+			// If there is no name for the geographic field, set a generic label
+			if (feature.properties[geographicField] == null) {
+				feature.properties[geographicField] = '[Unknown place name]';
+			}
+			
 			// Set the value, rewriting NULL to the specified message
 			var value = '<strong>' + feature.properties[field] + '</strong>';
 			if (feature.properties[field] == null) {
