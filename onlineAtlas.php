@@ -670,6 +670,13 @@ class onlineAtlas extends frontControllerApplication
 				unset ($feature['properties'][$fieldname]);
 			}
 			
+			# Handle division-by-zero errors in the data
+			foreach ($feature['properties'] as $key => $value) {
+				if ($value == '#DIV/0!') {
+					$feature['properties'][$key] = NULL;
+				}
+			}
+			
 			# Filter properties for supported fields only
 			$properties = application::arrayFields ($feature['properties'], array_keys ($this->fieldsExpanded));
 			
