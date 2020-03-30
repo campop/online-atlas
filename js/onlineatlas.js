@@ -1161,7 +1161,7 @@ var onlineatlas = (function ($) {
 				style: function (feature) {
 					if (feature.properties[mapUi.field] == null) {
 						return {
-							color: 'black',
+							color: '#333',
 							dashArray: '5, 5',
 							fillColor: 'white',
 							weight: (mapUi.zoomedOut ? 0 : 1),
