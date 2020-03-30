@@ -162,8 +162,14 @@ var onlineatlas = (function ($) {
 		// Function to set defaults from the URL
 		defaultsFromUrl: function ()
 		{
+			// Obtain the URL path
+			var path = window.location.pathname;
+			
+			// Remove the baseUrl
+			path = path.slice (_baseUrl.length);
+			
 			// Extract the URL into parts
-			var urlParts = window.location.pathname.split('/');
+			var urlParts = path.split('/');
 			
 			// Check if field is present and valid
 			if (!urlParts[1]) {return false;}
