@@ -1216,6 +1216,18 @@ var onlineatlas = (function ($) {
 			// Create a simpler variable for the intervals field
 			var intervals = _settings.fields[field].intervals;
 			
+			// For a wildcard, return either the wildcard colour if there is a value, or the unknown value if not
+			/* Example structure - note that the second value (NULL) is ignored, but NULL will then be styled in the legend as a dashed transparent box
+				'intervalsWildcard' => 'Town (by name)',
+				'intervals' => array (
+					'Town (by name)'	=> 'blue',
+					'Other areas'		=> NULL,
+				),
+			*/
+			if (_settings.fields[field].hasOwnProperty ('intervalsWildcard')) {
+				return (value ? intervals[_settings.fields[field].intervalsWildcard] : _settings.colourUnknown);
+			}
+			
 			// If the intervals is an array, i.e. standard list of colour stops, loop until found
 			if (intervals[0]) {		// Simple, quick check
 				
@@ -1439,7 +1451,7 @@ var onlineatlas = (function ($) {
 				labelsRows = labelsRows.reverse();	// Legends should be shown highest first
 			} else {
 				$.each (intervals, function (key, colour) {
-					labelsRows.push ('<tr><td>' + '<i style="background: ' + colour + '"></i>' + '</td><td>' + onlineatlas.htmlspecialchars (onlineatlas.ucfirst (key)) + '</td></tr>');
+					labelsRows.push ('<tr><td>' + '<i style="background: ' + colour + ';' + (colour == null ? ' border: 1px dashed gray;' : '') + '"></i>' + '</td><td>' + onlineatlas.htmlspecialchars (onlineatlas.ucfirst (key)) + '</td></tr>');
 				});
 			}
 			
