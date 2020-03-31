@@ -1148,7 +1148,10 @@ var onlineatlas = (function ($) {
 						mouseout: function (e) {
 							
 							// Reset the style
-							mapUi.dataLayer.resetStyle (e.target);
+							var thisLayer = e.target;
+							thisLayer.setStyle({
+								weight: (mapUi.zoomedOut ? 0 : 1)
+							});
 							
 							// Update the summary box
 							mapUi.summary.update (mapUi.field, null, mapUi.currentZoom);
@@ -1163,7 +1166,6 @@ var onlineatlas = (function ($) {
 				},
 				
 				// Style: base the colour on the specified colour field
-				// NB this has to be inlined, and cannot be refactored to a 'setStyle' method, as the field is needed as a parameter
 				style: function (feature) {
 					if (feature.properties[mapUi.field] == null) {
 						return {
