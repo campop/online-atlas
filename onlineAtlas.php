@@ -156,10 +156,10 @@ class onlineAtlas extends frontControllerApplication
 		# Define the base SQL
 		$sql = "
 			CREATE TABLE administrators (
-			  username varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Username',
-			  active enum('','Yes','No') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Yes' COMMENT 'Currently active?',
+			  username varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Username',
+			  active enum('','Yes','No') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Yes' COMMENT 'Currently active?',
 			  PRIMARY KEY (username)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='System administrators';
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='System administrators';
 			
 			CREATE TABLE `data` (
 			  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Automatic key' PRIMARY KEY,
@@ -171,7 +171,7 @@ class onlineAtlas extends frontControllerApplication
 			  `geometry` GEOMETRY NOT NULL COMMENT 'Geometry',
 			  INDEX(`year`)
 			  " . ($this->settings['closeDatasets'] ? ", INDEX(`close`)" : '') . "
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Data';
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Data';
 		";
 		
 		# Return the SQL
