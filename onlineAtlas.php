@@ -316,7 +316,7 @@ class onlineAtlas extends frontControllerApplication
 			<!-- Main stylesheet -->
 			<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css?6" type="text/css">
 			
-			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+			<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 			<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css">
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-touch-events/1.0.9/jquery.mobile-events.js"></script>
@@ -559,7 +559,7 @@ class onlineAtlas extends frontControllerApplication
 		$html = '';
 		
 		# Enable high memory due to GeoJSON size in json_decode
-		ini_set ('memory_limit','1000M');
+		ini_set ('memory_limit', '1000M');
 		
 		# Ensure the temp directory is writable
 		$exportsTmpDir = "{$this->applicationRoot}/exports-tmp";
