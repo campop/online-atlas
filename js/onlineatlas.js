@@ -1312,7 +1312,7 @@ var onlineatlas = (function ($) {
 				}
 				
 				// Unknown/other, if other checks have not matched
-				console.log ('Unmatched value: ' + value);
+				console.log ('Unmatched value in layer ' + field + ': ' + value);
 				return _settings.colourUnknown;
 				
 			// For pure key-value pair definition objects, read the value off
