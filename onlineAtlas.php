@@ -670,9 +670,10 @@ class onlineAtlas extends frontControllerApplication
 				unset ($feature['properties'][$fieldname]);
 			}
 			
+
 			# Handle division-by-zero errors in the data
 			foreach ($feature['properties'] as $key => $value) {
-				if ($value == '#DIV/0!') {
+				if ($value === '#DIV/0!') {		// Have to use exact equality comparator, as otherwise (float) 0 matches string '#DIV/0!'
 					$feature['properties'][$key] = NULL;
 				}
 			}
