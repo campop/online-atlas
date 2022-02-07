@@ -689,7 +689,8 @@ class onlineAtlas extends frontControllerApplication
 			}
 			
 			# Add the geometry
-			$insert['geometry'] = "ST_GeomFromGeoJSON('" . json_encode ($feature['geometry']) . "')";
+			#!# Upgrade all ST_ functions to use 4326 rather than 0
+			$insert['geometry'] = "ST_GeomFromGeoJSON('" . json_encode ($feature['geometry']) . "', 1, 0)";
 			
 			# Register the insert
 			$inserts[] = $insert;
