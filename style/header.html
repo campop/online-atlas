@@ -19,9 +19,9 @@
   <link rel="apple-touch-icon" href="/favicon.ico" />
 
   <!-- CSS : implied media="all" -->
-  <link rel="stylesheet" href="/style/project-light/stylesheets/full-stylesheet.css" />
-  <link rel="stylesheet" href="/style/fixes.css" />
-  <link rel="stylesheet" href="/style/project-light/stylesheets/apps.css" />
+  <link rel="stylesheet" href="{$baseUrl}/style/project-light/stylesheets/full-stylesheet.css" />
+  <link rel="stylesheet" href="{$baseUrl}/style/fixes.css" />
+  <link rel="stylesheet" href="{$baseUrl}/style/project-light/stylesheets/apps.css" />
   
   <link rel="stylesheet" href="/sitetech/generic.css" />
   
@@ -39,7 +39,7 @@
 		<div class="campl-wrap clearfix">	
 			<div class="campl-header-container campl-column10" id="global-header-controls">
 				<a href="https://www.cam.ac.uk/" class="campl-main-logo">
-					<img alt=""  src="/style/project-light/images/interface/main-logo-small.png" />
+					<img alt=""  src="{$baseUrl}/style/project-light/images/interface/main-logo-small.png" />
 				</a>
 			</div>
 								
@@ -56,8 +56,8 @@
 					
 
 <!--					<p class="right">
-						<a title="find us on Facebook" href="https://www.facebook.com/"><img alt="Follow us on Facebook" src="/images/facebook.png" width="32" height="32" border="0" /></a>&nbsp;
-						<a title="follow me on twitter" href="https://www.twitter.com/"><img alt="Follow us on Twitter" src="/images/twitter.png" width="32" height="32" border="0" /></a>
+						<a title="Find us on Facebook" href="https://www.facebook.com/"><img alt="Follow us on Facebook" src="{$baseUrl}/images/facebook.png" width="32" height="32" border="0" /></a>&nbsp;
+						<a title="Follow me on twitter" href="https://www.twitter.com/"><img alt="Follow us on Twitter" src="{$baseUrl}/images/twitter.png" width="32" height="32" border="0" /></a>
 					</p>
 -->
 					
@@ -95,16 +95,16 @@
 		<div class="campl-local-navigation-container">
 
 			<ul class="campl-unstyled-list">
-				<li><span><a href="/">Home: Map</a></span></li>
-				<li><a href="/about/">Overview</a></li>
-				<li><a href="/resources/">Resources</a></li>
-				<li><a href="/acknowledgements/">Acknowledgements</a></li>
-				<li><a href="/contacts/">Contact us</a></li>
+				<li><span><a href="{$baseUrl}/">Home: Map</a></span></li>
+				<li><a href="{$baseUrl}/about/">Overview</a></li>
+				<li><a href="{$baseUrl}/resources/">Resources</a></li>
+				<li><a href="{$baseUrl}/acknowledgements/">Acknowledgements</a></li>
+				<li><a href="{$baseUrl}/contacts/">Contact us</a></li>
 				{if ($userIsAdministrator)}
-					<li><a href="/import/">Import data</a></li>
+					<li><a href="{$baseUrl}/import/">Import data</a></li>
 				{/if}
 				{if ($userIsAdministrator)}
-					<li><a href="/admin.html">Admin</a></li>
+					<li><a href="{$baseUrl}/admin.html">Admin</a></li>
 				{/if}
 			</ul>
 		</div>

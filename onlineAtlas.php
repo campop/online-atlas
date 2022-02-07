@@ -407,7 +407,9 @@ class onlineAtlas extends frontControllerApplication
 		# Add text for more details on each field into the page
 		$html .= "\n<div id=\"aboutfields\">";
 		$file = ($aboutPath ? $aboutPath : $this->applicationRoot) . '/about.html';
-		$html .= file_get_contents ($file);
+		$fileContents = file_get_contents ($file);
+		$fileContents = str_replace ('{$baseUrl}', $this->baseUrl, $fileContents);
+		$html .= $fileContents;
 		$html .= "\n</div>";
 		
 		# Templatise
@@ -443,7 +445,9 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Load and show the HTML
 		$file = ($path ? $path : $this->applicationRoot) . '/about.html';
-		$html .= file_get_contents ($file);
+		$fileContents = file_get_contents ($file);
+		$fileContents = str_replace ('{$baseUrl}', $this->baseUrl, $fileContents);
+		$html .= $fileContents;
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
@@ -462,7 +466,9 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Load and show the HTML
 		$file = ($path ? $path : $this->applicationRoot) . '/resources.html';
-		$html .= file_get_contents ($file);
+		$fileContents = file_get_contents ($file);
+		$fileContents = str_replace ('{$baseUrl}', $this->baseUrl, $fileContents);
+		$html .= $fileContents;
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
@@ -481,7 +487,9 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Load and show the HTML
 		$file = ($path ? $path : $this->applicationRoot) . '/acknowledgements.html';
-		$html .= file_get_contents ($file);
+		$fileContents = file_get_contents ($file);
+		$fileContents = str_replace ('{$baseUrl}', $this->baseUrl, $fileContents);
+		$html .= $fileContents;
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
@@ -500,7 +508,9 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Load and show the HTML
 		$file = ($path ? $path : $this->applicationRoot) . '/contacts.html';
-		$html .= file_get_contents ($file);
+		$fileContents = file_get_contents ($file);
+		$fileContents = str_replace ('{$baseUrl}', $this->baseUrl, $fileContents);
+		$html .= $fileContents;
 		
 		# Add the feedback form
 		$this->template['feedbackform'] = parent::feedback (NULL, NULL, $echoHtml = false);
