@@ -323,7 +323,7 @@ class onlineAtlas extends frontControllerApplication
 			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/leaflet/dist/leaflet.css" />
 			<script src="' . $this->baseUrl . '/js/lib/leaflet/dist/leaflet.js"></script>
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/geocoder/geocoder.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/geocoder.js"></script>
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-fullhash/leaflet-fullHash.js"></script>
 			
