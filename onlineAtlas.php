@@ -653,9 +653,6 @@ class onlineAtlas extends frontControllerApplication
 		$string = file_get_contents ($geojsonFilename);
 		$geojson = json_decode ($string, true);
 		
-		# Load conversion library
-		require_once ('lib/geojson2spatialHelper.class.php');
-		
 		# Assemble as a set of inserts
 		$inserts = array ();
 		foreach ($geojson['features'] as $index => $feature) {
@@ -673,7 +670,6 @@ class onlineAtlas extends frontControllerApplication
 				unset ($feature['properties'][$fieldname]);
 			}
 			
-
 			# Handle division-by-zero errors in the data
 			foreach ($feature['properties'] as $key => $value) {
 				if ($value === '#DIV/0!') {		// Have to use exact equality comparator, as otherwise (float) 0 matches string '#DIV/0!'
@@ -693,7 +689,7 @@ class onlineAtlas extends frontControllerApplication
 			}
 			
 			# Add the geometry
-			$insert['geometry'] = "GeomFromText('" . geojson2spatial::geojsonGeometry2wkt ($feature['geometry']) . "')";
+			$insert['geometry'] = "ST_GeomFromGeoJSON('" . json_encode ($feature['geometry']) . "')";
 			
 			# Register the insert
 			$inserts[] = $insert;
