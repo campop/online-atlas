@@ -5,3 +5,8 @@
 !/tmp/templates_tpl/
 /tmp/templates_tpl/*
 !/tmp/templates_tpl/README.txt
+
+# JS package management
+/js/lib/*
+!/js/lib/geocoder/
+/yarn-error.log

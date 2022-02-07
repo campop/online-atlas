@@ -1,7 +1,6 @@
 <?php
 
 # Class to create the online atlas
-
 require_once ('frontControllerApplication.php');
 class onlineAtlas extends frontControllerApplication
 {
@@ -316,42 +315,41 @@ class onlineAtlas extends frontControllerApplication
 			<!-- Main stylesheet -->
 			<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css?6" type="text/css">
 			
-			<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+			<script src="' . $this->baseUrl . '/js/lib/jquery/dist/jquery.min.js"></script>
 			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 			<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css">
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-touch-events/1.0.9/jquery.mobile-events.js"></script>
+			<script src="' . $this->baseUrl . '/js/lib/@benmajor/jquery-touch-events/src/jquery.mobile-events.min.js"></script>
 			
-			<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-			<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/leaflet/dist/leaflet.css" />
+			<script src="' . $this->baseUrl . '/js/lib/leaflet/dist/leaflet.js"></script>
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/geocoder/geocoder.js"></script>
 			
-			<!--<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-fullHash/leaflet-fullHash.js"></script>-->
-			<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-hash/0.2.1/leaflet-hash.min.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-fullhash/leaflet-fullHash.js"></script>
 			
 			<!-- Leaflet-active-area; see: https://github.com/Mappy/Leaflet-active-area -->
-			<script src="' . $this->baseUrl . '/js/lib/Leaflet-active-area/src/leaflet.activearea.js" charset="utf-8"></script>
+			<script src="' . $this->baseUrl . '/js/lib/leaflet-active-area/src/leaflet.activearea.js"></script>
 			
 			<!-- Cookie support -->
-			<script src="' . $this->baseUrl . '/js/lib/js-cookie/js.cookie.min.js"></script>
+			<script src="' . $this->baseUrl . '/js/lib/js-cookie/src/js.cookie.js"></script>
 			
 			<!-- Vex dialogs; see: http://github.hubspot.com/vex/ -->
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/js/vex.combined.min.js"></script>
+			<script src="' . $this->baseUrl . '/js/lib/vex-js/dist/js/vex.combined.min.js"></script>
 			<script>vex.defaultOptions.className = \'vex-theme-plain\'</script>
-			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex.min.css" />
-			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex-theme-plain.min.css" />
+			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/vex-js/dist/css/vex.css" />
+			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/vex-js/dist/css/vex-theme-plain.css" />
 			
 			<!-- Full screen control; see: https://github.com/Leaflet/Leaflet.fullscreen -->
-			<script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js"></script>
-			<link href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css" rel="stylesheet" />
+			<script src="' . $this->baseUrl . '/js/lib/leaflet-fullscreen/dist/Leaflet.fullscreen.min.js"></script>
+			<link href="' . $this->baseUrl . '/js/lib/leaflet-fullscreen/dist/leaflet.fullscreen.css" rel="stylesheet" />
 			
 			<!-- Geolocation control; see: https://github.com/domoritz/leaflet-locatecontrol -->
-			<script src="' . $this->baseUrl . '/js/lib/leaflet-locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
-			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/leaflet-locatecontrol/dist/L.Control.Locate.min.css" />
-			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+			<script src="' . $this->baseUrl . '/js/lib/leaflet.locatecontrol//dist/L.Control.Locate.min.js"></script>
+			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/font-awesome/css/font-awesome.min.css">
 			
 			<!-- Side-by-side sync -->
-			<script src="' . $this->baseUrl . '/js/lib/Leaflet.Sync/L.Map.Sync.js" charset="utf-8"></script>
+			<script src="' . $this->baseUrl . '/js/lib/leaflet.sync/L.Map.Sync.js"></script>
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			
