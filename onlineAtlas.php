@@ -788,7 +788,12 @@ class onlineAtlas extends frontControllerApplication
 			$fields[] = 'ST_Y(ST_Centroid(geometry)) AS latitude';
 			$fields[] = 'ST_X(ST_Centroid(geometry)) AS longitude';
 		} else {
-			$fields[] = 'ST_AsGeoJSON(geometry) AS geometry';
+			if ($zoomedOut && !$exportCsv) {
+				# Simplify the lines to reduce data volume
+				$fields[] = 'ST_AsGeoJSON(ST_Simplify(geometry, 0.01)) AS geometry';	// 0.01 is approx 1,000m; see: https://en.wikipedia.org/wiki/Decimal_degrees
+			} else {
+				$fields[] = 'ST_AsGeoJSON(geometry) AS geometry';
+			}
 		}
 		$fields = implode (', ', $fields);
 		
@@ -849,11 +854,6 @@ class onlineAtlas extends frontControllerApplication
 		# Convert to GeoJSON
 		$data = $this->datasetToGeojson ($data);
 		
-		# Simplify the lines to reduce data volume
-		#!# This should really be done before the GeoJSON stage (and closeModeSimplifyFar removed/modified), as geojsonRenderer::unpackPointsCSV function is very memory-intensive; though ultimately, ST_Simplify would avoid large amounts of data entirely
-		if ($zoomedOut) {
-			$data = $this->simplifyLines ($data);
-		}
 		
 		# GeoJSON export; essentially a standard GeoJSON API output but with Content-Disposition to push as file
 		if ($exportGeojson) {
@@ -1052,39 +1052,6 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Return the GeoJSON
 		return $geojson;
-	}
-	
-	
-	# Function to simplify lines; this is a wrapper to the Douglas-Peucker algorithm library
-	#!# Migrate to ST_Simplify available in MySQL 5.7: https://dev.mysql.com/doc/refman/5.7/en/spatial-convenience-functions.html#function_st-simplify
-	private function simplifyLines ($data, $thresholdMetres = 1000)
-	{
-		# Load the library
-		require_once ('lib/simplifyLineHelper.class.php');
-		$simplifyLine = new simplifyLine ();
-		
-		# Simplify each feature
-		foreach ($data['features'] as $featureIndex => $feature) {
-			switch ($feature['geometry']['type']) {
-					
-				case 'Polygon':
-					foreach ($feature['geometry']['coordinates'] as $coordinateSetIndex => $coordinates) {
-						$data['features'][$featureIndex]['geometry']['coordinates'][$coordinateSetIndex] = $simplifyLine->straighten ($coordinates, $thresholdMetres);
-					}
-					break;
-					
-				case 'MultiPolygon':
-					foreach ($feature['geometry']['coordinates'] as $polygonIndex => $polygons) {
-						foreach ($polygons as $coordinateSetIndex => $coordinates) {
-							$data['features'][$featureIndex]['geometry']['coordinates'][$polygonIndex][$coordinateSetIndex] = $simplifyLine->straighten ($coordinates, $thresholdMetres);
-						}
-					}
-					break;
-			}
-		}
-		
-		# Return the data
-		return $data;
 	}
 }
 
