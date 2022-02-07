@@ -21,6 +21,7 @@ Dependencies
 
 * [application.php application support library](https://download.geog.cam.ac.uk/projects/application/)
 * [frontControllerApplication.php front controller application implementation library](https://download.geog.cam.ac.uk/projects/frontcontrollerapplication/)
+* geojsonRenderer.class.php
 * [ultimateForm.php form library](https://download.geog.cam.ac.uk/projects/ultimateform/)
 * [Smarty](https://www.smarty.net/)
 * Yarn package manager
