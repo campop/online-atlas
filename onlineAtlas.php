@@ -689,7 +689,7 @@ class onlineAtlas extends frontControllerApplication
 			}
 			
 			# Add the geometry
-			#!# Upgrade all ST_ functions to use 4326 rather than 0
+			#!# Upgrade all ST_ functions to use SRID=4326 rather than SRID=0, when MySQL has support in ST_Centroid for SRID=4326
 			$insert['geometry'] = "ST_GeomFromGeoJSON('" . json_encode ($feature['geometry']) . "', 1, 0)";
 			
 			# Register the insert
