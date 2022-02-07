@@ -353,11 +353,6 @@ class onlineAtlas extends frontControllerApplication
 			<!-- Side-by-side sync -->
 			<script src="' . $this->baseUrl . '/js/lib/Leaflet.Sync/L.Map.Sync.js" charset="utf-8"></script>
 			
-			<!-- IE9 polyfill -->
-			<!--[if lte IE 9]>
-				<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/4.0.1/placeholders.min.js"></script>
-			<![endif]-->
-			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/onlineatlas.js?6"></script>
