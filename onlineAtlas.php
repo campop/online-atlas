@@ -813,7 +813,7 @@ class onlineAtlas extends frontControllerApplication
 				{$fields}
 			FROM {$this->settings['database']}.{$this->settings['table']}
 			WHERE
-				MBRIntersects(geometry, ST_GeomFromText('{$bboxGeom}') )
+				ST_Intersects(geometry, ST_GeomFromText('{$bboxGeom}') )
 				AND year = {$year}
 				{$closeSql}
 			{$orderBySql}
