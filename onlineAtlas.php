@@ -788,7 +788,7 @@ class onlineAtlas extends frontControllerApplication
 			$fields[] = 'ST_Y(ST_Centroid(geometry)) AS latitude';
 			$fields[] = 'ST_X(ST_Centroid(geometry)) AS longitude';
 		} else {
-			$fields[] = 'ST_AsText(geometry) AS geometry';
+			$fields[] = 'ST_AsGeoJSON(geometry) AS geometry';
 		}
 		$fields = implode (', ', $fields);
 		
@@ -847,14 +847,7 @@ class onlineAtlas extends frontControllerApplication
 		}
 		
 		# Convert to GeoJSON
-		require_once ('geojsonRenderer.class.php');
-		$geojsonRenderer = new geojsonRenderer ();
-		foreach ($data as $id => $location) {
-			$properties = $location;
-			unset ($properties['geometry']);
-			$geojsonRenderer->geometryWKT ($location['geometry'], $properties);
-		}
-		$data = $geojsonRenderer->getData ();
+		$data = $this->datasetToGeojson ($data);
 		
 		# Simplify the lines to reduce data volume
 		#!# This should really be done before the GeoJSON stage (and closeModeSimplifyFar removed/modified), as geojsonRenderer::unpackPointsCSV function is very memory-intensive; though ultimately, ST_Simplify would avoid large amounts of data entirely
@@ -1034,6 +1027,31 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Unknown/other, if other checks have not matched
 		return NULL;	// Unmatched value
+	}
+	
+	
+	# Function to convert a dataset to GeoJSON
+	private function datasetToGeojson ($dataset)
+	{
+		# Start the GeoJSON
+		$geojson = array (
+			'type'		=> 'GeometryCollection',
+			'features'	=> array (),
+		);
+		
+		# Add each feature
+		foreach ($dataset as $feature) {
+			$properties = $feature;
+			unset ($properties['geometry']);
+			$geojson['features'][] = array (
+				'type'			=> 'Feature',
+				'properties'	=> $properties,
+				'geometry'		=> json_decode ($feature['geometry'], true),
+			);
+		}
+		
+		# Return the GeoJSON
+		return $geojson;
 	}
 	
 	
