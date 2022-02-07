@@ -852,7 +852,7 @@ class onlineAtlas extends frontControllerApplication
 		}
 		
 		# Convert to GeoJSON
-		$data = $this->datasetToGeojson ($data);
+		$data = application::datasetToGeojson ($data);
 		
 		
 		# GeoJSON export; essentially a standard GeoJSON API output but with Content-Disposition to push as file
@@ -1027,31 +1027,6 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Unknown/other, if other checks have not matched
 		return NULL;	// Unmatched value
-	}
-	
-	
-	# Function to convert a dataset to GeoJSON
-	private function datasetToGeojson ($dataset)
-	{
-		# Start the GeoJSON
-		$geojson = array (
-			'type'		=> 'GeometryCollection',
-			'features'	=> array (),
-		);
-		
-		# Add each feature
-		foreach ($dataset as $feature) {
-			$properties = $feature;
-			unset ($properties['geometry']);
-			$geojson['features'][] = array (
-				'type'			=> 'Feature',
-				'properties'	=> $properties,
-				'geometry'		=> json_decode ($feature['geometry'], true),
-			);
-		}
-		
-		# Return the GeoJSON
-		return $geojson;
 	}
 }
 
