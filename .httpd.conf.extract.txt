@@ -30,6 +30,10 @@
 	
 	Use MacroFrontControllerApplication "$applicationBaseUrl/" "$name"
 	
+	# API
+	#!# This line is required for baseUrl compatibility - but it should not be needed; not sure why this is failing within MacroFrontControllerApplication
+	RewriteRule ^$applicationBaseUrl/(api)/([.a-z]+)$ $applicationBaseUrl/index.html?action=$1&method=$2 [L,QSA]
+	
 	# Application directives
 	RewriteRule ^$applicationBaseUrl/(about|resources|acknowledgements|contacts|import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
 	RewriteRule ^$applicationBaseUrl/(about|resources|acknowledgements|contacts|import)$ $applicationBaseUrl/$1/ [R]
