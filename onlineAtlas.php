@@ -158,7 +158,7 @@ class onlineAtlas extends frontControllerApplication
 			  username varchar(255) NOT NULL COMMENT 'Username',
 			  active enum('','Yes','No') NOT NULL DEFAULT 'Yes' COMMENT 'Currently active?',
 			  PRIMARY KEY (username)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='System administrators';
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='System administrators';
 			
 			CREATE TABLE `data` (
 			  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Automatic key' PRIMARY KEY,
@@ -170,7 +170,7 @@ class onlineAtlas extends frontControllerApplication
 			  `geometry` GEOMETRY NOT NULL COMMENT 'Geometry',
 			  INDEX(`year`)
 			  " . ($this->settings['closeDatasets'] ? ", INDEX(`close`)" : '') . "
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Data';
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Data';
 		";
 		
 		# Return the SQL
