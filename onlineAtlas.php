@@ -26,6 +26,11 @@ class onlineAtlas extends frontControllerApplication
 			'styleFooter' => '/style/footer.html',
 			'geocoderApiKey' => NULL,
 			// 'importsSectionsMode' => true,
+			'defaultLocation' => array (
+				'latitude' => 53.035,
+				'longitude' => -1.082,
+				'zoom' => 7,
+			),
 			'datasets' => NULL,	// Must supply an array of datasets
 			'closeDatasets' => array (),
 			'closeName' => false,
@@ -353,10 +358,11 @@ class onlineAtlas extends frontControllerApplication
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/onlineatlas.js?6"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/onlineatlas.js?7"></script>
 			<script type="text/javascript">
 				
 				var config = {
+					defaultLocation: ' . json_encode ($this->settings['defaultLocation']) . ',
 					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
 					zoomedOut: ' . ($this->settings['zoomedOut'] ? $this->settings['zoomedOut'] : 'false') . ',
 					closeZoom: ' . ($this->settings['closeZoom'] ? $this->settings['closeZoom'] : 'false') . ',
