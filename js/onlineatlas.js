@@ -29,7 +29,7 @@ var onlineatlas = (function ($) {
 		minZoom: 5,		// Zoomed out
 		
 		// Max bounds
-		maxBounds: [[47, -14], [60, 12]],	// South, West ; North, East
+		maxBounds: [[47, -14], [62, 12]],	// South, West ; North, East
 		
 		// Tileservers; historical map sources are listed at: http://wiki.openstreetmap.org/wiki/National_Library_of_Scotland
 		defaultTileLayer: 'bartholomew',
