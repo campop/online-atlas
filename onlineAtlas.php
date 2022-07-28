@@ -804,8 +804,8 @@ class onlineAtlas extends frontControllerApplication
 		$orderBy = $fields;		// Set order-by to the main fields defined
 		$fields[] = $field . ($this->settings['variations'] ? "{$variation} AS {$field}" : '');
 		if ($exportCsv) {
-			$fields[] = 'ST_Y(ST_Centroid(geometry)) AS latitude';
-			$fields[] = 'ST_X(ST_Centroid(geometry)) AS longitude';
+			$fields[] = "IF(ST_IsValid(geometry), ST_Y(ST_Centroid(geometry)), '') AS latitude";
+			$fields[] = "IF(ST_IsValid(geometry), ST_X(ST_Centroid(geometry)), '') AS longitude";
 		} else {
 			if ($zoomedOut && !$exportCsv) {
 				# Simplify the lines to reduce data volume
