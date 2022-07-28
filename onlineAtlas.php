@@ -637,7 +637,10 @@ class onlineAtlas extends frontControllerApplication
 			rmdir ($tempDir);
 			
 			# Import the GeoJSON contents into the database
-			$this->importGeojson ($geojson, $year, $close);
+			if (!$this->importGeojson ($geojson, $year, $close, $errorHtml /* returned by reference */)) {
+				$html = "\n<p class=\"warning\">{$errorHtml}</p>";
+				return false;
+			}
 			
 			# Remove the GeoJSON file after use
 			unlink ($geojson);
@@ -653,11 +656,18 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Function to import contents of a GeoJSON file into the database
-	private function importGeojson ($geojsonFilename, $year, $close)
+	private function importGeojson ($geojsonFilename, $year, $close, &$errorHtml = false)
 	{
 		# Read the file and decode to GeoJSON
 		$string = file_get_contents ($geojsonFilename);
 		$geojson = json_decode ($string, true);
+		
+		# Check for JSON decoding failures; e.g. error 5 is a UTF-8 encoding failure, and the problematic line can be found using `grep -axv '.*' file.geojson`
+		if (is_null ($geojson)) {
+			$error = json_last_error ();
+			$errorHtml = "ERROR: JSON decoding of {$geojsonFilename} failed with <a href=\"https://www.php.net/json-last-error/#106644\" target=\"_blank\">JSON error #{$error}</a>.";
+			return false;
+		}
 		
 		# Assemble as a set of inserts
 		$inserts = array ();
@@ -707,6 +717,9 @@ class onlineAtlas extends frontControllerApplication
 			echo "\n<p class=\"warning\">ERROR while processing {$year}" . ($this->settings['closeDatasets'] ? ($close ? ' in close mode' : '') : '') . ':</p>';
 			application::dumpData ($this->databaseConnection->error ());
 		}
+		
+		# Return success
+		return true;
 	}
 	
 	
@@ -859,7 +872,6 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Convert to GeoJSON
 		$data = application::datasetToGeojson ($data);
-		
 		
 		# GeoJSON export; essentially a standard GeoJSON API output but with Content-Disposition to push as file
 		if ($exportGeojson) {
