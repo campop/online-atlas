@@ -1479,7 +1479,7 @@ var onlineatlas = (function ($) {
 		summaryControl: function (mapUi)
 		{
 			// Create the control
-			mapUi.summary = L.control();
+			mapUi.summary = L.control({position: 'topleft'});
 			
 			// Define its contents
 			var map = mapUi.map;
