@@ -36,39 +36,39 @@ body .ui-front {z-index: 1000;}
 /* Overlay */
 .leaflet-top.leaflet-right {height: 100%; width: 330px; padding: 0; margin: 0; /* border: 1px solid gray; */}
 .leaflet-top.leaflet-right .leaflet-control {margin: 0; height: 100%;}
-nav {width: 330px; height: 100%; background-color: #333; opacity: 0.85; color: white;}
+#mapcontainers nav {width: 330px; height: 100%; background-color: #333; opacity: 0.85; color: white;}
 .activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
 .leaflet-control-layers, .leaflet-control-attribution {right: 330px;}
 .leaflet-control.summary {position: absolute; left: 320px;}
-nav form {padding: 10px 10px 20px 15px;}
-nav form h3 {margin: 10px 0 2px;}
-nav form a {color: white; text-decoration: none;}
-nav form #variations {margin-top: 5px;}
-nav form #variations span {display: inline; padding: 4px 6px; border: 1px solid #666; margin-right: 10px; white-space: nowrap; line-height: 32px;}
-nav form #variations span input, nav form #variations span label {display: inline;}
+#mapcontainers nav form {padding: 10px 10px 20px 15px;}
+#mapcontainers nav form h3 {margin: 10px 0 2px;}
+#mapcontainers nav form a {color: white; text-decoration: none;}
+#mapcontainers nav form #variations {margin-top: 5px;}
+#mapcontainers nav form #variations span {display: inline; padding: 4px 6px; border: 1px solid #666; margin-right: 10px; white-space: nowrap; line-height: 32px;}
+#mapcontainers nav form #variations span input, #mapcontainers nav form #variations span label {display: inline;}
 
 /* Controls */
-nav form div {padding-left: 3px; border-radius: 4px; width: 100%;}
-nav form div.radiobuttons div.field:hover {background-color: #666;}
-nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
+#mapcontainers nav form div {padding-left: 3px; border-radius: 4px; width: 100%;}
+#mapcontainers nav form div.radiobuttons div.field:hover {background-color: #666;}
+#mapcontainers nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
 
 /* Unavailable entries */
 input[type="radio"].unavailable, label.unavailable {opacity: 0.5;}
 option.unavailable {color: #bbb;}
 
 /* Overflow for nav */
-.mapcontainer nav {overflow-y: auto; overflow-x: hidden;}
-.mapcontainer nav .radiobuttons label {width: 90%;}
+#mapcontainers  nav {overflow-y: auto; overflow-x: hidden;}
+#mapcontainers  nav .radiobuttons label {width: 90%;}
 
 /* Expandable menu */
-nav form div.radiobuttons {margin-top: 1em;}
-nav form div.radiobuttons.expandable .fieldgroup {display: none;}
-nav form div.radiobuttons h4 {margin-top: 0.6em; margin-bottom: 0.4em;}
-nav form div.radiobuttons.expandable h4 {margin-top: 1.2em; cursor: pointer;}
-nav form div.radiobuttons h4 i {margin-left: 2px; transition-duration: 0.4s;}
+#mapcontainers nav form div.radiobuttons {margin-top: 1em;}
+#mapcontainers nav form div.radiobuttons.expandable .fieldgroup {display: none;}
+#mapcontainers nav form div.radiobuttons h4 {margin-top: 0.6em; margin-bottom: 0.4em;}
+#mapcontainers nav form div.radiobuttons.expandable h4 {margin-top: 1.2em; cursor: pointer;}
+#mapcontainers nav form div.radiobuttons h4 i {margin-left: 2px; transition-duration: 0.4s;}
 
 /* Year range */
-nav form input[type="range"] {/* width and margin-left calculated in js */}
+#mapcontainers nav form input[type="range"] {/* width and margin-left calculated in js */}
 ul.rangelabels {margin: 0; padding: 0; height: 10px; position: relative; top: -5px;}
 ul.rangelabels li {/* width calculated in js */ font-size: 0.87em; display: inline-block; text-align: center; margin: 0; padding: 0;}
 ul.rangelabels.smalllabels li {font-size: 0.69em; border-right: 1px solid gray;}
@@ -118,8 +118,8 @@ img.resource {padding: 2px; box-shadow: 4px 4px 25px #aaa; margin-bottom: 10px;}
 #nav-mobile {display: none;}
 @media only screen and (min-width: 320px) and (max-width: 768px) {
 	#nav-mobile {display: block; cursor: pointer; position: absolute; z-index: 999; top: 10px; left: 5px; background: white url('/images/hamburger.svg') no-repeat center center; opacity: 0.9; height: 10px; width: 10px; padding: 17px; border-radius: 16px; box-shadow: 5px 5px 5px #aaa;}
-	nav {display: none;}	/* Default, toggled in JS */
-	nav {width: 90%; z-index: 999;}
+	#mapcontainers nav {display: none;}	/* Default, toggled in JS */
+	#mapcontainers nav {width: 90%; z-index: 999;}
 	#logo, #comparebox, p.export, .summary, .ui-tooltip {display: none;}
 	.leaflet-control-fullscreen, .leaflet-control-zoom {display: none;}
 	.leaflet-control-locate {position: fixed; top: 60px;}
