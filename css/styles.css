@@ -42,7 +42,7 @@ nav form {padding: 10px 10px 20px 15px;}
 nav form h3 {margin: 10px 0 2px;}
 nav form a {color: white; text-decoration: none;}
 nav form #variations {margin-top: 5px;}
-nav form #variations span {display: inline; padding: 4px 6px; border: 1px solid #666; margin-right: 10px; white-space: nowrap;}
+nav form #variations span {display: inline; padding: 4px 6px; border: 1px solid #666; margin-right: 10px; white-space: nowrap; line-height: 32px;}
 nav form #variations span input, nav form #variations span label {display: inline;}
 
 /* Controls */
