@@ -34,7 +34,9 @@ body .ui-front {z-index: 1000;}
 .ui-autocomplete li a.ui-state-active {cursor: pointer; background-color: #f7f7f7;}
 
 /* Overlay */
-nav {position: absolute; right: 0; width: 330px; height: 100%; z-index: 1000; background-color: #333; opacity: 0.85; color: white;}
+.leaflet-top.leaflet-right {height: 100%; width: 330px; padding: 0; margin: 0; /* border: 1px solid gray; */}
+.leaflet-top.leaflet-right .leaflet-control {margin: 0; height: 100%;}
+nav {width: 330px; height: 100%; background-color: #333; opacity: 0.85; color: white;}
 .activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
 .leaflet-control-layers, .leaflet-control-attribution {right: 330px;}
 .leaflet-control.summary {position: absolute; left: 320px;}
@@ -68,8 +70,8 @@ nav form div.radiobuttons h4 i {margin-left: 2px; transition-duration: 0.4s;}
 /* Year range */
 nav form input[type="range"] {/* width and margin-left calculated in js */}
 ul.rangelabels {margin: 0; padding: 0; height: 10px; position: relative; top: -5px;}
-ul.rangelabels li {/* width calculated in js */ display: inline-block; text-align: center; margin: 0; padding: 0;}
-ul.rangelabels.smalllabels li {font-size: 0.87em; border-right: 1px solid gray;}
+ul.rangelabels li {/* width calculated in js */ font-size: 0.87em; display: inline-block; text-align: center; margin: 0; padding: 0;}
+ul.rangelabels.smalllabels li {font-size: 0.69em; border-right: 1px solid gray;}
 ul.rangelabels.smalllabels li:last-child {border-right: 0;}
 
 /* Export */
@@ -79,7 +81,8 @@ p.export a:last-child {padding-left: 0px; padding-right: 6px;}
 p.export a:hover {text-decoration: none;}
 
 /* Legend and summary */
-.info {padding: 15px 12px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
+.info, .navigationpanel {font: 14px/16px Verdana, Arial, Helvetica, sans-serif;}
+.info {padding: 15px 12px; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
 .info h4 {margin: 0 0 5px; color: #777;}
 .legend {width: 170px; text-align: left; line-height: 18px; color: #555;}
 .legend table {border-collapse: collapse; width: 100%;}

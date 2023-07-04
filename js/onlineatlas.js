@@ -638,12 +638,24 @@ var onlineatlas = (function ($) {
 		// Function to create the navigation panel
 		createNav: function (mapUi)
 		{
+			// Affix the legend
+			var navigationpanel = L.control({position: 'topright'});
+			
+			// Define its contents
+			var navigationpanelDivClass = 'navigationpanel' + mapUi.index;
+			navigationpanel.onAdd = function () {
+				return L.DomUtil.create ('div', 'navigationpanel ' + navigationpanelDivClass);
+			};
+			
+			// Add to the map
+			navigationpanel.addTo (mapUi.map);
+			
 			// Remove any current content, e.g. due to redrawing
 			mapUi.navDivId = 'nav' + mapUi.index;
 			$('#' + mapUi.navDivId).remove();
 			
 			// Create a div for the nav within the map container
-			$('#' + mapUi.containerDivId).prepend ('<nav id="' + mapUi.navDivId + '"></nav>');
+			$('.' + navigationpanelDivClass).prepend ('<nav id="' + mapUi.navDivId + '"></nav>');
 			
 			// Create a form within the nav
 			$('#' + mapUi.navDivId).append ('<form></form>');
