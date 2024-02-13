@@ -313,9 +313,14 @@ const onlineatlas = (function ($) {
 						const fieldValue = _mapUis[0].field;
 						$('#' + _mapUis[0].navDivId + ' form select[name="field"]').val(fieldValue);
 						
-						// Copy the form values (year and field) from the left map to the new right-hand map
+						// Copy the form values (year, field, variations) from the left map to the new right-hand map
 						$('#' + _mapUis[1].yearDivId).val(yearIndex);
 						$('#' + _mapUis[1].navDivId + ' form select[name="field"]').val(fieldValue);
+						$.each (_settings.variations, function (variationsLabel, variations) {
+							const variationFieldname = _variationIds[variationsLabel].toLowerCase ();
+							const variationValue = _mapUis[0].variations[variationFieldname];
+							$('#' + _mapUis[1].navDivId + ' form input[name="' + variationFieldname + '"][value="' + variationValue + '"]').prop ('checked', true);
+						});
 						
 						// Register handlers to keep the select and radiobuttons in sync, for each map
 						$.each (_mapUis, function (index, mapUi) {
