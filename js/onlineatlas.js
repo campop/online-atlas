@@ -311,11 +311,11 @@ const onlineatlas = (function ($) {
 						// Clone the current field value in single mode (a radiobutton) to be the field value in side-by-side mode (a select), for the left map
 						// Other fields remain unchanged in the left map
 						const fieldValue = _mapUis[0].field;
-						$('#' + _mapUis[0].navDivId + ' form select').val(fieldValue);
+						$('#' + _mapUis[0].navDivId + ' form select[name="field"]').val(fieldValue);
 						
 						// Copy the form values (year and field) from the left map to the new right-hand map
 						$('#' + _mapUis[1].yearDivId).val(yearIndex);
-						$('#' + _mapUis[1].navDivId + ' form select').val(fieldValue);
+						$('#' + _mapUis[1].navDivId + ' form select[name="field"]').val(fieldValue);
 						
 						// Register handlers to keep the select and radiobuttons in sync, for each map
 						$.each (_mapUis, function (index, mapUi) {
