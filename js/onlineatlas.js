@@ -313,9 +313,6 @@ const onlineatlas = (function ($) {
 						const fieldValue = _mapUis[0].field;
 						$('#' + _mapUis[0].navDivId + ' form select[name="field"]').val(fieldValue);
 						
-						// Copy the form values (year, field, variations) from the left map to the new right-hand map
-						onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + _mapUis[1].navDivId + ' form');
-						
 						// Register handlers to keep the field value in sync between the single map (radiobutton) and side-by-side left map (select) display formats
 						// There is no need to synchronise other form widgets (year, varations), as their display formats do not change
 						$.each (_mapUis, function (index, mapUi) {
@@ -332,6 +329,9 @@ const onlineatlas = (function ($) {
 								$('#' + mapUi.navDivId + ' form input[name="field"][type="radio"][value="' + value + '"]').prop('checked', true);
 							});
 						});
+						
+						// Copy the form values (year, field, variations) from the left map to the new right-hand map
+						onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + _mapUis[1].navDivId + ' form');
 						
 						// Register a handler to dim out options which are not available for the selected year
 						onlineatlas.dimUnavailableHandlerWrapper (_mapUis[1]);
