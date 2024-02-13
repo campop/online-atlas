@@ -45,8 +45,9 @@ body .ui-front {z-index: 1000;}
 #mapcontainers nav form h3 {margin: 10px 0 2px;}
 #mapcontainers nav form a {color: white; text-decoration: none;}
 #mapcontainers nav form #variations {margin-top: 5px;}
-#mapcontainers nav form #variations span {display: inline; padding: 4px 6px; border: 1px solid #666; margin-right: 10px; white-space: nowrap; line-height: 32px;}
-#mapcontainers nav form #variations span input, #mapcontainers nav form #variations span label {display: inline;}
+#mapcontainers nav form #variations span {display: inline;}
+#mapcontainers nav form #variations span label {padding: 4px 6px; border: 1px solid #666; margin-right: 10px;}
+#mapcontainers nav form #variations span input, #mapcontainers nav form #variations span label {vertical-align: middle; display: inline; white-space: nowrap; line-height: 32px;}
 
 /* Controls */
 #mapcontainers nav form div {padding-left: 3px; border-radius: 4px; width: 100%;}

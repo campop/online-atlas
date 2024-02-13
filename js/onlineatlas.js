@@ -720,9 +720,9 @@ const onlineatlas = (function ($) {
 					$.each (variations, function (variation, label) {
 						const variationId = 'variation' + _variationIds[variationsLabel] + variation;	// Prepend 'variation' to ensure valid ID
 						variationsHtml += '<span>';
-						variationsHtml += '<input type="radio" name="' + _variationIds[variationsLabel].toLowerCase() + '" value="' + variation + '" id="' + variationId + mapUi.index + '"' + (variation == _settings.defaultVariations[variationsLabel] ? ' checked="checked"' : '') + ' />';
-						variationsHtml += '<label for="' + variationId + mapUi.index + '">';
-						variationsHtml += onlineatlas.htmlspecialchars (label);
+						variationsHtml += '<label>';
+						variationsHtml += '<input type="radio" name="' + _variationIds[variationsLabel].toLowerCase() + '" value="' + variation + '"' + (variation == _settings.defaultVariations[variationsLabel] ? ' checked="checked"' : '') + ' />';
+						variationsHtml += ' ' + onlineatlas.htmlspecialchars (label);
 						variationsHtml += '</label>';
 						variationsHtml += '</span>';
 					});
