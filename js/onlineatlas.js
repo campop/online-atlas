@@ -648,6 +648,7 @@ const onlineatlas = (function ($) {
 			navigationpanel.onAdd = function () {
 				const panelDiv = L.DomUtil.create ('div', 'navigationpanel ' + navigationpanelDivClass);
 				L.DomEvent.disableClickPropagation (panelDiv);		// Prevent drag/click propagating to the map; see: https://stackoverflow.com/a/37629102/
+				L.DomEvent.on (panelDiv, 'mousewheel', L.DomEvent.stopPropagation);		// Prevent scroll wheel changes propagating to the map; see: https://gis.stackexchange.com/a/154592
 				return panelDiv;
 			};
 			
