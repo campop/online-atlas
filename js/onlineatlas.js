@@ -298,6 +298,8 @@ const onlineatlas = (function ($) {
 				// This routine creates the second map and clones in values from the first map, when side-by-side is enabled the first time (only)
 				// The field selection, on both maps, also changes from a radiobutton to a drop-down, to save space, so the value has to be kept in sync between single mode and side-by-side mode left side
 				if ( $(this).is(':checked') ) {
+					
+					// Set main style class
 					$('#mapcontainers').addClass('sidebyside');
 					
 					// Load the second map UI if not already loaded
@@ -554,7 +556,7 @@ const onlineatlas = (function ($) {
 				maxZoom: _settings.maxZoom,
 				minZoom: _settings.minZoom,
 				maxBounds: _settings.maxBounds
-			}).setActiveArea('activearea');
+			}).setActiveArea ('activearea', /* keepCenter = */ true);	// Adjust the active area to make the visible centre (i.e. minus the sidebar, in single map mode) be the centre for zoom/similar operations
 			map.attributionControl.setPrefix ('');
 			
 			// Set a class corresponding to the map tile layer, so that the background can be styled with CSS
