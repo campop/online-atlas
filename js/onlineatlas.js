@@ -428,10 +428,10 @@ const onlineatlas = (function ($) {
 			// Show first-run welcome message if the user is new to the site
 			onlineatlas.welcomeFirstRun ();
 			
-			// Determine the active field, and create a handler for changes
+			// Determine the active field, and create a handler for changes, watching both the radiobuttons (single map) and select (side-by-side maps) modes, and switching between the two using getField ()
 			mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.
 			$('#' + mapUi.navDivId + ' form input[name="field"], #' + mapUi.navDivId + ' form select[name="field"]').on ('change', function () {
-				mapUi.field = onlineatlas.getField (mapUi.navDivId, 'field');
+				mapUi.field = onlineatlas.getVisibleFieldWidget (mapUi.navDivId);
 			});
 			
 			// If enabled, determine the active variation, and create a handler for changes
@@ -446,7 +446,7 @@ const onlineatlas = (function ($) {
 					// Changes
 					$('#' + mapUi.navDivId + ' form input[name="' + fieldnameFromInitial + '"]').on ('change', function (e) {
 						const fieldname = e.target.name;
-						mapUi.variations[fieldname] = onlineatlas.getField (mapUi.navDivId, fieldname);
+						mapUi.variations[fieldname] = onlineatlas.getVisibleFieldWidget (mapUi.navDivId);
 					});
 				});
 			}
@@ -488,13 +488,13 @@ const onlineatlas = (function ($) {
 		
 		
 		// Function to determine the field from the form value
-		getField: function (navDivId, inputName)
+		getVisibleFieldWidget: function (navDivId)
 		{
 			// Switch between radiobuttons (full mode) and select (side-by-side mode)
-			if ( $('#' + navDivId + ' select[name="' + inputField + '"]').is (':visible') ) {
-				return $('#' + navDivId + ' form select[name="' + inputField + '"]').val ();
+			if ( $('#' + navDivId + ' select[name="field"]').is (':visible') ) {
+				return $('#' + navDivId + ' form select[name="field"]').val ();
 			} else {
-				return $('#' + navDivId + ' form input[name="' + inputName + '"]:checked').val();
+				return $('#' + navDivId + ' form input[name="field"]:checked').val ();
 			}
 		},
 		
