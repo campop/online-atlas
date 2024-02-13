@@ -3,19 +3,19 @@
 /*jslint browser: true, white: true, single: true, for: true */
 /*global alert, console, window, Cookies, $, jQuery, L, autocomplete, vex */
 
-var onlineatlas = (function ($) {
+const onlineatlas = (function ($) {
 	
 	'use strict';
 	
 	// Internal class properties
-	var _baseUrl;
-	var _mapUis = {};
-	var _secondMapLoaded = false;
-	var _variationIds = {};
-	var _title = false;
+	let _baseUrl;
+	const _mapUis = {};
+	let _secondMapLoaded = false;
+	let _variationIds = {};
+	let _title = false;
 	
 	// Settings
-	var _settings = {
+	const _settings = {
 		
 		// Default map view
 		defaultLocation: {
@@ -149,7 +149,7 @@ var onlineatlas = (function ($) {
 		normaliseVariationIds: function ()
 		{
 			// Normalise each
-			var variationIds = {};
+			const variationIds = {};
 			$.each (_settings.variations, function (variationsLabel, variations) {
 				variationIds[variationsLabel] = onlineatlas.ucfirst (variationsLabel.toLowerCase().replace (/\W/g, ''));	// See: https://stackoverflow.com/a/9364527/180733
 			});
@@ -163,26 +163,26 @@ var onlineatlas = (function ($) {
 		defaultsFromUrl: function ()
 		{
 			// Obtain the URL path
-			var path = window.location.pathname;
+			let path = window.location.pathname;
 			
 			// Remove the baseUrl
 			path = path.slice (_baseUrl.length);
 			
 			// Extract the URL into parts
-			var urlParts = path.split('/');
+			const urlParts = path.split('/');
 			
 			// Check if field is present and valid
 			if (!urlParts[1]) {return false;}
-			var field = onlineatlas.fieldPresent (urlParts[1]);
+			const field = onlineatlas.fieldPresent (urlParts[1]);
 			if (!field) {return false;}
 			
 			// Check the year is also present and valid
 			if (!urlParts[2]) {return false;}
-			var year = parseInt (urlParts[2]);
+			const year = parseInt (urlParts[2]);
 			if ($.inArray (year, _settings.datasets) == -1) {return false;}	// https://api.jquery.com/jQuery.inArray/
 			
 			// If variations are enabled, check variation is present and valid
-			var variation = false;
+			let variation = false;
 			if (!$.isEmptyObject (_settings.variations)) {
 				if (!urlParts[3]) {return false;}
 				variation = onlineatlas.variationPresent (urlParts[3]);
@@ -202,7 +202,7 @@ var onlineatlas = (function ($) {
 		fieldPresent: function (fieldFromUrl /* expected to be lower-case */)
 		{
 			// Attempt to match the field by casting both the supplied field and each field in the supported fields to lower case
-			var fieldFound = false;
+			let fieldFound = false;
 			$.each (_settings.fields, function (field, value) {
 				if (fieldFromUrl == field.toLowerCase ()) {
 					fieldFound = field;
@@ -219,7 +219,7 @@ var onlineatlas = (function ($) {
 		variationPresent: function (variationFromUrl)
 		{
 			// Attempt to match the variation
-			var variationFound = false;
+			let variationFound = false;
 			$.each (_settings.variations, function (variation, label) {
 				if (variationFromUrl == label.toLowerCase ()) {
 					variationFound = variation;
@@ -285,7 +285,7 @@ var onlineatlas = (function ($) {
 		sideBySide: function ()
 		{
 			// Add checkbox controls to enable and syncronise side-by-side maps
-			var checkboxesHtml = '<p id="comparebox">';
+			let checkboxesHtml = '<p id="comparebox">';
 			checkboxesHtml += '<span id="syncronisebutton"><label for="syncronise"><img src="/images/icons/arrow_refresh.png" alt="" class="icon" /> Keep map positions in sync &nbsp;</label><input id="syncronise" name="syncronise" type="checkbox" checked="checked"></span> ';
 			checkboxesHtml += '<span id="comparebutton"><label for="compare"><img src="/images/icons/application_tile_horizontal.png" alt="" class="icon" /> Compare side-by-side &nbsp;</label><input id="compare" name="compare" type="checkbox"></span>';
 			checkboxesHtml += '</p>';
@@ -295,7 +295,7 @@ var onlineatlas = (function ($) {
 			$('#compare').on('click', function() {
 				
 				// Obtain the year index
-				var yearIndex = $('#' + _mapUis[0].yearDivId).val();
+				const yearIndex = $('#' + _mapUis[0].yearDivId).val();
 				
 				// Side-by-side mode
 				if ( $(this).is(':checked') ) {
@@ -307,7 +307,7 @@ var onlineatlas = (function ($) {
 						_secondMapLoaded = true;
 						
 						// Clone the current radiobutton value to be the new select value
-						var fieldValue = _mapUis[0].field;
+						const fieldValue = _mapUis[0].field;
 						$('#' + _mapUis[0].navDivId + ' form select').val(fieldValue);
 						
 						// Clone the current year and field values to be the defaults for the new map
@@ -315,14 +315,14 @@ var onlineatlas = (function ($) {
 						$('#' + _mapUis[1].navDivId + ' form select').val(fieldValue);
 						
 						// Register handlers to keep the select and radiobuttons in sync, for each map
-						var value;
-						var fieldname;
 						$.each (_mapUis, function (index, mapUi) {
-							$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function() {
+							let value;
+							let fieldname;
+							$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function () {
 								value = $(this).val();
 								$('#' + mapUi.navDivId + ' form select').val( value );
 							});
-							$('#' + mapUi.navDivId + ' form select').on('change', function() {
+							$('#' + mapUi.navDivId + ' form select').on('change', function () {
 								value = $(this).val();
 								fieldname = 'field' + index + '_' + onlineatlas.htmlspecialchars (value);
 								$('#' + fieldname).prop('checked', true);
@@ -337,7 +337,7 @@ var onlineatlas = (function ($) {
 					$('#mapcontainer1').show ();
 					
 					// Redraw the year control in the first form, to reset the layout sizing
-					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);
+					const yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').html (yearRangeControl);
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').on('change', function() {	// Re-register to refresh data on any form field change
 						onlineatlas.getData (_mapUis[0]);
@@ -353,7 +353,7 @@ var onlineatlas = (function ($) {
 					$('#syncronisebutton').show ();
 					
 					// Prevent far-out zoom, as a workaround for side-by-side interacting with maxBounds, which causes looping in Chrome and memory issues in Firefox
-					var sideBySideAcceptableZoom = 7;
+					const sideBySideAcceptableZoom = 7;
 					_mapUis[0].map.options.minZoom = sideBySideAcceptableZoom;
 					
 					// By default, syncronise the map positions
@@ -377,7 +377,7 @@ var onlineatlas = (function ($) {
 					$('#mapcontainer1').hide ();
 					
 					// Redraw the year control, to reset the layout sizing
-					var yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);
+					const yearRangeControl = onlineatlas.yearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').html (yearRangeControl);
 					
 					// Register a handler to dim out options which are not available for the selected year
@@ -404,7 +404,7 @@ var onlineatlas = (function ($) {
 		createMapUi: function (mapUiIndex)
 		{
 			// Create a map UI collection object
-			var mapUi = {};
+			const mapUi = {};
 			
 			// Create a div for this map UI within the mapcontainers section div
 			mapUi.index = mapUiIndex;
@@ -432,13 +432,16 @@ var onlineatlas = (function ($) {
 			
 			// If enabled, determine the active variation, and create a handler for changes
 			if (!$.isEmptyObject (_settings.variations)) {
-				var fieldname;
 				mapUi.variations = {};
 				$.each (_settings.variations, function (variationsLabel, variations) {
-					fieldname = _variationIds[variationsLabel].toLowerCase();
-					mapUi.variations[fieldname] = _settings.defaultVariations[variationsLabel];	// E.g. F, M, etc.
-					$('#' + mapUi.navDivId + ' form input[name="' + fieldname + '"]').on('change', function(e) {
-						var fieldname = e.target.name;
+					
+					// Initial value
+					const fieldnameFromInitial = _variationIds[variationsLabel].toLowerCase();
+					mapUi.variations[fieldnameFromInitial] = _settings.defaultVariations[variationsLabel];	// E.g. F, M, etc.
+					
+					// Changes
+					$('#' + mapUi.navDivId + ' form input[name="' + fieldnameFromInitial + '"]').on ('change', function (e) {
+						const fieldname = e.target.name;
 						mapUi.variations[fieldname] = onlineatlas.getField (mapUi.navDivId, fieldname);
 					});
 				});
@@ -499,26 +502,24 @@ var onlineatlas = (function ($) {
 			$('#' + mapUi.containerDivId).append ('<div id="' + mapUi.mapDivId + '" class="map"></div>');
 			
 			// Add the tile layers
-			var tileLayers = [];		// Background tile layers
-			var baseLayers = {};		// Labels, by name
-			var baseLayersById = {};	// Layers, by id
-			var layer;
-			var name;
+			const tileLayers = [];		// Background tile layers
+			const baseLayers = {};		// Labels, by name
+			const baseLayersById = {};	// Layers, by id
 			$.each (_settings.tileUrls, function (tileLayerId, tileLayerAttributes) {
-				layer = L.tileLayer(tileLayerAttributes[0], tileLayerAttributes[1]);
+				const layer = L.tileLayer(tileLayerAttributes[0], tileLayerAttributes[1]);
 				tileLayers.push (layer);
-				name = tileLayerAttributes[2];
+				const name = tileLayerAttributes[2];
 				baseLayers[name] = layer;
 				baseLayersById[tileLayerId] = layer;
 			});
 			
 			// Parse any hash in the URL to obtain any default position
-			var urlParameters = onlineatlas.getUrlParameters ();
-			var defaultLocation = (urlParameters.defaultLocation || _settings.defaultLocation);
-			var defaultTileLayer = (urlParameters.defaultTileLayer || _settings.defaultTileLayer);
+			const urlParameters = onlineatlas.getUrlParameters ();
+			const defaultLocation = (urlParameters.defaultLocation || _settings.defaultLocation);
+			const defaultTileLayer = (urlParameters.defaultTileLayer || _settings.defaultTileLayer);
 			
 			// Create the map
-			var map = L.map (mapUi.mapDivId, {
+			const map = L.map (mapUi.mapDivId, {
 				center: [defaultLocation.latitude, defaultLocation.longitude],
 				zoom: defaultLocation.zoom,
 				layers: baseLayersById[defaultTileLayer],	// Documentation suggests tileLayers is all that is needed, but that shows all together
@@ -583,13 +584,13 @@ var onlineatlas = (function ($) {
 		getUrlParameters: function ()
 		{
 			// Start a list of parameters
-			var urlParameters = {};
+			const urlParameters = {};
 			
 			// Get the location from the URL
 			urlParameters.defaultLocation = null;
 			urlParameters.defaultTileLayer = null;
 			if (window.location.hash) {
-				var hashParts = window.location.hash.match (/^#([0-9]{1,2})\/([\-.0-9]+)\/([\-.0-9]+)\/([a-z0-9]+)$/);	// E.g. #17/51.51137/-0.10498/bartholomew
+				const hashParts = window.location.hash.match (/^#([0-9]{1,2})\/([\-.0-9]+)\/([\-.0-9]+)\/([a-z0-9]+)$/);	// E.g. #17/51.51137/-0.10498/bartholomew
 				if (hashParts) {
 					urlParameters.defaultLocation = {
 						latitude: hashParts[2],
@@ -609,7 +610,7 @@ var onlineatlas = (function ($) {
 		setMapBackgroundColour: function (tileLayerOptions)
 		{
 			// Set, using jQuery, if specified, or clear
-			var backgroundColour = (tileLayerOptions.backgroundColour ? tileLayerOptions.backgroundColour : '');
+			const backgroundColour = (tileLayerOptions.backgroundColour ? tileLayerOptions.backgroundColour : '');
 			$('.leaflet-container').css ('background-color', backgroundColour);
 		},
 		
@@ -618,7 +619,7 @@ var onlineatlas = (function ($) {
 		createGeocoder: function (mapUi)
 		{
 			// Create a div for the geocoder within the map container
-			var geocoderDivId = 'geocoder' + mapUi.index;
+			const geocoderDivId = 'geocoder' + mapUi.index;
 			$('#' + mapUi.containerDivId).prepend ('<div id="' + geocoderDivId + '" class="geocoder"></div>');
 			
 			// Create the input form within the geocoder container
@@ -628,7 +629,7 @@ var onlineatlas = (function ($) {
 			autocomplete.addTo ('#' + geocoderDivId + ' input', {
 				sourceUrl: _settings.geocoderApiBaseUrl + '?key=' + _settings.geocoderApiKey + '&bounded=1&bbox=' + _settings.autocompleteBbox,
 				select: function (event, ui) {
-					var bbox = ui.item.feature.properties.bbox.split(',');
+					const bbox = ui.item.feature.properties.bbox.split(',');
 					mapUi.map.fitBounds([ [bbox[1], bbox[0]], [bbox[3], bbox[2]] ]);
 					event.preventDefault();
 				}
@@ -640,12 +641,12 @@ var onlineatlas = (function ($) {
 		createNav: function (mapUi)
 		{
 			// Affix the legend
-			var navigationpanel = L.control({position: 'topright'});
+			const navigationpanel = L.control({position: 'topright'});
 			
 			// Define its contents
-			var navigationpanelDivClass = 'navigationpanel' + mapUi.index;
+			const navigationpanelDivClass = 'navigationpanel' + mapUi.index;
 			navigationpanel.onAdd = function () {
-				var panelDiv = L.DomUtil.create ('div', 'navigationpanel ' + navigationpanelDivClass);
+				const panelDiv = L.DomUtil.create ('div', 'navigationpanel ' + navigationpanelDivClass);
 				L.DomEvent.disableClickPropagation (panelDiv);		// Prevent drag/click propagating to the map; see: https://stackoverflow.com/a/37629102/
 				return panelDiv;
 			};
@@ -665,19 +666,19 @@ var onlineatlas = (function ($) {
 			
 			// Create an export link
 			if (_settings.export) {
-				var exportDivId = 'export' + mapUi.index;
+				const exportDivId = 'export' + mapUi.index;
 				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a class="exportcsv" href="#" title="Export the current view (as shown on the map) as raw data in CSV format">Exports: <img src="/images/icons/page_excel.png" alt="" /></a> <a class="exportgeojson" href="#" title="Export the current view (as shown on the map) as raw data in GeoJSON format (for GIS)"><img src="/images/icons/page_code.png" alt="" /></a></p>');
 			}
 			
 			// Create an export link
 			if (_settings.pdfLink) {
-				var exportDivId = 'pdf' + mapUi.index;
-				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a class="pdfmap noautoicon" href="#" title="Download a PDF of this data">Download: <img src="/images/icons/page_white_acrobat.png" alt="" /></a></p>');
+				const exportPdfDivId = 'pdf' + mapUi.index;
+				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportPdfDivId + '" class="export"><a class="pdfmap noautoicon" href="#" title="Download a PDF of this data">Download: <img src="/images/icons/page_white_acrobat.png" alt="" /></a></p>');
 			}
 			
 			// Create the year range control
 			mapUi.yearDivId = 'year' + mapUi.index;
-			var yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultDataset);
+			const yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultDataset);
 			
 			// Add the year control to the form
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
@@ -687,12 +688,11 @@ var onlineatlas = (function ($) {
 			// Build variations controls
 			if (!$.isEmptyObject (_settings.variations)) {
 				$.each (_settings.variations, function (variationsLabel, variations) {
-					var variationsHtml = '';
+					let variationsHtml = '';
 					$('#' + mapUi.navDivId + ' form').append ('<h3>' + onlineatlas.htmlspecialchars (variationsLabel) + ':</h3>');
 					variationsHtml += '<p id="variations">';
-					var variationId;
 					$.each (variations, function (variation, label) {
-						variationId = 'variation' + _variationIds[variationsLabel] + variation;	// Prepend 'variation' to ensure valid ID
+						const variationId = 'variation' + _variationIds[variationsLabel] + variation;	// Prepend 'variation' to ensure valid ID
 						variationsHtml += '<span>';
 						variationsHtml += '<input type="radio" name="' + _variationIds[variationsLabel].toLowerCase() + '" value="' + variation + '" id="' + variationId + '"' + (variation == _settings.defaultVariations[variationsLabel] ? ' checked="checked"' : '') + ' />';
 						variationsHtml += '<label for="' + variationId + '">';
@@ -706,19 +706,16 @@ var onlineatlas = (function ($) {
 			}
 			
 			// Group the fields
-			var fieldGroups = onlineatlas.groupFields (_settings.fields);
+			const fieldGroups = onlineatlas.groupFields (_settings.fields);
 			
 			// Build radiobutton and select list options; both are created up-front, and the relevant one hidden according when changing to/from side-by-side mode
-			var radiobuttonsHtml = '';
-			var selectHtml = '';
-			var fieldId;
-			var heading;
-			var field;
-			var hasGroups = false;
+			let radiobuttonsHtml = '';
+			let selectHtml = '';
+			let hasGroups = false;
 			$.each (fieldGroups, function (i, fieldGroup) {
 				
 				// Determine the heading, if any
-				heading = (fieldGroup.name.match(/^_[0-9]+$/) ? false : fieldGroup.name);	// Virtual fields use _<number>, as per virtualGroupingIndex below
+				const heading = (fieldGroup.name.match(/^_[0-9]+$/) ? false : fieldGroup.name);	// Virtual fields use _<number>, as per virtualGroupingIndex below
 				
 				// Add heading for this group if required
 				if (heading) {
@@ -735,18 +732,17 @@ var onlineatlas = (function ($) {
 				}
 				
 				// Add each field
-				var isNullField;
 				$.each (fieldGroup.fields, function (j, id) {
-					field = _settings.fields[id];
+					const field = _settings.fields[id];
 					
 					// Skip general fields, like year
 					if (field.general) {return /* i.e. continue */;}
 					
 					// Determine if this is the null field, if enabled
-					isNullField = (_settings.nullField && (id == _settings.nullField));
+					const isNullField = (_settings.nullField && (id == _settings.nullField));
 					
 					// Construct the radiobutton list (for full mode)
-					fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (id);
+					const fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (id);
 					radiobuttonsHtml += '<div class="field" title="' + onlineatlas.htmlspecialchars (field.description) + '">';
 					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldId + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
 					radiobuttonsHtml += '<label for="' + fieldId + '">';
@@ -802,7 +798,7 @@ var onlineatlas = (function ($) {
 				// Expand the heading containing the default field if required
 				if (_settings.defaultField) {
 					if (_settings.fields[_settings.defaultField].grouping) {
-						var radiobuttonId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (_settings.defaultField);
+						const radiobuttonId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (_settings.defaultField);
 						$('#' + radiobuttonId).parent().parent().slideToggle();
 						$('#' + radiobuttonId).parent().parent().prev('h4').find('i').css('transform', 'rotate(90deg)');
 					}
@@ -829,16 +825,14 @@ var onlineatlas = (function ($) {
 		dimUnavailableHandler: function (mapUi)
 		{
 			// Obtain the year value
-			var yearIndex = $('#' + mapUi.yearDivId).val();
-			var yearValue = _settings.datasets[yearIndex];
+			const yearIndex = $('#' + mapUi.yearDivId).val();
+			const yearValue = _settings.datasets[yearIndex];
 			
 			// Loop through each field, and determine the years which are unavailable
-			var fieldId;
-			var paths;
 			$.each (_settings.fields, function (fieldKey, field) {
 				if (field.unavailable) {
-					fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (fieldKey);
-					paths = 'input#' + fieldId + ', label[for="' + fieldId + '"], select[id="field' + mapUi.index + '"] option[value="' + fieldKey + '"]';
+					const fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (fieldKey);
+					const paths = 'input#' + fieldId + ', label[for="' + fieldId + '"], select[id="field' + mapUi.index + '"] option[value="' + fieldKey + '"]';
 					if ($.inArray (yearValue, field.unavailable) != -1) {	// https://api.jquery.com/jQuery.inArray/
 						$(paths).addClass ('unavailable');
 						//$('input#' + fieldId).prop('title', '[Not available for this year]');
@@ -856,29 +850,29 @@ var onlineatlas = (function ($) {
 		{
 			// Determine the default value
 			if (!defaultDataset) {defaultDataset = _settings.datasets[1];}	// Second by default
-			var value = _settings.datasets.indexOf (defaultDataset);
+			const value = _settings.datasets.indexOf (defaultDataset);
 			
 			// Determine the width for the labels
-			var maxBoxWidth = $('#' + navDivId).width () - 20 /* scroll bar allowance */ - 30;	// Maximum size of slider
-			var totalLabels = _settings.datasets.length;
-			var labelWidth = Math.floor (maxBoxWidth / totalLabels);
-			var sliderWidth = maxBoxWidth - labelWidth;		// Remove one, because there needs to be a half-width space at each end
-			var sliderMargin = Math.floor (labelWidth / 2);		// Half-width space at each end
-			var smallLabelWidthThreshold = 40;
-			var rangeClass = (labelWidth < smallLabelWidthThreshold ? ' smalllabels' : '');
+			const maxBoxWidth = $('#' + navDivId).width () - 20 /* scroll bar allowance */ - 30;	// Maximum size of slider
+			const totalLabels = _settings.datasets.length;
+			let labelWidth = Math.floor (maxBoxWidth / totalLabels);
+			const sliderWidth = maxBoxWidth - labelWidth;		// Remove one, because there needs to be a half-width space at each end
+			const sliderMargin = Math.floor (labelWidth / 2);		// Half-width space at each end
+			const smallLabelWidthThreshold = 40;
+			const rangeClass = (labelWidth < smallLabelWidthThreshold ? ' smalllabels' : '');
 			if (labelWidth < smallLabelWidthThreshold) {
 				labelWidth = labelWidth - 1;
 			}
 			
 			// Construct a datalist for the year control
-			var datalistHtml = '<ul class="rangelabels' + rangeClass + '">';
+			let datalistHtml = '<ul class="rangelabels' + rangeClass + '">';
 			$.each (_settings.datasets, function (index, year) {
 				datalistHtml += '<li style="width: ' + labelWidth + 'px;">' + year + '</li>';
 			});
 			datalistHtml += '</ul>';
 			
 			// Combine the range slider and the associated datalist
-			var html = ' <input type="range" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + value + '" style="width: ' + sliderWidth + 'px; margin-left: ' + sliderMargin + 'px;" /> ';
+			let html = ' <input type="range" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + value + '" style="width: ' + sliderWidth + 'px; margin-left: ' + sliderMargin + 'px;" /> ';
 			html += datalistHtml;
 			
 			// Return the HTML
@@ -890,11 +884,11 @@ var onlineatlas = (function ($) {
 		groupFields: function (fields)
 		{
 			// Group fields, either by explicit grouping (which will have fold-out headings) or virtual grouping (which not have headings)
-			var groupings = {};
-			var grouping;
-			var virtualGroupingIndex = 0;
-			var orderingIndex = 0;
+			const groupings = {};
+			let virtualGroupingIndex = 0;
+			let orderingIndex = 0;
 			$.each (fields, function (id, field) {
+				let grouping;
 				if (field.grouping) {
 					grouping = field.grouping;
 				} else {
@@ -909,7 +903,7 @@ var onlineatlas = (function ($) {
 			});
 			
 			// Order the groupings
-			var fieldGroups = [];
+			const fieldGroups = [];
 			$.each (groupings, function (name, grouping) {
 				fieldGroups[grouping.ordering] = {name: name, fields: grouping.fields};
 			});
@@ -928,8 +922,8 @@ var onlineatlas = (function ($) {
 			map.getPane('labels').style.pointerEvents = 'none';
 			
 			// Create a labels layer; see: https://carto.com/location-data-services/basemaps/
-			//var locationLabels = L.tileLayer('http://tiles.oobrien.com/shine_labels_cdrc/{z}/{x}/{y}.png', {
-			var locationLabels = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png', {
+			//const locationLabels = L.tileLayer('http://tiles.oobrien.com/shine_labels_cdrc/{z}/{x}/{y}.png', {
+			const locationLabels = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png', {
 				attribution: '&copy; OpenStreetMap, &copy; CartoDB',
 				pane: 'labels'
 			});
@@ -946,17 +940,14 @@ var onlineatlas = (function ($) {
 			if (!_settings.firstRunMessageHtml) {return;}
 			
 			// End if cookie already set
-			var name = 'welcome';
-			if (Cookies.get(name)) {return;}
+			const name = 'welcome';
+			if (Cookies.get (name)) {return;}
 			
 			// Set the cookie
-			Cookies.set(name, '1', {expires: 14});
-			
-			// Define a welcome message
-			var message = _settings.firstRunMessageHtml;
+			Cookies.set (name, '1', {expires: 14});
 			
 			// Show the dialog
-			vex.dialog.alert ({unsafeMessage: message});
+			vex.dialog.alert ({unsafeMessage: _settings.firstRunMessageHtml});
 		},
 		
 		
@@ -967,10 +958,10 @@ var onlineatlas = (function ($) {
 			$('.moredetails').click (function (e) {
 				
 				// Obtain the field
-				var field = $(this).attr('data-field');
+				const field = $(this).attr('data-field');
 				
 				// Obtain the content; see: https://stackoverflow.com/a/14744011/180733 and https://stackoverflow.com/a/25183183/180733
-				var dialogBoxContentHtml = $('#aboutfields').find('h3.' + field).nextUntil('h3, h2').addBack().map(function() {
+				let dialogBoxContentHtml = $('#aboutfields').find('h3.' + field).nextUntil('h3, h2').addBack().map(function() {
 					return this.outerHTML;
 				}).get().join('');
 				if (!dialogBoxContentHtml) {
@@ -1002,7 +993,7 @@ var onlineatlas = (function ($) {
 		getData: function (mapUi)
 		{
 			// Start API data parameters
-			var apiData = {};
+			const apiData = {};
 			
 			// Supply the bbox and zoom
 			apiData.bbox = mapUi.map.getBounds().toBBoxString();
@@ -1012,14 +1003,13 @@ var onlineatlas = (function ($) {
 			apiData.field = mapUi.field;
 			
 			// Set the year, based on the slider value
-			var yearIndex = $('#' + mapUi.yearDivId).val();
+			const yearIndex = $('#' + mapUi.yearDivId).val();
 			apiData.year = _settings.datasets[yearIndex];
 			
 			// Append the variation, if supported
 			if (!$.isEmptyObject (_settings.variations)) {
-				var fieldname;
 				$.each (_settings.variations, function (variationsLabel, variations) {
-					fieldname = _variationIds[variationsLabel].toLowerCase();
+					const fieldname = _variationIds[variationsLabel].toLowerCase ();
 					apiData[fieldname] = mapUi.variations[fieldname];
 				});
 			}
@@ -1031,26 +1021,25 @@ var onlineatlas = (function ($) {
 			
 			// Update the export link with the new parameters
 			if (_settings.export) {
-				var requestSerialised = $.param(apiData);
-				var csvExportUrl = _baseUrl + '/data.csv?' + requestSerialised;
+				const requestSerialised = $.param (apiData);
+				const csvExportUrl = _baseUrl + '/data.csv?' + requestSerialised;
 				$('#' + mapUi.navDivId + ' p.export a.exportcsv').attr('href', csvExportUrl);
-				var geojsonExportUrl = _baseUrl + '/data.geojson?' + requestSerialised;
+				const geojsonExportUrl = _baseUrl + '/data.geojson?' + requestSerialised;
 				$('#' + mapUi.navDivId + ' p.export a.exportgeojson').attr('href', geojsonExportUrl);
 			}
 			
 			// Update the PDF link with the new parameters
 			if (_settings.pdfLink) {
-				var requestSerialised = $.param(apiData);
-				var variationsSlug = '';
+				let variationsSlug = '';
 				if (!$.isEmptyObject (_settings.variations)) {
-					var variationsComponents = [];
+					const variationsComponents = [];
 					$.each (_settings.variations, function (variationsLabel, variations) {
 						fieldname = _variationIds[variationsLabel].toLowerCase();
 						variationsComponents.push (mapUi.variations[fieldname].toLowerCase());
 					});
 					variationsSlug = variationsComponents.join ('_') + '_';
 				}
-				var pdfMapUrl = _baseUrl + '/resources/' + apiData.field.toLowerCase() + '_' + variationsSlug + apiData.year + '.pdf';	// E.g. /resources/bld_m_a_1851.pdf
+				const pdfMapUrl = _baseUrl + '/resources/' + apiData.field.toLowerCase() + '_' + variationsSlug + apiData.year + '.pdf';	// E.g. /resources/bld_m_a_1851.pdf
 				$('#' + mapUi.navDivId + ' p.export a.pdfmap').attr('href', pdfMapUrl);
 			}
 			
@@ -1061,7 +1050,7 @@ var onlineatlas = (function ($) {
 			$('#' + mapUi.containerDivId + ' #loading').show();
 			
 			// Fetch data
-			$.ajax({
+			$.ajax ({
 				url: _baseUrl + '/api/locations',
 				dataType: (onlineatlas.browserSupportsCors () ? 'json' : 'jsonp'),		// Fall back to JSON-P for IE9
 				crossDomain: true,	// Needed for IE<=9; see: https://stackoverflow.com/a/12644252/180733
@@ -1070,7 +1059,7 @@ var onlineatlas = (function ($) {
 					
 					// Show error, unless deliberately aborted
 					if (jqXHR.statusText != 'abort') {
-						var errorData = $.parseJSON(jqXHR.responseText);
+						const errorData = $.parseJSON(jqXHR.responseText);
 						alert ('Error: ' + errorData.error);
 					}
 				},
@@ -1102,21 +1091,21 @@ var onlineatlas = (function ($) {
 			if (!history.pushState) {return;}
 			
 			// Construct the URL slug
-			var field = parameters.field;
-			var year = parameters.year;
-			var urlSlug = '/' + field.toLowerCase() + '/' + year + '/';
+			const field = parameters.field;
+			const year = parameters.year;
+			let urlSlug = '/' + field.toLowerCase() + '/' + year + '/';
 			if (parameters.variation) {
 				urlSlug += _settings.variations[parameters.variation].toLowerCase() + '/';	// e.g. 'female'
 			}
 			
 			// Construct the URL
-			var url = _baseUrl;	// Absolute URL
+			let url = _baseUrl;	// Absolute URL
 			url += urlSlug;
 			url += window.location.hash;
 			
 			// Construct the page title, based on the enabled layers
 			if (!_title) {_title = document.title;}		// Obtain and cache the original page title
-			var title = _title;
+			let title = _title;
 			title += ': ' + _settings.fields[field].label + ', ' + year;
 			
 			// Push the URL state
@@ -1146,7 +1135,7 @@ var onlineatlas = (function ($) {
 						mouseover: function (e) {
 							
 							// Set the style for this feature
-							var thisLayer = e.target;
+							const thisLayer = e.target;
 							thisLayer.setStyle({
 								weight: 4
 							});
@@ -1163,7 +1152,7 @@ var onlineatlas = (function ($) {
 						mouseout: function (e) {
 							
 							// Reset the style
-							var thisLayer = e.target;
+							const thisLayer = e.target;
 							thisLayer.setStyle({
 								weight: (mapUi.zoomedOut ? 0 : 1)
 							});
@@ -1175,7 +1164,7 @@ var onlineatlas = (function ($) {
 					
 					// Enable popups (if close enough)
 					if (!mapUi.zoomedOut) {
-						var popupHtml = onlineatlas.popupHtml (feature);
+						const popupHtml = onlineatlas.popupHtml (feature);
 						layer.bindPopup(popupHtml, {autoPan: false});
 					}
 				},
@@ -1231,7 +1220,7 @@ var onlineatlas = (function ($) {
 		getColour: function (value, field)
 		{
 			// Create a simpler variable for the intervals field
-			var intervals = _settings.fields[field].intervals;
+			const intervals = _settings.fields[field].intervals;
 			
 			// For a wildcard, return either the wildcard colour if there is a value, or the unknown value if not
 			/* Example structure - note that the second value (NULL) is ignored, but NULL will then be styled in the legend as a dashed transparent box
@@ -1254,13 +1243,13 @@ var onlineatlas = (function ($) {
 				}
 				
 				// Last interval
-				var lastInterval = intervals.length - 1;
+				const lastInterval = intervals.length - 1;
 				
 				// Loop through until found
-				var interval;
-				var colourStop;
-				var matches;
-				var i;
+				let interval;
+				let colourStop;
+				let matches;
+				let i;
 				for (i = 0; i < intervals.length; i++) {
 					interval = intervals[i];
 					colourStop = _settings.colourStops[i];
@@ -1341,8 +1330,8 @@ var onlineatlas = (function ($) {
 		popupHtml: function (feature /*, dataset */)
 		{
 			// Determine list of areas present in the data, to be shown in the title in hierarchical order
-			var availableAreaFields = ['PARISH', 'SUBDIST', 'REGDIST', 'REGCNTY'];	// More specific first, so that listing is e.g. "Kingston, Surrey, London"
-			var areaHierarchy = [];
+			const availableAreaFields = ['PARISH', 'SUBDIST', 'REGDIST', 'REGCNTY'];	// More specific first, so that listing is e.g. "Kingston, Surrey, London"
+			const areaHierarchy = [];
 			$.each (availableAreaFields, function (index, areaField) {
 				if (feature.properties[areaField]) {
 					areaHierarchy.push (feature.properties[areaField]);
@@ -1350,7 +1339,7 @@ var onlineatlas = (function ($) {
 			});
 			
 			// Start with the title
-			var html = '<p><strong>Displayed data for ' + areaHierarchy.join (', ') + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
+			let html = '<p><strong>Displayed data for ' + areaHierarchy.join (', ') + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
 			
 			// Add table
 			html += '<table id="chart" class="lines compressed">';
@@ -1395,7 +1384,7 @@ var onlineatlas = (function ($) {
 			}
 			
 			// Determine the field to use, and a suffix
-			var geographicField = _settings.farField;
+			let geographicField = _settings.farField;
 			if (_settings.closeZoom && _settings.closeField) {
 				if (currentZoom >= _settings.closeZoom) {
 					geographicField = _settings.closeField;
@@ -1408,13 +1397,13 @@ var onlineatlas = (function ($) {
 			}
 			
 			// Set the value, rewriting NULL to the specified message
-			var value = '<strong>' + feature.properties[field] + '</strong>';
+			let value = '<strong>' + feature.properties[field] + '</strong>';
 			if (feature.properties[field] == null) {
 				value = _settings['nullDataMessage'];
 			}
 			
 			// Assemble the HTML
-			var html = '<p>' + onlineatlas.htmlspecialchars (feature.properties[geographicField]) + ', in ' + feature.properties.year + ': ' + value + '</p>';
+			const html = '<p>' + onlineatlas.htmlspecialchars (feature.properties[geographicField]) + ', in ' + feature.properties.year + ': ' + value + '</p>';
 			
 			// Return the HTML
 			return html;
@@ -1425,7 +1414,7 @@ var onlineatlas = (function ($) {
 		createLegend: function (mapUi)
 		{
 			// Affix the legend
-			var legend = L.control({position: 'bottomleft'});
+			const legend = L.control({position: 'bottomleft'});
 			
 			// Define its contents
 			legend.onAdd = function () {
@@ -1456,8 +1445,8 @@ var onlineatlas = (function ($) {
 			$('#' + mapUi.mapDivId + ' .legend').show ();
 			
 			// If the intervals is an array, i.e. standard list of colour stops, loop until found
-			var labelsRows = [];
-			var intervals = _settings.fields[mapUi.field].intervals;
+			let labelsRows = [];
+			const intervals = _settings.fields[mapUi.field].intervals;
 			if (intervals[0]) {		// Simple, quick check
 				
 				// Loop through each colour until found
@@ -1473,7 +1462,7 @@ var onlineatlas = (function ($) {
 			}
 			
 			// Compile the HTML
-			var html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].label) + '</h4>';
+			let html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].label) + '</h4>';
 			html += '<p>' + (_settings.fields[mapUi.field].descriptionLegendHtml ? _settings.fields[mapUi.field].descriptionLegendHtml : onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].description)) + '</p>';
 			html += '<table>' + labelsRows.join ('\n') + '</table>';
 			
@@ -1497,7 +1486,7 @@ var onlineatlas = (function ($) {
 			mapUi.summary = L.control({position: 'topleft'});
 			
 			// Define its contents
-			var map = mapUi.map;
+			const map = mapUi.map;
 			mapUi.summary.onAdd = function () {
 			    this._div = L.DomUtil.create('div', 'info summary'); // create a div with a classes 'info' and 'summary'
 			    this.update(mapUi.field, null, mapUi.currentZoom);
@@ -1506,7 +1495,7 @@ var onlineatlas = (function ($) {
 			
 			// Register a method to update the control based on feature properties passed
 			mapUi.summary.update = function (field, feature, currentZoom) {
-				var html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + '</h4>';
+				let html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + '</h4>';
 				html += (feature ?
 					onlineatlas.summaryHtml (field, feature, currentZoom)
 					: 'Hover over an area to view details.');
