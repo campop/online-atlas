@@ -294,6 +294,12 @@ const onlineatlas = (function ($) {
 			// Handle toggle
 			$('#compare').on('click', function() {
 				
+				// Get the centre point
+				const centre = _mapUis[0].map.getCenter ();
+				
+				// Obtain the year index
+				const yearIndex = $('#' + _mapUis[0].yearDivId).val();
+				
 				// Side-by-side mode; this adds a second map on the right, but retains the original map on the left though resizes it
 				// This routine creates the second map and clones in values from the first map, when side-by-side is enabled the first time (only)
 				// The field selection, on both maps, also changes from a radiobutton to a drop-down, to save space, so the value has to be kept in sync between single mode and side-by-side mode left side
@@ -354,6 +360,9 @@ const onlineatlas = (function ($) {
 					// Re-centre the first map
 					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
 					
+					//_mapUis[0].map.flyTo (centre);
+					
+					
 					// Show the syncronisation button
 					$('#syncronisebutton').show ();
 					
@@ -361,7 +370,7 @@ const onlineatlas = (function ($) {
 					const sideBySideAcceptableZoom = 7;
 					_mapUis[0].map.options.minZoom = sideBySideAcceptableZoom;
 					
-					// By default, syncronise the map positions
+					// By default, syncronise the map positions; see: https://github.com/jieter/Leaflet.Sync
 					_mapUis[0].map.sync (_mapUis[1].map);
 					_mapUis[1].map.sync (_mapUis[0].map);
 					$('#syncronise').on('click', function() {
@@ -1065,7 +1074,7 @@ const onlineatlas = (function ($) {
 				if (!$.isEmptyObject (_settings.variations)) {
 					const variationsComponents = [];
 					$.each (_settings.variations, function (variationsLabel, variations) {
-						fieldname = _variationIds[variationsLabel].toLowerCase();
+						const fieldname = _variationIds[variationsLabel].toLowerCase();
 						variationsComponents.push (mapUi.variations[fieldname].toLowerCase());
 					});
 					variationsSlug = variationsComponents.join ('_') + '_';
