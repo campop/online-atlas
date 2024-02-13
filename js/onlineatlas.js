@@ -316,18 +316,20 @@ const onlineatlas = (function ($) {
 						// Copy the form values (year, field, variations) from the left map to the new right-hand map
 						onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + _mapUis[1].navDivId + ' form');
 						
-						// Register handlers to keep the select and radiobuttons in sync, for each map
+						// Register handlers to keep the field value in sync between the single map (radiobutton) and side-by-side left map (select) display formats
+						// There is no need to syncronise other form widgets (year, varations), as their display formats do not change
 						$.each (_mapUis, function (index, mapUi) {
-							let value;
-							let fieldname;
-							$('#' + mapUi.navDivId + ' form input[type="radio"]').on('change', function () {
-								value = $(this).val();
-								$('#' + mapUi.navDivId + ' form select').val( value );
+							
+							// When main map field value (radiobutton) is changed, set the side-by-side left map value (select) to be the same
+							$('#' + mapUi.navDivId + ' form input[name="field"][type="radio"]').on ('change', function () {
+								const value = $(this).val();
+								$('#' + _mapUis[0].navDivId + ' form select[name="field"]').val (value);
 							});
-							$('#' + mapUi.navDivId + ' form select').on('change', function () {
-								value = $(this).val();
-								fieldname = 'field' + index + '_' + onlineatlas.htmlspecialchars (value);
-								$('#' + fieldname).prop('checked', true);
+							
+							// When the side-by-side left map value (select) is changed, set the map field value (radiobutton) to be the same
+							$('#' + _mapUis[0].navDivId + ' form select[name="field"]').on ('change', function () {
+								const value = $(this).val();
+								$('#' + mapUi.navDivId + ' form input[name="field"][type="radio"][value="' + value + '"]').prop('checked', true);
 							});
 						});
 						
