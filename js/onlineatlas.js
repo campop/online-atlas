@@ -644,7 +644,9 @@ var onlineatlas = (function ($) {
 			// Define its contents
 			var navigationpanelDivClass = 'navigationpanel' + mapUi.index;
 			navigationpanel.onAdd = function () {
-				return L.DomUtil.create ('div', 'navigationpanel ' + navigationpanelDivClass);
+				var panelDiv = L.DomUtil.create ('div', 'navigationpanel ' + navigationpanelDivClass);
+				L.DomEvent.disableClickPropagation (panelDiv);		// Prevent drag/click propagating to the map; see: https://stackoverflow.com/a/37629102/
+				return panelDiv;
 			};
 			
 			// Add to the map
