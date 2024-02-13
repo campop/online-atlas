@@ -558,7 +558,7 @@ const onlineatlas = (function ($) {
 				maxZoom: _settings.maxZoom,
 				minZoom: _settings.minZoom,
 				maxBounds: _settings.maxBounds
-			}).setActiveArea('activearea');
+			}).setActiveArea ('activearea', /* keepCenter = */ true);	// Adjust the active area to make the visible centre (i.e. minus the sidebar, in single map mode) be the centre for zoom/similar operations
 			map.attributionControl.setPrefix ('');
 			
 			// Set a class corresponding to the map tile layer, so that the background can be styled with CSS
