@@ -286,8 +286,8 @@ const onlineatlas = (function ($) {
 		{
 			// Add checkbox controls to enable and syncronise side-by-side maps
 			let checkboxesHtml = '<p id="comparebox">';
-			checkboxesHtml += '<span id="syncronisebutton"><label for="syncronise"><img src="/images/icons/arrow_refresh.png" alt="" class="icon" /> Keep map positions in sync &nbsp;</label><input id="syncronise" name="syncronise" type="checkbox" checked="checked"></span> ';
-			checkboxesHtml += '<span id="comparebutton"><label for="compare"><img src="/images/icons/application_tile_horizontal.png" alt="" class="icon" /> Compare side-by-side &nbsp;</label><input id="compare" name="compare" type="checkbox"></span>';
+			checkboxesHtml += '<span id="syncronisebutton"><label><img src="/images/icons/arrow_refresh.png" alt="" class="icon" /> Keep map positions in sync &nbsp;<input id="syncronise" name="syncronise" type="checkbox" checked="checked"></label></span> ';
+			checkboxesHtml += '<span id="comparebutton"><label><img src="/images/icons/application_tile_horizontal.png" alt="" class="icon" /> Compare side-by-side &nbsp;<input id="compare" name="compare" type="checkbox"></label></span>';
 			checkboxesHtml += '</p>';
 			$('#mapcontainers').prepend (checkboxesHtml);
 			

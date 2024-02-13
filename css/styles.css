@@ -4,9 +4,8 @@
 
 /* Side-by-side comparison */
 #comparebox {text-align: right; margin-bottom: 15px;}
-#comparebox span {border: 1px solid #ccc; background-color: #f7f7f7; padding: 6px 10px; margin-left: 10px;}
-#comparebox span label {font-size: 1.2em;}
-#comparebox label, #comparebox input[type=checkbox] {position: relative; vertical-align: middle;}
+#comparebox span label {border: 1px solid #ccc; background-color: #f7f7f7; padding: 6px 10px; margin-left: 10px; font-size: 1.2em;}
+#comparebox span label, #comparebox span label input[type=checkbox] {vertical-align: middle;}
 #comparebox #syncronisebutton {display: none;}
 #mapcontainers.sidebyside .mapcontainer {width: 49%;}
 #mapcontainers.sidebyside #mapcontainer0 {float: left;}
