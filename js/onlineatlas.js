@@ -674,7 +674,7 @@ const onlineatlas = (function ($) {
 			navigationpanel.onAdd = function () {
 				const panelDiv = L.DomUtil.create ('div', 'navigationpanel ' + navigationpanelDivClass);
 				L.DomEvent.disableClickPropagation (panelDiv);		// Prevent drag/click propagating to the map; see: https://stackoverflow.com/a/37629102/
-				L.DomEvent.on (panelDiv, 'mousewheel', L.DomEvent.stopPropagation);		// Prevent scroll wheel changes propagating to the map; see: https://gis.stackexchange.com/a/154592
+				L.DomEvent.on (panelDiv, 'mousewheel', L.DomEvent.stopPropagation);		// Prevent scroll wheel changes propagating to the map, as this panel may be scrollable; see: https://gis.stackexchange.com/a/154592
 				return panelDiv;
 			};
 			
@@ -1445,7 +1445,9 @@ const onlineatlas = (function ($) {
 			
 			// Define its contents
 			legend.onAdd = function () {
-				return L.DomUtil.create ('div', 'info legend');
+				const panelDiv = L.DomUtil.create ('div', 'info legend');
+				L.DomEvent.disableClickPropagation (panelDiv);		// Prevent drag/click propagating to the map; see: https://stackoverflow.com/a/37629102/
+				return panelDiv;
 			};
 			
 			// Add to the map
@@ -1516,6 +1518,7 @@ const onlineatlas = (function ($) {
 			const map = mapUi.map;
 			mapUi.summary.onAdd = function () {
 			    this._div = L.DomUtil.create('div', 'info summary'); // create a div with a classes 'info' and 'summary'
+				L.DomEvent.disableClickPropagation (this._div);		// Prevent drag/click propagating to the map; see: https://stackoverflow.com/a/37629102/
 			    this.update(mapUi.field, null, mapUi.currentZoom);
 			    return this._div;
 			};
