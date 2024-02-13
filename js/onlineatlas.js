@@ -314,13 +314,7 @@ const onlineatlas = (function ($) {
 						$('#' + _mapUis[0].navDivId + ' form select[name="field"]').val(fieldValue);
 						
 						// Copy the form values (year, field, variations) from the left map to the new right-hand map
-						$('#' + _mapUis[1].yearDivId).val(yearIndex);
-						$('#' + _mapUis[1].navDivId + ' form select[name="field"]').val(fieldValue);
-						$.each (_settings.variations, function (variationsLabel, variations) {
-							const variationFieldname = _variationIds[variationsLabel].toLowerCase ();
-							const variationValue = _mapUis[0].variations[variationFieldname];
-							$('#' + _mapUis[1].navDivId + ' form input[name="' + variationFieldname + '"][value="' + variationValue + '"]').prop ('checked', true);
-						});
+						onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + _mapUis[1].navDivId + ' form');
 						
 						// Register handlers to keep the select and radiobuttons in sync, for each map
 						$.each (_mapUis, function (index, mapUi) {
@@ -500,6 +494,29 @@ const onlineatlas = (function ($) {
 			} else {
 				return $('#' + navDivId + ' form input[name="' + inputName + '"]:checked').val();
 			}
+		},
+		
+		
+		// Generic function to clone form values from one form to another of the same structure
+		cloneFormValues: function (form1QuerySelector, form2QuerySelector)
+		{
+			// General inputs with simple scalar values (e.g. not checkbox/button)
+			$(form1QuerySelector).find ('input:not([type=radio], [type=checkbox], [type=button])').each (function (index, input) {
+				$(form2QuerySelector).find ('input[name="' + input.name + '"]').val (input.value);
+			});
+			
+			// Select boxes
+			$(form1QuerySelector).find ('select').each (function (index, select) {
+				const value = $(select).find (':selected').val ();
+				$(form2QuerySelector).find ('select[name="' + select.name + '"]').val (value);
+			});
+			
+			// Radiobuttons
+			$(form1QuerySelector).find ('input[type="radio"]:checked').each (function (index, radio) {
+				$(form2QuerySelector).find ('input[type="radio"][name="' + radio.name + '"][value="' + radio.value + '"]').prop ('checked', true);
+			});
+			
+			// #!# Other types can be added
 		},
 		
 		
@@ -881,7 +898,7 @@ const onlineatlas = (function ($) {
 			datalistHtml += '</ul>';
 			
 			// Combine the range slider and the associated datalist
-			let html = ' <input type="range" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + value + '" style="width: ' + sliderWidth + 'px; margin-left: ' + sliderMargin + 'px;" /> ';
+			let html = ' <input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + value + '" style="width: ' + sliderWidth + 'px; margin-left: ' + sliderMargin + 'px;" /> ';
 			html += datalistHtml;
 			
 			// Return the HTML
