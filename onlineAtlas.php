@@ -358,7 +358,7 @@ class onlineAtlas extends frontControllerApplication
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/onlineatlas.js?8"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/js/onlineatlas.js?9"></script>
 			<script type="text/javascript">
 				
 				var config = {
