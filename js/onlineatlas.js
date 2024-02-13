@@ -301,6 +301,8 @@ const onlineatlas = (function ($) {
 				// This routine creates the second map and clones in values from the first map, when side-by-side is enabled the first time (only)
 				// The field selection, on both maps, also changes from a radiobutton to a drop-down, to save space, so the value has to be kept in sync between single mode and side-by-side mode left side
 				if ( $(this).is(':checked') ) {
+					
+					// Set main style class
 					$('#mapcontainers').addClass('sidebyside');
 					
 					// Load the second map UI if not already loaded
@@ -330,8 +332,9 @@ const onlineatlas = (function ($) {
 							});
 						});
 						
-						// Copy the form values (year, field, variations) from the left map to the new right-hand map
+						// Copy the form values (year, field, variations) from the left map to the new right-hand map, and trigger change
 						onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + _mapUis[1].navDivId + ' form');
+						$('#' + _mapUis[1].navDivId + ' form select[name="field"]').trigger ('change');
 						
 						// Register a handler to dim out options which are not available for the selected year
 						onlineatlas.dimUnavailableHandlerWrapper (_mapUis[1]);
