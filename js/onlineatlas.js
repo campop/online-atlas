@@ -297,20 +297,23 @@ const onlineatlas = (function ($) {
 				// Obtain the year index
 				const yearIndex = $('#' + _mapUis[0].yearDivId).val();
 				
-				// Side-by-side mode
+				// Side-by-side mode; this adds a second map on the right, but retains the original map on the left though resizes it
+				// This routine creates the second map and clones in values from the first map, when side-by-side is enabled the first time (only)
+				// The field selection, on both maps, also changes from a radiobutton to a drop-down, to save space, so the value has to be kept in sync between single mode and side-by-side mode left side
 				if ( $(this).is(':checked') ) {
 					$('#mapcontainers').addClass('sidebyside');
 					
 					// Load the second map UI if not already loaded
 					if (!_secondMapLoaded) {
 						_mapUis[1] = onlineatlas.createMapUi (1);
-						_secondMapLoaded = true;
+						_secondMapLoaded = true;	// Prevent re-entry into this cloning, as hiding/re-showing should keep previous state
 						
-						// Clone the current radiobutton value to be the new select value
+						// Clone the current field value in single mode (a radiobutton) to be the field value in side-by-side mode (a select), for the left map
+						// Other fields remain unchanged in the left map
 						const fieldValue = _mapUis[0].field;
 						$('#' + _mapUis[0].navDivId + ' form select').val(fieldValue);
 						
-						// Clone the current year and field values to be the defaults for the new map
+						// Copy the form values (year and field) from the left map to the new right-hand map
 						$('#' + _mapUis[1].yearDivId).val(yearIndex);
 						$('#' + _mapUis[1].navDivId + ' form select').val(fieldValue);
 						
@@ -1000,7 +1003,7 @@ const onlineatlas = (function ($) {
 			apiData.bbox = mapUi.map.getBounds().toBBoxString();
 			apiData.zoom = mapUi.currentZoom;
 			
-			// Set the field, based on the radiobutton value
+			// Set the field, based on the layer radiobutton/dropdown value
 			apiData.field = mapUi.field;
 			
 			// Set the year, based on the slider value
