@@ -434,19 +434,18 @@ const onlineatlas = (function ($) {
 				mapUi.field = onlineatlas.getVisibleFieldWidget (mapUi.navDivId);
 			});
 			
-			// If enabled, determine the active variation, and create a handler for changes
+			// For each variation (if any), create a handler for changes
 			if (!$.isEmptyObject (_settings.variations)) {
 				mapUi.variations = {};
 				$.each (_settings.variations, function (variationsLabel, variations) {
 					
 					// Initial value
-					const fieldnameFromInitial = _variationIds[variationsLabel].toLowerCase();
-					mapUi.variations[fieldnameFromInitial] = _settings.defaultVariations[variationsLabel];	// E.g. F, M, etc.
+					const fieldname = _variationIds[variationsLabel].toLowerCase();
+					mapUi.variations[fieldname] = _settings.defaultVariations[variationsLabel];	// E.g. F, M, etc.
 					
-					// Changes
-					$('#' + mapUi.navDivId + ' form input[name="' + fieldnameFromInitial + '"]').on ('change', function (e) {
-						const fieldname = e.target.name;
-						mapUi.variations[fieldname] = onlineatlas.getVisibleFieldWidget (mapUi.navDivId);
+					// Changes, which simply read off the field name/value pairs
+					$('#' + mapUi.navDivId + ' form input[name="' + fieldname + '"]').on ('change', function (e) {
+						mapUi.variations[this.name] = this.value;
 					});
 				});
 			}
