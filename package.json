@@ -5,7 +5,7 @@
     "jquery": "^3.6.0",
     "jquery-ui": "^1.13.1",
     "js-cookie": "2.1.4",
-    "leaflet": "^1.7.1",
+    "leaflet": "^1.9.4",
     "leaflet-active-area": "^1.2.0",
     "leaflet-ajax": "^2.1.0",
     "leaflet-fullhash": "^1.0.0",

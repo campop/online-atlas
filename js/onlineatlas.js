@@ -526,6 +526,7 @@ var onlineatlas = (function ($) {
 				minZoom: _settings.minZoom,
 				maxBounds: _settings.maxBounds
 			}).setActiveArea('activearea');
+			map.attributionControl.setPrefix ('');
 			
 			// Set a class corresponding to the map tile layer, so that the background can be styled with CSS
 			onlineatlas.setMapBackgroundColour (tileLayers[0].options);
