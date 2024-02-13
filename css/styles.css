@@ -15,7 +15,8 @@
 #mapcontainers.sidebyside .mapcontainer .leaflet-control-layers, #mapcontainers.sidebyside .mapcontainer .leaflet-control-attribution {right: 0;}
 #mapcontainers.sidebyside .mapcontainer .summary {left: 45px; top: 50px; width: 157px;}
 #mapcontainers.sidebyside .mapcontainer .geocoder input {width: 170px;}
-#mapcontainers.sidebyside nav {height: 170px; width: 310px;}
+#mapcontainers.sidebyside .navigationpanel {height: 170px;}
+#mapcontainers.sidebyside nav {width: 310px;}
 #mapcontainers.sidebyside nav form {padding-top: 15px; padding-bottom: 15px;}
 #mapcontainers.sidebyside nav .radiobuttons {display: none;}
 #mapcontainers nav select {display: none;}
@@ -35,7 +36,8 @@ body .ui-front {z-index: 1000;}
 
 /* Overlay */
 .leaflet-top.leaflet-right {height: 100%; width: 330px; padding: 0; margin: 0; /* border: 1px solid gray; */}
-.leaflet-top.leaflet-right .leaflet-control {margin: 0; height: 100%;}
+.leaflet-top.leaflet-right .leaflet-control {margin: 0;}
+.navigationpanel {height: 100%;}
 #mapcontainers nav {width: 330px; height: 100%; background-color: #333; opacity: 0.85; color: white;}
 .activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
 .leaflet-control-layers, .leaflet-control-attribution {right: 330px;}
