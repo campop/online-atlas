@@ -430,7 +430,7 @@ const onlineatlas = (function ($) {
 			
 			// Determine the active field, and create a handler for changes
 			mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.
-			$('#' + mapUi.navDivId + ' form input[name="field"], #' + mapUi.navDivId + ' form select').on('change', function() {
+			$('#' + mapUi.navDivId + ' form input[name="field"], #' + mapUi.navDivId + ' form select[name="field"]').on ('change', function () {
 				mapUi.field = onlineatlas.getField (mapUi.navDivId, 'field');
 			});
 			
@@ -491,8 +491,8 @@ const onlineatlas = (function ($) {
 		getField: function (navDivId, inputName)
 		{
 			// Switch between radiobuttons (full mode) and select (side-by-side mode)
-			if ( $('#' + navDivId + ' select').is(':visible') ) {
-				return $('#' + navDivId + ' form select').val();
+			if ( $('#' + navDivId + ' select[name="' + inputField + '"]').is (':visible') ) {
+				return $('#' + navDivId + ' form select[name="' + inputField + '"]').val ();
 			} else {
 				return $('#' + navDivId + ' form input[name="' + inputName + '"]:checked').val();
 			}
