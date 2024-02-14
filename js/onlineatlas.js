@@ -27,6 +27,7 @@ const onlineatlas = (function ($) {
 		// Max/min zoom
 		maxZoom: 13,	// Zoomed in
 		minZoom: 5,		// Zoomed out
+		sideBySideMinZoom: 7,
 		
 		// Max bounds
 		maxBounds: [[47, -14], [62, 12]],	// South, West ; North, East
@@ -367,8 +368,7 @@ const onlineatlas = (function ($) {
 					$('#syncronisebutton').show ();
 					
 					// Prevent far-out zoom, as a workaround for side-by-side interacting with maxBounds, which causes looping in Chrome and memory issues in Firefox
-					const sideBySideAcceptableZoom = 7;
-					_mapUis[0].map.options.minZoom = sideBySideAcceptableZoom;
+					_mapUis[0].map.options.minZoom = _settings.sideBySideMinZoom;
 					
 					// By default, syncronise the map positions; see: https://github.com/jieter/Leaflet.Sync
 					_mapUis[0].map.sync (_mapUis[1].map);
