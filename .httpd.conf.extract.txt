@@ -18,7 +18,6 @@
 	
 	# Central assets
 	#!# Move to an htdocs/ folder
-	Alias $applicationBaseUrl/robots.txt $repoPath/robots.txt
 	Alias $applicationBaseUrl/css/ $repoPath/css/
 	Alias $applicationBaseUrl/data/ $repoPath/data/
 	AliasMatch ^$applicationBaseUrl/images/(fileicons|general|icons)/ $repoPath/images/fileicons/$1/
