@@ -380,9 +380,9 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Add text for more details on each field into the page, if required
 		if ($this->settings['aboutFile']) {
-			$html .= "\n<div id=\"aboutfields\">";
+			$html .= "\n<template id=\"aboutfields\">";		// Avoids content being duplicated from actual page
 			$html .= "\n" . file_get_contents ($this->settings['aboutFile']);
-			$html .= "\n</div>";
+			$html .= "\n</template>";
 		}
 		
 		# Templatise

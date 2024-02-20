@@ -1001,7 +1001,8 @@ const onlineatlas = (function ($) {
 				const field = $(this).attr('data-field');
 				
 				// Obtain the content; see: https://stackoverflow.com/a/14744011/180733 and https://stackoverflow.com/a/25183183/180733
-				let dialogBoxContentHtml = $('#aboutfields').find('h3.' + field).nextUntil('h3, h2').addBack().map(function() {
+				const templateHtml = $('template#aboutfields')[0].content;
+				let dialogBoxContentHtml = $(templateHtml).find('h3.' + field).nextUntil('h3, h2').addBack().map(function() {
 					return this.outerHTML;
 				}).get().join('');
 				if (!dialogBoxContentHtml) {
