@@ -14,6 +14,7 @@ class onlineAtlas extends frontControllerApplication
 		$defaults = array (
 			'applicationName' => 'Online atlas',
 			'pageHeader' => 'Online atlas',
+			'div' => 'onlineatlas',
 			'hostname' => 'localhost',
 			'database' => 'onlineatlas',
 			'username' => 'onlineatlas',
@@ -47,7 +48,6 @@ class onlineAtlas extends frontControllerApplication
 			'disableTabs' => true,
 			'authLinkVisibility' => false,
 			'h1' => '',
-			'div' => false,
 			'ogPreview' => '/images/preview.png',
 			'firstRunMessageHtml' => false,
 			'defaultDataset' => false,
