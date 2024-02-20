@@ -367,6 +367,10 @@ class onlineAtlas extends frontControllerApplication
 			$html .= "\n</template>";
 		}
 		
+		# Add Open Graph tags
+		#!# These are probably not recognised within <body> content, but here for now
+		$html .= $this->ogTags ();
+		
 		# Show the HTML
 		echo $html;
 	}
