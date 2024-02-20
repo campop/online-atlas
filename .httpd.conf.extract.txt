@@ -14,8 +14,6 @@
 	</Location>
 	
 	# Local assets
-	Alias $applicationBaseUrl/images/about/ $localRepoPath/images/about/
-	Alias $applicationBaseUrl/images/logos/ $localRepoPath/images/logos/
 	Alias $applicationBaseUrl/images/preview.png $localRepoPath/images/preview.png
 	
 	# Central assets
