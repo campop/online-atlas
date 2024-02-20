@@ -50,6 +50,7 @@ class onlineAtlas extends frontControllerApplication
 			'h1' => '',
 			'ogPreview' => '/images/preview.png',
 			'firstRunMessageHtml' => false,
+			'aboutFile' => false,
 			'defaultDataset' => false,
 			'defaultField' => NULL,
 			'defaultVariations' => array (),
@@ -286,7 +287,7 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Welcome screen
-	public function home ($aboutPath = false, $additionalCss = false)
+	public function home ($additionalCss = false)
 	{
 		# Start the HTML
 		$html = '
@@ -377,13 +378,12 @@ class onlineAtlas extends frontControllerApplication
 			$html .= "\n" . '</style>';
 		}
 		
-		# Add text for more details on each field into the page
-		$html .= "\n<div id=\"aboutfields\">";
-		$file = ($aboutPath ? $aboutPath : $this->applicationRoot) . '/about.html';
-		$fileContents = file_get_contents ($file);
-		$fileContents = str_replace ('{$baseUrl}', $this->baseUrl, $fileContents);
-		$html .= $fileContents;
-		$html .= "\n</div>";
+		# Add text for more details on each field into the page, if required
+		if ($this->settings['aboutFile']) {
+			$html .= "\n<div id=\"aboutfields\">";
+			$html .= "\n" . file_get_contents ($this->settings['aboutFile']);
+			$html .= "\n</div>";
+		}
 		
 		# Templatise
 		$this->template['contentHtml'] = $html;
