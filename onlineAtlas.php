@@ -103,26 +103,6 @@ class onlineAtlas extends frontControllerApplication
 				'tab' => $this->settings['applicationName'],
 				'icon' => 'map',
 			),
-			'about' => array (
-				'description' => false,
-				'url' => 'about/',
-				'tab' => 'About the Atlas',
-			),
-			'resources' => array (
-				'description' => false,
-				'url' => 'resources/',
-				'tab' => 'Resources',
-			),
-			'acknowledgements' => array (
-				'description' => false,
-				'url' => 'acknowledgements/',
-				'tab' => 'Acknowledgements',
-			),
-			'contacts' => array (
-				'description' => false,
-				'url' => 'contacts/',
-				'tab' => 'Contacts',
-			),
 			'exportcsv' => array (
 				'description' => false,
 				'url' => 'data.csv',
@@ -427,93 +407,6 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Return the fields
 		return $fields;
-	}
-	
-	
-	# About page
-	public function about ($path = false)
-	{
-		# Add the stylesheet
-		$html = '<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css" />';
-		
-		# Load and show the HTML
-		$file = ($path ? $path : $this->applicationRoot) . '/about.html';
-		$fileContents = file_get_contents ($file);
-		$fileContents = str_replace ('{$baseUrl}', $this->baseUrl, $fileContents);
-		$html .= $fileContents;
-		
-		# Templatise
-		$this->template['contentHtml'] = $html;
-		$html = $this->templatise ();
-		
-		# Show the HTML
-		echo $html;
-	}
-	
-	
-	# Resources page
-	public function resources ($path = false)
-	{
-		# Add the stylesheet
-		$html = '<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css" />';
-		
-		# Load and show the HTML
-		$file = ($path ? $path : $this->applicationRoot) . '/resources.html';
-		$fileContents = file_get_contents ($file);
-		$fileContents = str_replace ('{$baseUrl}', $this->baseUrl, $fileContents);
-		$html .= $fileContents;
-		
-		# Templatise
-		$this->template['contentHtml'] = $html;
-		$html = $this->templatise ();
-		
-		# Show the HTML
-		echo $html;
-	}
-	
-	
-	# Acknowledgements page
-	public function acknowledgements ($path = false)
-	{
-		# Add the stylesheet
-		$html = '<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css" />';
-		
-		# Load and show the HTML
-		$file = ($path ? $path : $this->applicationRoot) . '/acknowledgements.html';
-		$fileContents = file_get_contents ($file);
-		$fileContents = str_replace ('{$baseUrl}', $this->baseUrl, $fileContents);
-		$html .= $fileContents;
-		
-		# Templatise
-		$this->template['contentHtml'] = $html;
-		$html = $this->templatise ();
-		
-		# Show the HTML
-		echo $html;
-	}
-	
-	
-	# Contact page
-	public function contacts ($path = false)
-	{
-		# Add the stylesheet
-		$html = '<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css" />';
-		
-		# Load and show the HTML
-		$file = ($path ? $path : $this->applicationRoot) . '/contacts.html';
-		$fileContents = file_get_contents ($file);
-		$fileContents = str_replace ('{$baseUrl}', $this->baseUrl, $fileContents);
-		$html .= $fileContents;
-		
-		# Add the feedback form
-		$this->template['feedbackform'] = parent::feedback (NULL, NULL, $echoHtml = false);
-		
-		# Templatise
-		$this->template['contentHtml'] = $html;
-		$html = $this->templatise ();
-		
-		# Show the HTML
-		echo $html;
 	}
 	
 	

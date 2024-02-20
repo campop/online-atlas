@@ -17,7 +17,6 @@
 	Alias $applicationBaseUrl/images/about/ $localRepoPath/images/about/
 	Alias $applicationBaseUrl/images/logos/ $localRepoPath/images/logos/
 	Alias $applicationBaseUrl/images/preview.png $localRepoPath/images/preview.png
-	Alias $applicationBaseUrl/resources/ $localRepoPath/resources/
 	
 	# Central assets
 	#!# Move to an htdocs/ folder
@@ -35,8 +34,8 @@
 	RewriteRule ^$applicationBaseUrl/(api)/([.a-z]+)$ $applicationBaseUrl/index.html?action=$1&method=$2 [L,QSA]
 	
 	# Application directives
-	RewriteRule ^$applicationBaseUrl/(about|resources|acknowledgements|contacts|import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
-	RewriteRule ^$applicationBaseUrl/(about|resources|acknowledgements|contacts|import)$ $applicationBaseUrl/$1/ [R]
+	RewriteRule ^$applicationBaseUrl/(import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
+	RewriteRule ^$applicationBaseUrl/(import)$ $applicationBaseUrl/$1/ [R]
 	RewriteRule ^$applicationBaseUrl/data.csv$ $applicationBaseUrl/index.html?action=exportcsv [L,QSA]
 	RewriteRule ^$applicationBaseUrl/data.geojson$ $applicationBaseUrl/index.html?action=exportgeojson [L,QSA]
 	
