@@ -43,7 +43,6 @@ class onlineAtlas extends frontControllerApplication
 			'downloadFilenameBase' => 'onlineatlas',	// Or false to disable
 			'pdfLink' => false,
 			'downloadInitialNotice' => false,
-			'useTemplating' => true,
 			'bodyClass' => '',
 			'disableTabs' => true,
 			'authLinkVisibility' => false,
@@ -176,23 +175,6 @@ class onlineAtlas extends frontControllerApplication
 	# Additional processing
 	public function main ()
 	{
-		# Set the body class and action
-		$this->template['bodyClass'] = $this->settings['bodyClass'];
-		$this->template['action'] = $this->action;
-		
-		# Set the SSO block
-		$this->template['sso'] = pureContent::ssoLinks ('Raven');
-		
-		# Set Open Graph tags
-		$this->template['ogTags'] = $this->ogTags ();
-		
-		# Set the admin
-		$this->template['userIsAdministrator'] = $this->userIsAdministrator;
-		
-		# Set the default title
-		$this->template['title'] = $this->settings['applicationName'];
-		$this->template['pageHeader'] = $this->settings['pageHeader'];
-		
 		# Flatten variations to create a list to which the main fields will be multiplexed
 		$this->settings['variationsFlattened'] = application::array_key_combinations ($this->settings['variations']);
 		
@@ -385,10 +367,6 @@ class onlineAtlas extends frontControllerApplication
 			$html .= "\n</template>";
 		}
 		
-		# Templatise
-		$this->template['contentHtml'] = $html;
-		$html = $this->templatise ();
-		
 		# Show the HTML
 		echo $html;
 	}
@@ -438,10 +416,6 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Run the import UI (which will output HTML)
 		$html = $this->importUi ($importFiles, $importTypes, $fileCreationInstructionsHtml, 'zip', $echoHtml = false);
-		
-		# Templatise
-		$this->template['contentHtml'] = $html;
-		$html = $this->templatise ();
 		
 		# Show the HTML
 		echo $html;
