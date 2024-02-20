@@ -27,7 +27,6 @@
 	AliasMatch ^$applicationBaseUrl/images/(fileicons|general|icons)/ $repoPath/images/fileicons/$1/
 	AliasMatch ^$applicationBaseUrl/images/(beta.png|hamburger.svg|spinner.svg|ui-anim_basic_16x16.gif)$ $repoPath/images/$1
 	Alias $applicationBaseUrl/js/ $repoPath/js/
-	Alias $applicationBaseUrl/style/ $repoPath/style/
 	
 	Use MacroFrontControllerApplication "$applicationBaseUrl/" "$name"
 	
