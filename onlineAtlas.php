@@ -46,7 +46,6 @@ class onlineAtlas extends frontControllerApplication
 			'bodyClass' => '',
 			'disableTabs' => true,
 			'authLinkVisibility' => false,
-			'h1' => '',
 			'ogPreview' => '/images/preview.png',
 			'firstRunMessageHtml' => false,
 			'aboutFile' => false,
