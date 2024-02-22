@@ -438,6 +438,25 @@ const onlineatlas = (function ($) {
 			// Create the location overlay pane
 			onlineatlas.createLocationsOverlayPane (mapUi.map);
 			
+			// Add static GeoJSON overlay to filter out non-GB locations
+			fetch (_baseUrl + '/overlay.geojson')
+				.then (function (response) { return response.json (); })
+				.then (function (geojson) {
+					mapUi.map.createPane ('overlay');	// See: https://leafletjs.com/examples/map-panes/
+					mapUi.map.getPane ('overlay').style.zIndex = 700;	// Names layer is 650
+					const overlayOptions = {
+						style: {
+							color: 'transparent',	// Line colour
+							fillColor: '#a5c2ba',
+							fillOpacity: 1
+						},
+						pane: 'overlay',
+						interactive: false
+					};
+					const overlay = L.geoJSON (geojson, overlayOptions).addTo (mapUi.map);
+					overlay.bringToFront ();
+			});
+			
 			// Show first-run welcome message if the user is new to the site
 			onlineatlas.welcomeFirstRun ();
 			
