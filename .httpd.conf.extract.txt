@@ -7,54 +7,54 @@
 #   Use MacroOnlineAtlas "/public-url/onlineatlas" "/path/to/online-atlas" "Online atlas" "/path/to/online-atlas/:/path/to/smarty/:/path/to/php/libraries/"
 
 
-<Macro MacroOnlineAtlas $applicationBaseUrl $localRepoPath $repoPath $name $includePath>
+<Macro MacroOnlineAtlas $baseUrl $localRepoPath $repoPath $name $includePath>
 	
 	<Location $applicationBaseUrl/>
 		php_value include_path "$includePath"
 	</Location>
 	
 	# Local assets
-	Alias $applicationBaseUrl/images/preview.png $localRepoPath/images/preview.png
+	Alias $baseUrl/images/preview.png $localRepoPath/images/preview.png
 	
 	# Central assets
 	#!# Move to an htdocs/ folder
-	Alias $applicationBaseUrl/overlay.geojson $repoPath/overlay.geojson
-	Alias $applicationBaseUrl/css/ $repoPath/css/
-	Alias $applicationBaseUrl/data/ $repoPath/data/
-	Alias $applicationBaseUrl/images/icons/ $repoPath/images/icons/
-	AliasMatch ^$applicationBaseUrl/images/(beta.png|hamburger.svg|spinner.svg|ui-anim_basic_16x16.gif)$ $repoPath/images/$1
-	Alias $applicationBaseUrl/js/ $repoPath/js/
+	Alias $baseUrl/overlay.geojson $repoPath/overlay.geojson
+	Alias $baseUrl/css/ $repoPath/css/
+	Alias $baseUrl/data/ $repoPath/data/
+	Alias $baseUrl/images/icons/ $repoPath/images/icons/
+	AliasMatch ^$baseUrl/images/(beta.png|hamburger.svg|spinner.svg|ui-anim_basic_16x16.gif)$ $repoPath/images/$1
+	Alias $baseUrl/js/ $repoPath/js/
 	
 	Use MacroFrontControllerApplication "$applicationBaseUrl/" "$name"
 	
 	# API
 	#!# This line is required for baseUrl compatibility - but it should not be needed; not sure why this is failing within MacroFrontControllerApplication
-	RewriteRule ^$applicationBaseUrl/(api)/([.a-z]+)$ $applicationBaseUrl/index.html?action=$1&method=$2 [L,QSA]
+	RewriteRule ^$baseUrl/(api)/([.a-z]+)$ $baseUrl/index.html?action=$1&method=$2 [L,QSA]
 	
 	# Application directives
-	RewriteRule ^$applicationBaseUrl/(import)/$ $applicationBaseUrl/index.html?action=$1 [L,QSA]
-	RewriteRule ^$applicationBaseUrl/(import)$ $applicationBaseUrl/$1/ [R]
-	RewriteRule ^$applicationBaseUrl/data.csv$ $applicationBaseUrl/index.html?action=exportcsv [L,QSA]
-	RewriteRule ^$applicationBaseUrl/data.geojson$ $applicationBaseUrl/index.html?action=exportgeojson [L,QSA]
+	RewriteRule ^$baseUrl/(import)/$ $baseUrl/index.html?action=$1 [L,QSA]
+	RewriteRule ^$baseUrl/(import)$ $baseUrl/$1/ [R]
+	RewriteRule ^$baseUrl/data.csv$ $baseUrl/index.html?action=exportcsv [L,QSA]
+	RewriteRule ^$baseUrl/data.geojson$ $baseUrl/index.html?action=exportgeojson [L,QSA]
 	
 	# Route all virtual requests arising from HTML5 pushState URLs to main page
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^$applicationBaseUrl/([_a-z0-9]+)/([0-9]{4})/$ $applicationBaseUrl/index.html?field=$1&year=$2 [L,QSA]
-	RewriteRule ^$applicationBaseUrl/([_a-z0-9]+)/([0-9]{4})/([a-z]+)/$ $applicationBaseUrl/index.html?field=$1&year=$2&variation=$3 [L,QSA]
+	RewriteRule ^$baseUrl/([_a-z0-9]+)/([0-9]{4})/$ $baseUrl/index.html?field=$1&year=$2 [L,QSA]
+	RewriteRule ^$baseUrl/([_a-z0-9]+)/([0-9]{4})/([a-z]+)/$ $baseUrl/index.html?field=$1&year=$2&variation=$3 [L,QSA]
 	
-	<Location $applicationBaseUrl/>
+	<Location $baseUrl/>
 		php_value memory_limit 100M
 	</Location>
 	
 	# Large file uploads for import page
-	<Location $applicationBaseUrl/import/>
+	<Location $baseUrl/import/>
 		php_value upload_max_filesize 100M
 		php_value post_max_size 100M
 	</Location>
 	
 	# Export
-	<Location $applicationBaseUrl/data.csv>
+	<Location $baseUrl/data.csv>
 		php_value auto_prepend_file none
 		php_value auto_append_file none
 	</Location>
