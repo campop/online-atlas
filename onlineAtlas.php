@@ -274,7 +274,7 @@ class onlineAtlas extends frontControllerApplication
 		$html = '
 			
 			<!-- Main stylesheet -->
-			<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css?8" type="text/css">
+			<link rel="stylesheet" href="' . $this->baseUrl . '/css/styles.css?9" type="text/css">
 			
 			<script src="' . $this->baseUrl . '/js/lib/jquery/dist/jquery.min.js"></script>
 			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
