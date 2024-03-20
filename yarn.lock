@@ -10,46 +10,46 @@
 classlist-polyfill@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/classlist-polyfill/-/classlist-polyfill-1.2.0.tgz#935bc2dfd9458a876b279617514638bcaa964a2e"
-  integrity sha1-k1vC39lFiodrJ5YXUUY4vKqWSi4=
+  integrity sha512-GzIjNdcEtH4ieA2S8NmrSxv7DfEV5fmixQeyTmqmRmRJPGpRBaSnA2a0VrCjyT8iW8JjEdMbKzDotAJf+ajgaQ==
 
 deep-clone-simple@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/deep-clone-simple/-/deep-clone-simple-1.1.1.tgz#0ec358dfcce062928dbf58f0dfa484b4b5425d59"
-  integrity sha1-DsNY38zgYpKNv1jw36SEtLVCXVk=
+  integrity sha512-d/Knd6Cmq0hQTdTf5uggLD0ua6zpwGb1Yqorz3Y8NAmcAMKsG/UmV8+iaNqgT92WPFD7EDymwGIwwVy888T6fQ==
 
 domify@1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/domify/-/domify-1.4.0.tgz#11483617f764f8695975b4bdc79b14f0803b629b"
-  integrity sha1-EUg2F/dk+GlZdbS9x5sU8IA7Yps=
+  integrity sha512-CBzequt8IJiKV8fav4tn0qA9KSiZ76w3C2EkyfC8+df6UGNcZJRfvfBcRzLW39eGeETcunkOvvRBj/gKXIdULw==
 
 es6-object-assign@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/es6-object-assign/-/es6-object-assign-1.1.0.tgz#c2c3582656247c39ea107cb1e6652b6f9f24523c"
-  integrity sha1-wsNYJlYkfDnqEHyx5mUrb58kUjw=
+  integrity sha512-MEl9uirslVwqQU369iHNWZXsI8yaZYGg/D65aOgZkeyFJwHYSxilf7rQzXKI7DdDuBPrBXbfk3sl9hJhmd5AUw==
 
 font-awesome@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
-  integrity sha1-j6jPBBGhoxr9B7BtKQK7n8gVoTM=
+  integrity sha512-U6kGnykA/6bFmg1M/oT9EkFeIYv7JlX3bozwQJWiiLz6L0w3F5vBVPxHlwyX/vtNq1ckcpRKOB9f2Qal/VtFpg==
 
 form-serialize@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/form-serialize/-/form-serialize-0.7.1.tgz#48f74e37d041de4f7d140dd2c54b37fff8d2e843"
-  integrity sha1-SPdON9BB3k99FA3SxUs3//jS6EM=
+  integrity sha512-WGThlbRC1ELTwfR4HGLFnUBU3yzaOmiZ1ZbPgic3XsS3nGTzZdrxOLwsP4kz6QBdy1KAwvoLwN9TJk08mfqxxA==
 
 immediate@~3.0.5:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
-  integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
+  integrity sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==
 
-jquery-ui@^1.13.1:
+jquery-ui@^1.13.2:
   version "1.13.2"
   resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.13.2.tgz#de03580ae6604773602f8d786ad1abfb75232034"
   integrity sha512-wBZPnqWs5GaYJmo1Jj0k/mrSkzdQzKDwhXNtHKcBdAcKVxMM3KNYFq+iJ2i1rwiG53Z8M4mTn3Qxrm17uH1D4Q==
   dependencies:
     jquery ">=1.8.0 <4.0.0"
 
-"jquery@>=1.8.0 <4.0.0", jquery@^3.6.0:
+"jquery@>=1.8.0 <4.0.0", jquery@^3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.7.1.tgz#083ef98927c9a6a74d05a6af02806566d16274de"
   integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
@@ -57,17 +57,17 @@ jquery-ui@^1.13.1:
 js-cookie@2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-2.1.4.tgz#da4ec503866f149d164cf25f579ef31015025d8d"
-  integrity sha1-2k7FA4ZvFJ0WTPJfV57zEBUCXY0=
+  integrity sha512-ACJgj9MPgn/ac4b55OZFbPY/u57HTSkOD65ScYN1sh/js0pQP7WQh7/kFt6/NxBOHKlwVsxZWliVo7CkxF0Cjg==
 
 leaflet-active-area@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/leaflet-active-area/-/leaflet-active-area-1.2.0.tgz#f5cde2f4f3eaa4b75230fb4f44c4acdfb7c324c3"
-  integrity sha512-Hq22sKlk9KqkEFca5c5ks89zoFQ81h/mmdSQgx9m/MgihR4YL24WkTJhVaRgSNZQ95NneOpawYnn1eXJNzObcA==
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/leaflet-active-area/-/leaflet-active-area-1.2.1.tgz#dc93ea005e32c7a027360f2d14098c21aaaed52f"
+  integrity sha512-lZdkGt7VzaYCrarYaWnJ4BI2CrzrfivX35GLUc9l4w8y9ru88LLqcQzWZMw7bPzSzHO7do301z77mSfIvhWjFg==
 
 leaflet-ajax@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/leaflet-ajax/-/leaflet-ajax-2.1.0.tgz#269343d59bd38dc9dfa4f3a733e787ff32fe236f"
-  integrity sha1-JpND1ZvTjcnfpPOnM+eH/zL+I28=
+  integrity sha512-5Acw/C+27nZPd4PM4bH6eO7GDwj54RsQnJ3E4+LKQ9nva9qp57D6/b5inQfyzaZoU+r6/HgrsMv4AjjrnM1Wlg==
   dependencies:
     lie "^3.0.1"
 
@@ -79,17 +79,17 @@ leaflet-fullhash@^1.0.0:
 leaflet-fullscreen@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/leaflet-fullscreen/-/leaflet-fullscreen-1.0.2.tgz#09c61c4bac45f63b2ee126afd87e5cd97650fc1b"
-  integrity sha1-CcYcS6xF9jsu4Sav2H5c2XZQ/Bs=
+  integrity sha512-1Yxm8RZg6KlKX25+hbP2H/wnOAphH7hFcvuADJFb4QZTN7uOSN9Hsci5EZpow8vtNej9OGzu59Jxmn+0qKOO9Q==
 
-leaflet.locatecontrol@^0.76.0:
-  version "0.76.0"
-  resolved "https://registry.yarnpkg.com/leaflet.locatecontrol/-/leaflet.locatecontrol-0.76.0.tgz#afca63a3ccf3161bed0e8bf94a98ddba364e90e1"
-  integrity sha512-Mx8uiihBi8KrrW3LgblsNL/pS8HR0gj60m8VFDFrnhSvDuitChazc095XcMSscf/XqZW+TSqQMCTe+AUy/4/eA==
+leaflet.locatecontrol@^0.79.0:
+  version "0.79.0"
+  resolved "https://registry.yarnpkg.com/leaflet.locatecontrol/-/leaflet.locatecontrol-0.79.0.tgz#0236b87c699a49f9ddb2f289941fbc0d3c3f8b62"
+  integrity sha512-h64QIHFkypYdr90lkSfjKvPvvk8/b8UnP3m9WuoWdp5p2AaCWC0T1NVwyuj4rd5U4fBW3tQt4ppmZ2LceHMIDg==
 
 leaflet.sync@^0.2.4:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/leaflet.sync/-/leaflet.sync-0.2.4.tgz#76d4095a61470882d72e092190090d0a1fa55ca2"
-  integrity sha1-dtQJWmFHCILXLgkhkAkNCh+lXKI=
+  integrity sha512-e59CcQNMFFZJWCAGzyFxcsVldWd0cU7G71q2Zh5a5Pbe7ua4G7CNQcKz51IALf0NzOyRF7ws6gjnndiVWkYN+w==
 
 leaflet@^1.9.4:
   version "1.9.4"

@@ -2,15 +2,15 @@
   "dependencies": {
     "@benmajor/jquery-touch-events": "^2.0.3",
     "font-awesome": "^4.7.0",
-    "jquery": "^3.6.0",
-    "jquery-ui": "^1.13.1",
+    "jquery": "^3.7.1",
+    "jquery-ui": "^1.13.2",
     "js-cookie": "2.1.4",
     "leaflet": "^1.9.4",
     "leaflet-active-area": "^1.2.0",
     "leaflet-ajax": "^2.1.0",
     "leaflet-fullhash": "^1.0.0",
     "leaflet-fullscreen": "^1.0.2",
-    "leaflet.locatecontrol": "^0.76.0",
+    "leaflet.locatecontrol": "^0.79.0",
     "leaflet.sync": "^0.2.4",
     "vex-js": "^4.1.0"
   }
