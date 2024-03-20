@@ -1,7 +1,6 @@
 <?php
 
 # Class to create the online atlas
-require_once ('frontControllerApplication.php');
 class onlineAtlas extends frontControllerApplication
 {
 	# Class properties

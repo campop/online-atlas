@@ -31,7 +31,7 @@ $settings = array (
 );
 
 # Load and run the class
-require_once ('online-atlas/onlineAtlas.php');
+require_once ('vendor/autoload.php');
 new onlineAtlas ($settings);
 
 ?>

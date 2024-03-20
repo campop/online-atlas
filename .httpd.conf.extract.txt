@@ -4,28 +4,24 @@
 #   
 #   # Online atlas
 #   Include /path/to/online-atlas/.httpd.conf.extract.txt
-#   Use MacroOnlineAtlas "/public-url/onlineatlas" "/path/to/online-atlas" "Online atlas" "/path/to/online-atlas/:/path/to/smarty/:/path/to/php/libraries/"
+#   Use MacroOnlineAtlas "/my-atlas" "/path/to/atlas-implementation-repo" "Online atlas"
 
 
-<Macro MacroOnlineAtlas $baseUrl $localRepoPath $repoPath $name $includePath>
-	
-	<Location $applicationBaseUrl/>
-		php_value include_path "$includePath"
-	</Location>
+<Macro MacroOnlineAtlas $baseUrl $repoPath $name>
 	
 	# Local assets
-	Alias $baseUrl/images/preview.png $localRepoPath/images/preview.png
+	Alias $baseUrl/images/preview.png $repoPath/images/preview.png
 	
 	# Central assets
 	#!# Move to an htdocs/ folder
-	Alias $baseUrl/overlay.geojson $repoPath/overlay.geojson
-	Alias $baseUrl/css/ $repoPath/css/
-	Alias $baseUrl/data/ $repoPath/data/
-	Alias $baseUrl/images/icons/ $repoPath/images/icons/
-	AliasMatch ^$baseUrl/images/(beta.png|hamburger.svg|spinner.svg|ui-anim_basic_16x16.gif)$ $repoPath/images/$1
-	Alias $baseUrl/js/ $repoPath/js/
+	Alias $baseUrl/overlay.geojson $repoPath/vendor/campop/online-atlas/overlay.geojson
+	Alias $baseUrl/css/ $repoPath/vendor/campop/online-atlas/css/
+	Alias $baseUrl/data/ $repoPath/vendor/campop/online-atlas/data/
+	Alias $baseUrl/images/icons/ $repoPath/vendor/campop/online-atlas/images/icons/
+	AliasMatch ^$baseUrl/images/(beta.png|hamburger.svg|spinner.svg|ui-anim_basic_16x16.gif)$ $repoPath/vendor/campop/online-atlas/images/$1
+	Alias $baseUrl/js/ $repoPath/vendor/campop/online-atlas/js/
 	
-	Use MacroFrontControllerApplication "$applicationBaseUrl/" "$name"
+	Use MacroFrontControllerApplication "$baseUrl/" "$name"
 	
 	# API
 	#!# This line is required for baseUrl compatibility - but it should not be needed; not sure why this is failing within MacroFrontControllerApplication

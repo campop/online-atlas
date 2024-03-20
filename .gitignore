@@ -1,6 +1,11 @@
 /.config.js
+/index.html
 /exports/*
 !/exports/.gitignore
+
+# PHP package management
+/composer.lock
+/vendor/
 
 # JS package management
 /js/lib/*

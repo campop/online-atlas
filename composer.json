@@ -1,0 +1,14 @@
+{
+    "name": "campop/online-atlas",
+    "description": "Online atlas",
+    "type": "library",
+    "license": "GPL-3.0-only",
+    "minimum-stability": "stable",
+    "require": {
+        "libpurecontent/frontcontrollerapplication": "^1.13",
+        "libpurecontent/application": "^1.9"
+    },
+    "autoload": {
+        "files": ["onlineAtlas.php"]
+    }
+}
