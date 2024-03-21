@@ -363,12 +363,12 @@ const onlineatlas = (function ($) {
 					
 					//_mapUis[0].map.flyTo (centre);
 					
-					
 					// Show the syncronisation button
 					$('#syncronisebutton').show ();
 					
 					// Prevent far-out zoom, as a workaround for side-by-side interacting with maxBounds, which causes looping in Chrome and memory issues in Firefox
-					_mapUis[0].map.options.minZoom = _settings.sideBySideMinZoom;
+					_mapUis[0].map.setMinZoom (_settings.sideBySideMinZoom);
+					_mapUis[1].map.setMinZoom (_settings.sideBySideMinZoom);
 					
 					// By default, syncronise the map positions; see: https://github.com/jieter/Leaflet.Sync
 					_mapUis[0].map.sync (_mapUis[1].map);
@@ -404,7 +404,7 @@ const onlineatlas = (function ($) {
 					$('#syncronisebutton').hide ();
 					
 					// Reset the min zoom level
-					_mapUis[0].map.options.minZoom = _settings.minZoom;
+					_mapUis[0].map.setMinZoom (_settings.minZoom);
 					
 					// Unsyncronise the map positions
 					_mapUis[0].map.unsync (_mapUis[1].map);
