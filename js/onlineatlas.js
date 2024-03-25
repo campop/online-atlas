@@ -152,7 +152,7 @@ const onlineatlas = (function ($) {
 			// Normalise each
 			const variationIds = {};
 			$.each (_settings.variations, function (variationsLabel, variations) {
-				variationIds[variationsLabel] = onlineatlas.ucfirst (variationsLabel.toLowerCase().replace (/\W/g, ''));	// See: https://stackoverflow.com/a/9364527/180733
+				variationIds[variationsLabel] = onlineatlas.ucfirst (variationsLabel.toLowerCase().replace (/\W/g, ''));	// See: https://stackoverflow.com/a/9364527/
 			});
 			
 			// Return the IDs
@@ -1061,7 +1061,7 @@ const onlineatlas = (function ($) {
 				// Obtain the field
 				const field = $(this).attr('data-field');
 				
-				// Obtain the content; see: https://stackoverflow.com/a/14744011/180733 and https://stackoverflow.com/a/25183183/180733
+				// Obtain the content; see: https://stackoverflow.com/a/14744011/ and https://stackoverflow.com/a/25183183/
 				const templateHtml = $('template#aboutfields')[0].content;
 				let dialogBoxContentHtml = $(templateHtml).find('h3.' + field).nextUntil('h3, h2').addBack().map(function() {
 					return this.outerHTML;
@@ -1155,7 +1155,7 @@ const onlineatlas = (function ($) {
 			$.ajax ({
 				url: _baseUrl + '/api/locations',
 				dataType: (onlineatlas.browserSupportsCors () ? 'json' : 'jsonp'),		// Fall back to JSON-P for IE9
-				crossDomain: true,	// Needed for IE<=9; see: https://stackoverflow.com/a/12644252/180733
+				crossDomain: true,	// Needed for IE<=9; see: https://stackoverflow.com/a/12644252/
 				data: apiData,
 				error: function (jqXHR, error, exception) {
 					
@@ -1468,7 +1468,7 @@ const onlineatlas = (function ($) {
 		},
 		
 		
-		// Function to make first character upper-case; see: https://stackoverflow.com/a/1026087/180733
+		// Function to make first character upper-case; see: https://stackoverflow.com/a/1026087/
 		ucfirst: function (string)
 		{
 			return string.charAt(0).toUpperCase() + string.slice(1);
@@ -1575,7 +1575,7 @@ const onlineatlas = (function ($) {
 			// Add tooltips if <abbr> present in legend extended description
 			if (_settings.fields[mapUi.field].descriptionLegendHtml && (_settings.fields[mapUi.field].descriptionLegendHtml.indexOf ('<abbr>') >= 0)) {
 				$('body').tooltip ({
-					selector: '.legend p abbr',		// Late binding equivalent; see: https://stackoverflow.com/a/10420203/180733
+					selector: '.legend p abbr',		// Late binding equivalent; see: https://stackoverflow.com/a/10420203/
 					track: true
 				});
 			}
