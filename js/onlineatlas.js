@@ -925,15 +925,21 @@ const onlineatlas = (function ($) {
 			const smallLabelWidthThreshold = 40;
 			const rangeClass = (labelWidth < smallLabelWidthThreshold ? ' smalllabels' : '');
 			
-			// Construct a datalist for the year control
-			let datalistHtml = '<ul class="rangelabels' + rangeClass + '">';
+			// Construct a visible list and datalist (so that ticks are created) for the year control
+			let listHtml = '<ul class="rangelabels' + rangeClass + '">';
+			const datalistId = navDivId + 'ticks';
+			let datalistHtml = '<datalist id="' + datalistId + '">';
 			$.each (_settings.datasets, function (index, year) {
-				datalistHtml += '<li style="width: ' + labelWidth + 'px;">' + year + '</li>';
+				listHtml += '<li style="width: ' + labelWidth + 'px;">' + year + '</li>';
+				datalistHtml += '<option>' + index + '</option>';
 			});
-			datalistHtml += '</ul>';
+			listHtml += '</ul>';
+			datalistHtml += '</datalist>';
 			
 			// Combine the range slider and the associated datalist
-			let html = ' <input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + value + '" style="width: ' + sliderWidth + 'px; margin: 0 ' + sliderMargin + 'px;" /> ';
+			// Ticks have no styling support currently, though the technique here could be used: https://css-tricks.com/why-do-we-have-repeating-linear-gradient-anyway/
+			let html = '<input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + value + '" style="width: ' + sliderWidth + 'px; margin: 0 ' + sliderMargin + 'px;" list="' + datalistId + '" />';
+			html += listHtml;
 			html += datalistHtml;
 			
 			// Return the HTML
