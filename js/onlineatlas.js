@@ -286,12 +286,10 @@ const onlineatlas = (function ($) {
 					$('#onlineatlas nav').hide ('slide', {direction: 'right'}, 250);
 				});
 				
-				// Exempt swiperight from range control; see: https://stackoverflow.com/a/48006174/180733
-				$(document).on('mousedown touchstart', 'input[type=range]',
-					function(e) {
-						e.stopPropagation();
-					}
-				);
+				// Exempt range control from swiperight behaviour; see: https://stackoverflow.com/a/48006174/
+				$('input[type=range], .yearrangecontrol').on('mousedown touchstart', function(e) {
+					e.stopPropagation();
+				});
 			}
 			
 			// Minimise legend on mobile by default
