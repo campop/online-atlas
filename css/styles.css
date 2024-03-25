@@ -142,5 +142,6 @@ img.resource {padding: 2px; box-shadow: 4px 4px 25px #aaa; margin-bottom: 10px;}
 	.leaflet-control-layers, .leaflet-control-attribution {right: 0;}
 	.map .leaflet-popup {min-width: 200px; max-width: 90%; background-color: red;}
 	table#chart td:first-child {width: auto;}
+	.leaflet-bottom.leaflet-left {margin-bottom: 15px;}
 	.info.legend {padding: 2px 10px;}
 }
