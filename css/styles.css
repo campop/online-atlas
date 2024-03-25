@@ -42,7 +42,7 @@ body .ui-front {z-index: 1000;}
 .leaflet-control-layers, .leaflet-control-attribution {right: 330px;}
 .leaflet-control.summary {position: absolute; left: 320px;}
 #mapcontainers nav form {padding: 10px 10px 20px 15px;}
-#mapcontainers nav .yearrangecontrol {width: 100%; height: 46px;}
+#mapcontainers nav .yearrangecontrol {margin-top: 10px; width: 100%; padding-top: 5px; height: 55px; background-color: #666;}
 #mapcontainers nav form h3 {margin: 10px 0 2px;}
 #mapcontainers nav form a {color: white; text-decoration: none;}
 #mapcontainers nav form #variations {margin-top: 5px;}
