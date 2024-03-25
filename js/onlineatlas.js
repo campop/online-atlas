@@ -735,14 +735,9 @@ const onlineatlas = (function ($) {
 				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportPdfDivId + '" class="export"><a class="pdfmap noautoicon" href="#" title="Download a PDF of this data">Download: <img src="/images/icons/page_white_acrobat.png" alt="" /></a></p>');
 			}
 			
-			// Create the year range control
-			mapUi.yearDivId = 'year' + mapUi.index;
-			const yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultDataset);
-			
-			// Add the year control to the form
+			// Create the year range control by creating a space (with known height); this is not yet populated as the year range control needs to know the calculated box sizing after scrollbars have appeared
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
 			$('#' + mapUi.navDivId + ' form').append ('<div class="yearrangecontrol"></div>');
-			$('#' + mapUi.navDivId + ' form .yearrangecontrol').append (yearRangeControl);
 			
 			// Build variations controls
 			if (!$.isEmptyObject (_settings.variations)) {
@@ -836,6 +831,11 @@ const onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form').append (radiobuttonsHtml);
 			$('#' + mapUi.navDivId + ' form').append (selectHtml);
 			
+			// Populate the year range control, now that the box sizing will be stable since all elements are now present
+			mapUi.yearDivId = 'year' + mapUi.index;
+			const yearRangeControl = onlineatlas.yearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultDataset);
+			$('#' + mapUi.navDivId + ' form .yearrangecontrol').append (yearRangeControl);
+			
 			// Register a slide menu handler, if groupings are present
 			if (_settings.expandableHeadings && hasGroups) {
 				$('.mapcontainer nav#' + mapUi.navDivId + ' form div.radiobuttons h4').click (function (event) {
@@ -912,10 +912,10 @@ const onlineatlas = (function ($) {
 			const value = _settings.datasets.indexOf (defaultDataset);
 			
 			// Determine the width for the labels
-			const maxBoxWidth = $('#' + navDivId).innerWidth () - 25 /* scroll bar allowance */ - 30;	// Maximum size of slider; innerWidth is used as width is in practice unreliable - see: https://stackoverflow.com/a/35334723/
+			const actualFormWidth = $('#' + navDivId + ' form').width ();	// This is the actual width available within the form (i.e. not including padding); the scrollbar rendering has already taken place
 			const totalLabels = _settings.datasets.length;
-			let labelWidth = Math.floor (maxBoxWidth / totalLabels);
-			const sliderWidth = maxBoxWidth - labelWidth;		// Remove one, because there needs to be a half-width space at each end
+			let labelWidth = Math.floor (actualFormWidth / totalLabels);
+			const sliderWidth = actualFormWidth - labelWidth;		// Remove one, because there needs to be a half-width space at each end
 			const sliderMargin = Math.floor (labelWidth / 2);		// Half-width space at each end
 			const smallLabelWidthThreshold = 40;
 			const rangeClass = (labelWidth < smallLabelWidthThreshold ? ' smalllabels' : '');
