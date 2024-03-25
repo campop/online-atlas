@@ -50,6 +50,10 @@ body .ui-front {z-index: 1000;}
 #mapcontainers nav form #variations span label {padding: 4px 6px; border: 1px solid #666; margin-right: 10px;}
 #mapcontainers nav form #variations span input, #mapcontainers nav form #variations span label {vertical-align: middle; display: inline; white-space: nowrap; line-height: 32px;}
 
+/* Close button */
+#onlineatlas p.closebutton a {float: right; padding: 10px; color: white; text-decoration: none; border: 0;}
+#onlineatlas p.closebutton a:hover {background-color: transparent;}
+
 /* Controls */
 #mapcontainers nav form div {border-radius: 4px; width: 100%;}
 #mapcontainers nav form div.radiobuttons {padding-left: 3px;}

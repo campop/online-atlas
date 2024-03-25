@@ -239,6 +239,15 @@ const onlineatlas = (function ($) {
 			// Add hamburger menu
 			$('#map0').append ('<div id="nav-mobile"></div>');
 			
+			// Create a close button
+			if ($('#nav-mobile').is(':visible')) {
+				$('#onlineatlas nav').prepend ('<p id="navclose" class="closebutton"><a href="#">&#10006;</a></p>');
+				$('#onlineatlas nav #navclose').click (function (e) {
+					$('#onlineatlas nav').hide ('slide', {direction: 'right'}, 250);
+					e.preventDefault ();
+				});
+			}
+			
 			// Toggle visibility clickable
 			$('#nav-mobile').click(function () {
 				if ($('#onlineatlas nav').is(':visible')) {
