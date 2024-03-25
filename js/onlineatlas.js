@@ -912,7 +912,7 @@ const onlineatlas = (function ($) {
 			const value = _settings.datasets.indexOf (defaultDataset);
 			
 			// Determine the width for the labels
-			const maxBoxWidth = $('#' + navDivId).width () - 20 /* scroll bar allowance */ - 30;	// Maximum size of slider
+			const maxBoxWidth = $('#' + navDivId).innerWidth () - 25 /* scroll bar allowance */ - 30;	// Maximum size of slider; innerWidth is used as width is in practice unreliable - see: https://stackoverflow.com/a/35334723/
 			const totalLabels = _settings.datasets.length;
 			let labelWidth = Math.floor (maxBoxWidth / totalLabels);
 			const sliderWidth = maxBoxWidth - labelWidth;		// Remove one, because there needs to be a half-width space at each end
