@@ -241,16 +241,16 @@ const onlineatlas = (function ($) {
 			
 			// Toggle visibility clickable
 			$('#nav-mobile').click(function () {
-				if ($('nav').is(':visible')) {
-					$('nav').hide ('slide', {direction: 'right'}, 250);
+				if ($('#onlineatlas nav').is(':visible')) {
+					$('#onlineatlas nav').hide ('slide', {direction: 'right'}, 250);
 				} else {
-					$('nav').animate ({width:'toggle'}, 250);
+					$('#onlineatlas nav').animate ({width:'toggle'}, 250);
 				}
 			});
 			
 			// Disable title tooltips
 			$('#nav-mobile').click(function () {
-				if ($('nav').is(':visible')) {
+				if ($('#onlineatlas nav').is(':visible')) {
 					$('.radiobuttons .field').removeAttr ('title');
 				}
 			});
@@ -258,9 +258,9 @@ const onlineatlas = (function ($) {
 			/*
 			// Enable implicit click/touch on map as close menu
 			if ($('#nav-mobile').is(':visible')) {
-				if (!$('nav').is(':visible')) {
+				if (!$('#onlineatlas nav').is(':visible')) {
 					$('.map').click(function () {
-						$('nav').hide ('slide', {direction: 'right'}, 250);
+						$('#onlineatlas nav').hide ('slide', {direction: 'right'}, 250);
 					});
 				};
 			};
@@ -268,8 +268,8 @@ const onlineatlas = (function ($) {
 			
 			// Enable closing menu on slide right
 			if ($('#nav-mobile').is(':visible')) {
-				$('nav').on('swiperight', function () {
-					$('nav').hide ('slide', {direction: 'right'}, 250);
+				$('#onlineatlas nav').on('swiperight', function () {
+					$('#onlineatlas nav').hide ('slide', {direction: 'right'}, 250);
 				});
 				
 				// Exempt swiperight from range control; see: https://stackoverflow.com/a/48006174/180733
