@@ -293,6 +293,26 @@ const onlineatlas = (function ($) {
 					}
 				);
 			}
+			
+			// Minimise legend on mobile by default
+			if ($('#nav-mobile').is(':visible')) {
+				$('#legenddetail').after ('<p id="legendshow"><a href="#">Show details &raquo;</a></p>');
+				$('.legend').prepend ('<p id="legendclose" class="closebutton"><a href="#">&#10006;</a></p>');
+				$('#legenddetail').hide ();
+				$('#legendclose a').hide ();
+				$('#legendshow a').click (function (e) {
+					$('#legenddetail').show ();
+					$('#legendshow a').hide ();
+					$('#legendclose a').show ();
+					e.preventDefault ();
+				});
+				$('#legendclose a').click (function (e) {
+					$('#legenddetail').hide ();
+					$('#legendshow a').show ();
+					$('#legendclose a').hide ();
+					e.preventDefault ();
+				});
+			}
 		},
 		
 		
@@ -1549,8 +1569,10 @@ const onlineatlas = (function ($) {
 			
 			// Compile the HTML
 			let html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].label) + '</h4>';
+			html += '<div id="legenddetail">';
 			html += '<p>' + (_settings.fields[mapUi.field].descriptionLegendHtml ? _settings.fields[mapUi.field].descriptionLegendHtml : onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].description)) + '</p>';
 			html += '<table>' + labelsRows.join ('\n') + '</table>';
+			html += '</div>';
 			
 			// Add tooltips if <abbr> present in legend extended description
 			if (_settings.fields[mapUi.field].descriptionLegendHtml && (_settings.fields[mapUi.field].descriptionLegendHtml.indexOf ('<abbr>') >= 0)) {

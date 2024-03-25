@@ -38,6 +38,7 @@ body .ui-front {z-index: 1000;}
 .leaflet-top.leaflet-right .leaflet-control {margin: 0;}
 .navigationpanel {height: 100%;}
 #mapcontainers nav {width: 330px; height: 100%; background-color: #333; opacity: 0.92; color: white;}
+#onlineatlas nav p.closebutton a {color: white;}
 .activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
 .leaflet-control-layers, .leaflet-control-attribution {right: 330px;}
 .leaflet-control.summary {position: absolute; left: 320px;}
@@ -51,7 +52,7 @@ body .ui-front {z-index: 1000;}
 #mapcontainers nav form #variations span input, #mapcontainers nav form #variations span label {vertical-align: middle; display: inline; white-space: nowrap; line-height: 32px;}
 
 /* Close button */
-#onlineatlas p.closebutton a {float: right; padding: 10px; color: white; text-decoration: none; border: 0;}
+#onlineatlas p.closebutton a {float: right; padding: 10px; text-decoration: none; border: 0;}
 #onlineatlas p.closebutton a:hover {background-color: transparent;}
 
 /* Controls */
@@ -93,6 +94,7 @@ p.export a:hover {text-decoration: none;}
 .info {padding: 15px 12px; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
 .info h4 {margin: 0 0 5px; color: #777;}
 .legend {width: 170px; text-align: left; line-height: 18px; color: #555;}
+#onlineatlas .legend a {color: black;}
 .legend table {border-collapse: collapse; width: 100%;}
 .legend table td {background-color: transparent; padding: 0;}
 .legend table td:first-child {width: 16px;}
@@ -140,5 +142,5 @@ img.resource {padding: 2px; box-shadow: 4px 4px 25px #aaa; margin-bottom: 10px;}
 	.leaflet-control-layers, .leaflet-control-attribution {right: 0;}
 	.map .leaflet-popup {min-width: 200px; max-width: 90%; background-color: red;}
 	table#chart td:first-child {width: auto;}
-	
+	.info.legend {padding: 2px 10px;}
 }
