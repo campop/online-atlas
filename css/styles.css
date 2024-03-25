@@ -131,9 +131,7 @@ img.resource {padding: 2px; box-shadow: 4px 4px 25px #aaa; margin-bottom: 10px;}
 	.geocoder {top: 14px; left: 65px; right: 25px;}
 	.geocoder input {width: 100%;}
 	input[name="location"] {font-size: 11px;}
-	#nav0 label {font-size: 74%;}
 	#nav0 ul.rangelabels li {font-size: 65%;}
-	#nav0 label {width: 85%;}
 	.activearea {right: 0;}
 	.leaflet-control-layers, .leaflet-control-attribution {right: 0;}
 	.map .leaflet-popup {min-width: 200px; max-width: 90%; background-color: red;}
