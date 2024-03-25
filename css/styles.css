@@ -42,7 +42,7 @@ body .ui-front {z-index: 1000;}
 .leaflet-control-layers, .leaflet-control-attribution {right: 330px;}
 .leaflet-control.summary {position: absolute; left: 320px;}
 #mapcontainers nav form {padding: 10px 10px 20px 15px;}
-#mapcontainers nav .yearrangecontrol {width: 100%; height: 40px;}
+#mapcontainers nav .yearrangecontrol {width: 100%; height: 43px;}
 #mapcontainers nav form h3 {margin: 10px 0 2px;}
 #mapcontainers nav form a {color: white; text-decoration: none;}
 #mapcontainers nav form #variations {margin-top: 5px;}
@@ -51,7 +51,8 @@ body .ui-front {z-index: 1000;}
 #mapcontainers nav form #variations span input, #mapcontainers nav form #variations span label {vertical-align: middle; display: inline; white-space: nowrap; line-height: 32px;}
 
 /* Controls */
-#mapcontainers nav form div {padding-left: 3px; border-radius: 4px; width: 100%;}
+#mapcontainers nav form div {border-radius: 4px; width: 100%;}
+#mapcontainers nav form div.radiobuttons {padding-left: 3px;}
 #mapcontainers nav form div.radiobuttons div.field:hover {background-color: #666;}
 #mapcontainers nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
 
@@ -60,8 +61,8 @@ input[type="radio"].unavailable, label.unavailable {opacity: 0.5;}
 option.unavailable {color: #bbb;}
 
 /* Overflow for nav */
-#mapcontainers  nav {overflow-y: auto; overflow-x: hidden;}
-#mapcontainers  nav .radiobuttons label {width: 90%;}
+#mapcontainers nav {overflow-y: auto; overflow-x: hidden;}
+#mapcontainers nav .radiobuttons label {width: 90%;}
 
 /* Expandable menu */
 #mapcontainers nav form div.radiobuttons {margin-top: 1em;}
@@ -72,10 +73,10 @@ option.unavailable {color: #bbb;}
 
 /* Year range */
 #mapcontainers nav form input[type="range"] {/* width and margin-left calculated in js */}
-ul.rangelabels {margin: 0; padding: 0; height: 10px; position: relative; top: -5px;}
+ul.rangelabels {width: 100%; margin: 3px 0 0 0; padding: 0; height: 10px; position: relative; top: -5px; white-space: nowrap;}
 ul.rangelabels li {/* width calculated in js */ font-size: 0.87em; display: inline-block; text-align: center; margin: 0; padding: 0;}
-ul.rangelabels.smalllabels li {font-size: 0.69em; border-right: 1px solid gray;}
-ul.rangelabels.smalllabels li:last-child {border-right: 0;}
+ul.rangelabels.smalllabels li {font-size: 0.69em; outline-right: 1px solid gray;}	/* Outline used, to avoid adding extra space to the carefully-calculated sizings */
+ul.rangelabels.smalllabels li:last-child {outline-right: 0;}
 
 /* Export */
 p.export {float: right; border: 1px solid #ccc; border-radius: 4px;}

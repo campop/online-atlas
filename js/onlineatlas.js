@@ -911,17 +911,19 @@ const onlineatlas = (function ($) {
 			if (!defaultDataset) {defaultDataset = _settings.datasets[1];}	// Second by default
 			const value = _settings.datasets.indexOf (defaultDataset);
 			
+			// Assign the width of the browser's rendering of a range handle, which we have to adjust for since it does NOT extend beyond the edge; see: https://css-tricks.com/sliding-nightmare-understanding-range-input/
+			const thumbRangeShadowDomWidth = 16;	// Chrome is 16px; Firefox is 20px
+			const halfThumbRangeShadowDomWidth = thumbRangeShadowDomWidth / 2;
+			
 			// Determine the width for the labels
+			// NB Sub-pixel rendering is set to 3dp
 			const actualFormWidth = $('#' + navDivId + ' form').width ();	// This is the actual width available within the form (i.e. not including padding); the scrollbar rendering has already taken place
 			const totalLabels = _settings.datasets.length;
-			let labelWidth = Math.floor (actualFormWidth / totalLabels);
-			const sliderWidth = actualFormWidth - labelWidth;		// Remove one, because there needs to be a half-width space at each end
-			const sliderMargin = Math.floor (labelWidth / 2);		// Half-width space at each end
+			let labelWidth =  (actualFormWidth / totalLabels).toFixed (3);
+			const sliderWidth = actualFormWidth - labelWidth + thumbRangeShadowDomWidth;		// Remove one, because there needs to be a half-width space at each end, but add half the thumb each side
+			const sliderMargin = (labelWidth / 2).toFixed (3) - halfThumbRangeShadowDomWidth;		// Half-width space at each end, minus the extra overlapping thumb
 			const smallLabelWidthThreshold = 40;
 			const rangeClass = (labelWidth < smallLabelWidthThreshold ? ' smalllabels' : '');
-			if (labelWidth < smallLabelWidthThreshold) {
-				labelWidth = labelWidth - 1;
-			}
 			
 			// Construct a datalist for the year control
 			let datalistHtml = '<ul class="rangelabels' + rangeClass + '">';
@@ -931,7 +933,7 @@ const onlineatlas = (function ($) {
 			datalistHtml += '</ul>';
 			
 			// Combine the range slider and the associated datalist
-			let html = ' <input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + value + '" style="width: ' + sliderWidth + 'px; margin-left: ' + sliderMargin + 'px;" /> ';
+			let html = ' <input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + value + '" style="width: ' + sliderWidth + 'px; margin: 0 ' + sliderMargin + 'px;" /> ';
 			html += datalistHtml;
 			
 			// Return the HTML
