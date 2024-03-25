@@ -248,6 +248,11 @@ const onlineatlas = (function ($) {
 				}
 			});
 			
+			// Open menu by default on mobile
+			if ($('#nav-mobile').is(':visible')) {
+				$('#nav-mobile').click ();
+			}
+			
 			// Disable title tooltips
 			$('#nav-mobile').click(function () {
 				if ($('#onlineatlas nav').is(':visible')) {
@@ -263,7 +268,7 @@ const onlineatlas = (function ($) {
 						$('#onlineatlas nav').hide ('slide', {direction: 'right'}, 250);
 					});
 				};
-			};
+			}
 			*/
 			
 			// Enable closing menu on slide right
@@ -278,7 +283,7 @@ const onlineatlas = (function ($) {
 						e.stopPropagation();
 					}
 				);
-			};
+			}
 		},
 		
 		
