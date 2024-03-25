@@ -920,9 +920,11 @@ const onlineatlas = (function ($) {
 			const thumbRangeShadowDomWidth = 16;	// Chrome is 16px; Firefox is 20px
 			const halfThumbRangeShadowDomWidth = thumbRangeShadowDomWidth / 2;
 			
+			// Get the main form width; this is the actual width available within the form (i.e. not including padding); the scrollbar rendering has already taken place
+			const actualFormWidth = $('#' + navDivId + ' form').width () || 288;	// Fallback for mobile, where width is 0 at load time due to animation
+			
 			// Determine the width for the labels
 			// NB Sub-pixel rendering is set to 3dp
-			const actualFormWidth = $('#' + navDivId + ' form').width ();	// This is the actual width available within the form (i.e. not including padding); the scrollbar rendering has already taken place
 			const totalLabels = _settings.datasets.length;
 			let labelWidth =  (actualFormWidth / totalLabels).toFixed (3);
 			const sliderWidth = actualFormWidth - labelWidth + thumbRangeShadowDomWidth;		// Remove one, because there needs to be a half-width space at each end, but add half the thumb each side
