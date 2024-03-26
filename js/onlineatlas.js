@@ -625,16 +625,11 @@ const onlineatlas = (function ($) {
 				onlineatlas.setMapBackgroundColour (baseLayers[e.name].options);
 			});
 			
-			// Set the zoom and determine whether the map is zoomed out too far, and set the mouse cursor
-			mapUi.currentZoom = map.getZoom();
-			mapUi.zoomedOut = (_settings.zoomedOut ? (_settings.defaultZoom <= _settings.zoomedOut) : false);
-			map.on('zoomend', function() {
-				mapUi.currentZoom = map.getZoom();
-				mapUi.zoomedOut = (_settings.zoomedOut ? (mapUi.currentZoom <= _settings.zoomedOut) : false);
+			// Set the zoom and determine whether the map is zoomed out too far, set the mouse cursor
+			onlineatlas.manageZoomedOut (mapUi, map);
+			map.on ('zoomend', function () {
+				onlineatlas.manageZoomedOut (mapUi, map);
 			});
-			
-			// Set mouse cursor based on zoom status
-			$('#map').css('cursor', (mapUi.zoomedOut ? 'zoom-in' : 'auto'));
 			
 			// Zoom in on single click if zoomed out, if enabled
 			if (_settings.zoomedOut) {
@@ -702,6 +697,18 @@ const onlineatlas = (function ($) {
 			// Set, using jQuery, if specified, or clear
 			const backgroundColour = (tileLayerOptions.backgroundColour ? tileLayerOptions.backgroundColour : '');
 			$('.leaflet-container').css ('background-color', backgroundColour);
+		},
+		
+		
+		// Manage behaviour when zoomed-out
+		manageZoomedOut: function (mapUi, map)
+		{
+			// Determine if zoomed out
+			mapUi.currentZoom = map.getZoom ();
+			mapUi.zoomedOut = (_settings.zoomedOut ? (mapUi.currentZoom <= _settings.zoomedOut) : false);
+			
+			// Set mouse cursor based on zoom status
+			$('#' + mapUi.mapDivId).css ('cursor', (mapUi.zoomedOut ? 'zoom-in' : 'auto'));
 		},
 		
 		
