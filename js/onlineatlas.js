@@ -525,6 +525,11 @@ const onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
 				mapUi.summary.update (mapUi.field, null, mapUi.currentZoom);
 			});
+			mapUi.map.on ('zoomend', function () {
+				if (mapUi.zoomedOut) {
+					mapUi.summary.update (mapUi.field, null, mapUi.currentZoom);	// Feature as null resets the status
+				}
+			});
 			
 			// Add the data via AJAX requests
 			onlineatlas.getData (mapUi);
