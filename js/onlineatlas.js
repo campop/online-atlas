@@ -1051,7 +1051,7 @@ const onlineatlas = (function ($) {
 			$('#' + navDivId + ' form .yearrangecontrol ul.rangelabels li').on ('click', function () {
 				$('#' + navDivId + ' form .yearrangecontrol input').val (this.dataset.index);
 				$('#' + navDivId + ' form .yearrangecontrol input').trigger ('input');	// Ensure highlight function gets an event
-				$('#' + navDivId + ' form .yearrangecontrol input').trigger ('click');	// Ensure API call gets made
+				$('#' + navDivId + ' form .yearrangecontrol input').trigger ('change');	// Ensure API call gets made
 			});
 		},
 		
