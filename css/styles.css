@@ -81,6 +81,7 @@ option.unavailable {color: #bbb;}
 #mapcontainers nav form input[type="range"] {/* width and margin-left calculated in js */}
 ul.rangelabels {width: 100%; margin: 6px 0 0 0; padding: 0; height: 10px; position: relative; top: -5px; white-space: nowrap;}
 ul.rangelabels li {/* width calculated in js */ font-size: 0.87em; display: inline-block; text-align: center; margin: 0; padding: 0;}
+ul.rangelabels li.selected {font-weight: bold; color: orange;}
 ul.rangelabels.smalllabels li {font-size: 0.69em; outline-right: 1px solid gray;}	/* Outline used, to avoid adding extra space to the carefully-calculated sizings */
 ul.rangelabels.smalllabels li:last-child {outline-right: 0;}
 

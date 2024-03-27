@@ -988,6 +988,14 @@ const onlineatlas = (function ($) {
 			
 			// Add the control to the HTML
 			$('#' + navDivId + ' form .yearrangecontrol').html (html);
+			
+			// Set highlight initially and when the value is changed
+			$('#' + navDivId + ' ul.rangelabels li:nth-child(' + (parseInt (initialIndexValue) + 1) + ')').addClass ('selected');
+			$('#' + navDivId + ' form .yearrangecontrol input').on ('input', function () {
+				const selectedIndex = $('#' + yearDivId).val ();
+				$('#' + navDivId + ' ul.rangelabels li').removeClass ('selected');	// Clear any existing
+				$('#' + navDivId + ' ul.rangelabels li:nth-child(' + (parseInt (selectedIndex) + 1) + ')').addClass ('selected');
+			});
 		},
 		
 		
