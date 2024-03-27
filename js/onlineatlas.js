@@ -796,25 +796,9 @@ const onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
 			$('#' + mapUi.navDivId + ' form').append ('<div class="yearrangecontrol"></div>');
 			
-			// Build variations controls
-			if (!$.isEmptyObject (_settings.variations)) {
-				$.each (_settings.variations, function (variationLabel, variationOptions) {
-					let variationsHtml = '';
-					$('#' + mapUi.navDivId + ' form').append ('<h3>' + onlineatlas.htmlspecialchars (variationLabel) + ':</h3>');
-					variationsHtml += '<p id="variations">';
-					$.each (variationOptions, function (variation, label) {
-						const variationId = 'variation' + _variationIds[variationLabel] + variation;	// Prepend 'variation' to ensure valid ID
-						variationsHtml += '<span>';
-						variationsHtml += '<label>';
-						variationsHtml += '<input type="radio" name="' + _variationIds[variationLabel].toLowerCase() + '" value="' + variation + '"' + (variation == _settings.defaultVariations[variationLabel] ? ' checked="checked"' : '') + ' />';
-						variationsHtml += ' ' + onlineatlas.htmlspecialchars (label);
-						variationsHtml += '</label>';
-						variationsHtml += '</span>';
-					});
-					variationsHtml += '</p>';
-					$('#' + mapUi.navDivId + ' form').append (variationsHtml);
-				});
-			}
+			// Add variations controls
+			const variationsControlsHtml = onlineatlas.buildVariationsControls ();
+			$('#' + mapUi.navDivId + ' form').append (variationsControlsHtml);
 			
 			// Group the fields
 			const fieldGroups = onlineatlas.groupFields (_settings.fields);
@@ -922,6 +906,36 @@ const onlineatlas = (function ($) {
 			
 			// Register a handler to dim out options which are not available for the selected year
 			onlineatlas.dimUnavailableHandlerWrapper (mapUi);
+		},
+		
+		
+		// Function to build variations controls
+		buildVariationsControls: function ()
+		{
+			// End if no variations
+			if ($.isEmptyObject (_settings.variations)) {return;}
+			
+			// Start the HTML
+			let html = '';
+			
+			// Add control for each variation
+			$.each (_settings.variations, function (variationLabel, variationOptions) {
+				html += '<h3>' + onlineatlas.htmlspecialchars (variationLabel) + ':</h3>';
+				html += '<p id="variations">';
+				$.each (variationOptions, function (variation, label) {
+					const variationId = 'variation' + _variationIds[variationLabel] + variation;	// Prepend 'variation' to ensure valid ID
+					html += '<span>';
+					html += '<label>';
+					html += '<input type="radio" name="' + _variationIds[variationLabel].toLowerCase() + '" value="' + variation + '"' + (variation == _settings.defaultVariations[variationLabel] ? ' checked="checked"' : '') + ' />';
+					html += ' ' + onlineatlas.htmlspecialchars (label);
+					html += '</label>';
+					html += '</span>';
+				});
+				html += '</p>';
+			});
+			
+			// Return the HTML
+			return html;
 		},
 		
 		
