@@ -780,13 +780,13 @@ const onlineatlas = (function ($) {
 			// Create a form within the nav
 			$('#' + mapUi.navDivId).append ('<form></form>');
 			
-			// Create an export link
+			// Create a CSV export link
 			if (_settings.export) {
 				const exportDivId = 'export' + mapUi.index;
 				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a class="exportcsv" href="#" title="Export the current view (as shown on the map) as raw data in CSV format">Exports: <img src="/images/icons/page_excel.png" alt="" /></a> <a class="exportgeojson" href="#" title="Export the current view (as shown on the map) as raw data in GeoJSON format (for GIS)"><img src="/images/icons/page_code.png" alt="" /></a></p>');
 			}
 			
-			// Create an export link
+			// Create a PDF export link
 			if (_settings.pdfLink) {
 				const exportPdfDivId = 'pdf' + mapUi.index;
 				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportPdfDivId + '" class="export"><a class="pdfmap noautoicon" href="#" title="Download a PDF of this data">Download: <img src="/images/icons/page_white_acrobat.png" alt="" /></a></p>');
@@ -796,17 +796,18 @@ const onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Year:</h3>');
 			$('#' + mapUi.navDivId + ' form').append ('<div class="yearrangecontrol"></div>');
 			
+			// Build the field controls
+			const fieldControls = onlineatlas.buildFieldControls (mapUi.index);
+			
+			// Add the (small nav) select after the year
+			$('#' + mapUi.navDivId + ' form').append (fieldControls.selectHtml);
+			
 			// Add variations controls
 			const variationsControlsHtml = onlineatlas.buildVariationsControls ();
 			$('#' + mapUi.navDivId + ' form').append (variationsControlsHtml);
 			
-			// Build the field controls
-			const fieldControls = onlineatlas.buildFieldControls (mapUi.index);
-			
 			// Create the year control within the form
-			$('#' + mapUi.navDivId + ' form').append ('<h3>Show:</h3>');
 			$('#' + mapUi.navDivId + ' form').append (fieldControls.radiobuttonsHtml);
-			$('#' + mapUi.navDivId + ' form').append (fieldControls.selectHtml);
 			
 			// Populate the year range control, now that the box sizing will be stable since all elements are now present
 			mapUi.yearDivId = 'year' + mapUi.index;
@@ -881,6 +882,9 @@ const onlineatlas = (function ($) {
 			// Group the fields
 			const fieldGroups = onlineatlas.groupFields (_settings.fields);
 			
+			// Define the introduction HTML
+			const introductionHtml = '<h3>Show:</h3>';
+			
 			// Build radiobutton and select list options; both are created up-front, and the relevant one hidden according when changing to/from side-by-side mode
 			let radiobuttonsHtml = '';
 			let selectHtml = '';
@@ -940,10 +944,10 @@ const onlineatlas = (function ($) {
 			});
 			
 			// Add a container for the radiobuttons
-			radiobuttonsHtml = '<div class="radiobuttons' + (_settings.expandableHeadings ? ' expandable' : '') + '">' + radiobuttonsHtml + '</div>';
+			radiobuttonsHtml = '<div class="radiobuttons' + (_settings.expandableHeadings ? ' expandable' : '') + '">' + introductionHtml + radiobuttonsHtml + '</div>';
 			
 			// Assemble the select widget
-			selectHtml = '<select name="field" id="field' + mapUiIndex + '">' + selectHtml + '</select>';
+			selectHtml = '<div class="select">' + introductionHtml + '<select name="field" id="field' + mapUiIndex + '">' + selectHtml + '</select>' + '</div>';
 			
 			// Return the two controls
 			return {

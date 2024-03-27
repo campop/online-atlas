@@ -18,8 +18,8 @@
 #mapcontainers.sidebyside nav {width: 310px;}
 #mapcontainers.sidebyside nav form {padding-top: 15px; padding-bottom: 15px;}
 #mapcontainers.sidebyside nav .radiobuttons {display: none;}
-#mapcontainers nav select {display: none;}
-#mapcontainers.sidebyside nav select {display: block; max-width: 100%;}
+#mapcontainers nav .select {display: none;}
+#mapcontainers.sidebyside nav .select {display: block; max-width: 100%;}
 
 /* Geocoder */
 .geocoder {position: absolute; top: 10px; left: 55px; z-index: 500;}
