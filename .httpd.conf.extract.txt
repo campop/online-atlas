@@ -37,7 +37,7 @@
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule ^$baseUrl/([_a-z0-9]+)/([0-9]{4})/$ $baseUrl/index.html?field=$1&year=$2 [L,QSA]
-	RewriteRule ^$baseUrl/([_a-z0-9]+)/([0-9]{4})/([a-z]+)/$ $baseUrl/index.html?field=$1&year=$2&variation=$3 [L,QSA]
+	RewriteRule ^$baseUrl/([_a-z0-9]+)/([0-9]{4})/(.+)/$ $baseUrl/index.html?field=$1&year=$2&variation=$3 [L,QSA]
 	
 	<Location $baseUrl/>
 		php_value memory_limit 100M

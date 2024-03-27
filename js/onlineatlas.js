@@ -186,18 +186,17 @@ const onlineatlas = (function ($) {
 			if ($.inArray (year, _settings.datasets) == -1) {return false;}	// https://api.jquery.com/jQuery.inArray/
 			
 			// If variations are enabled, check variation is present and valid
-			let variation = false;
+			let variations = false;
 			if (!$.isEmptyObject (_settings.variations)) {
-				if (!urlParts[2]) {return false;}
-				variation = onlineatlas.variationPresent (urlParts[2]);
-				if (!variation) {return false;}
+				variations = onlineatlas.variationsPresent (urlParts.slice (2));	// Omit field and year
+				if (variations === false) {return false;}
 			}
 			
 			// Set the default field and year
 			_settings.defaultField = field;
 			_settings.defaultDataset = year;
-			if (variation) {
-				_settings.defaultVariation = variation;
+			if (!$.isEmptyObject (_settings.variations)) {
+				_settings.defaultVariations = variations;	// Override code-supplied default
 			}
 		},
 		
@@ -219,21 +218,32 @@ const onlineatlas = (function ($) {
 		},
 		
 		
-		// Determine if the variation is present
-		variationPresent: function (variationFromUrl)
+		// Determine if the variation(s) are present
+		variationsPresent: function (variationsFromUrl)
 		{
-			// Attempt to match the variation
-			let variationFound = false;
+			// Check the expected number of variation parameters are present in the URL
+			const totalVariationsExpected = Object.keys (_settings.variations).length;
+			if (variationsFromUrl.length != totalVariationsExpected) {return false;}
+			
+			// Attempt to match all variations; the URL order is assumed to match the settings order
+			const variationsFound = {};
+			let i = 0;
 			$.each (_settings.variations, function (variationLabel, variationOptions) {
-				// #!# This is clearly incorrect following the change to multiple variations support
-				if (variationFromUrl == variationOptions.toLowerCase ()) {
-					variationFound = variationLabel;
-					return;		// Break out of loop; can't use 'return' with $.each to return from the whole function
-				}
+				const variationFromUrl = variationsFromUrl[i];
+				$.each (variationOptions, function (variation, label) {
+					if (variationFromUrl == variation.toLowerCase ()) {
+						variationsFound[variationLabel] = variation;
+						return;		// Break out of loop; can't use 'return' with $.each to return from the whole function
+					}
+				});
+				i++;
 			});
 			
-			// Return the result, either the variation as found, or false
-			return variationFound;
+			// Return false if some not present
+			if (Object.keys (variationsFound).length != totalVariationsExpected) {return false;}
+			
+			// Return found variations
+			return variationsFound;
 		},
 		
 		
@@ -1225,9 +1235,10 @@ const onlineatlas = (function ($) {
 			const field = parameters.field;
 			const year = parameters.year;
 			let urlSlug = '/' + field.toLowerCase() + '/' + year + '/';
-			// #!# This is clearly incorrect following the change to multiple variations support
-			if (parameters.variation) {
-				urlSlug += _settings.variations[parameters.variation].toLowerCase() + '/';	// e.g. 'female'
+			if (Object.keys (_settings.variations).length) {
+				$.each (_settings.variations, function (variationLabel, variationOptions) {
+					urlSlug += parameters[variationLabel.toLowerCase ()].toLowerCase () + '/';	// E.g. 'female/'
+				});
 			}
 			
 			// Construct the URL
