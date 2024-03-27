@@ -151,8 +151,8 @@ const onlineatlas = (function ($) {
 		{
 			// Normalise each
 			const variationIds = {};
-			$.each (_settings.variations, function (variationsLabel, variations) {
-				variationIds[variationsLabel] = onlineatlas.ucfirst (variationsLabel.toLowerCase().replace (/\W/g, ''));	// See: https://stackoverflow.com/a/9364527/
+			$.each (_settings.variations, function (variationLabel, variationOptions) {
+				variationIds[variationLabel] = onlineatlas.ucfirst (variationLabel.toLowerCase().replace (/\W/g, ''));	// See: https://stackoverflow.com/a/9364527/
 			});
 			
 			// Return the IDs
@@ -170,7 +170,7 @@ const onlineatlas = (function ($) {
 			path = path.slice (_baseUrl.length);
 			
 			// Extract the URL into parts
-			const urlParts = path.split('/');
+			const urlParts = path.split ('/');
 			
 			// Check if field is present and valid
 			if (!urlParts[1]) {return false;}
@@ -221,9 +221,10 @@ const onlineatlas = (function ($) {
 		{
 			// Attempt to match the variation
 			let variationFound = false;
-			$.each (_settings.variations, function (variation, label) {
-				if (variationFromUrl == label.toLowerCase ()) {
-					variationFound = variation;
+			$.each (_settings.variations, function (variationLabel, variationOptions) {
+				// #!# This is clearly incorrect following the change to multiple variations support
+				if (variationFromUrl == variationOptions.toLowerCase ()) {
+					variationFound = variationLabel;
 					return;		// Break out of loop; can't use 'return' with $.each to return from the whole function
 				}
 			});
@@ -500,11 +501,11 @@ const onlineatlas = (function ($) {
 			// For each variation (if any), create a handler for changes
 			if (!$.isEmptyObject (_settings.variations)) {
 				mapUi.variations = {};
-				$.each (_settings.variations, function (variationsLabel, variations) {
+				$.each (_settings.variations, function (variationLabel, variationOptions) {
 					
 					// Initial value
-					const fieldname = _variationIds[variationsLabel].toLowerCase();
-					mapUi.variations[fieldname] = _settings.defaultVariations[variationsLabel];	// E.g. F, M, etc.
+					const fieldname = _variationIds[variationLabel].toLowerCase();
+					mapUi.variations[fieldname] = _settings.defaultVariations[variationLabel];	// E.g. F, M, etc.
 					
 					// Changes, which simply read off the field name/value pairs
 					$('#' + mapUi.navDivId + ' form input[name="' + fieldname + '"]').on ('change', function (e) {
@@ -784,15 +785,15 @@ const onlineatlas = (function ($) {
 			
 			// Build variations controls
 			if (!$.isEmptyObject (_settings.variations)) {
-				$.each (_settings.variations, function (variationsLabel, variations) {
+				$.each (_settings.variations, function (variationLabel, variationOptions) {
 					let variationsHtml = '';
-					$('#' + mapUi.navDivId + ' form').append ('<h3>' + onlineatlas.htmlspecialchars (variationsLabel) + ':</h3>');
+					$('#' + mapUi.navDivId + ' form').append ('<h3>' + onlineatlas.htmlspecialchars (variationLabel) + ':</h3>');
 					variationsHtml += '<p id="variations">';
-					$.each (variations, function (variation, label) {
-						const variationId = 'variation' + _variationIds[variationsLabel] + variation;	// Prepend 'variation' to ensure valid ID
+					$.each (variationOptions, function (variation, label) {
+						const variationId = 'variation' + _variationIds[variationLabel] + variation;	// Prepend 'variation' to ensure valid ID
 						variationsHtml += '<span>';
 						variationsHtml += '<label>';
-						variationsHtml += '<input type="radio" name="' + _variationIds[variationsLabel].toLowerCase() + '" value="' + variation + '"' + (variation == _settings.defaultVariations[variationsLabel] ? ' checked="checked"' : '') + ' />';
+						variationsHtml += '<input type="radio" name="' + _variationIds[variationLabel].toLowerCase() + '" value="' + variation + '"' + (variation == _settings.defaultVariations[variationLabel] ? ' checked="checked"' : '') + ' />';
 						variationsHtml += ' ' + onlineatlas.htmlspecialchars (label);
 						variationsHtml += '</label>';
 						variationsHtml += '</span>';
@@ -1135,8 +1136,8 @@ const onlineatlas = (function ($) {
 			
 			// Append the variation, if supported
 			if (!$.isEmptyObject (_settings.variations)) {
-				$.each (_settings.variations, function (variationsLabel, variations) {
-					const fieldname = _variationIds[variationsLabel].toLowerCase ();
+				$.each (_settings.variations, function (variationLabel, variationOptions) {
+					const fieldname = _variationIds[variationLabel].toLowerCase ();
 					apiData[fieldname] = mapUi.variations[fieldname];
 				});
 			}
@@ -1160,8 +1161,8 @@ const onlineatlas = (function ($) {
 				let variationsSlug = '';
 				if (!$.isEmptyObject (_settings.variations)) {
 					const variationsComponents = [];
-					$.each (_settings.variations, function (variationsLabel, variations) {
-						const fieldname = _variationIds[variationsLabel].toLowerCase();
+					$.each (_settings.variations, function (variationLabel, variationOptions) {
+						const fieldname = _variationIds[variationLabel].toLowerCase();
 						variationsComponents.push (mapUi.variations[fieldname].toLowerCase());
 					});
 					variationsSlug = variationsComponents.join ('_') + '_';
@@ -1221,6 +1222,7 @@ const onlineatlas = (function ($) {
 			const field = parameters.field;
 			const year = parameters.year;
 			let urlSlug = '/' + field.toLowerCase() + '/' + year + '/';
+			// #!# This is clearly incorrect following the change to multiple variations support
 			if (parameters.variation) {
 				urlSlug += _settings.variations[parameters.variation].toLowerCase() + '/';	// e.g. 'female'
 			}
