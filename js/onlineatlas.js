@@ -974,7 +974,7 @@ const onlineatlas = (function ($) {
 			const datalistId = navDivId + 'ticks';
 			let datalistHtml = '<datalist id="' + datalistId + '">';
 			$.each (_settings.datasets, function (index, year) {
-				listHtml += '<li style="width: ' + labelWidth + 'px;">' + year + '</li>';
+				listHtml += '<li style="width: ' + labelWidth + 'px;" data-index="' + index + '">' + year + '</li>';
 				datalistHtml += '<option>' + index + '</option>';
 			});
 			listHtml += '</ul>';
@@ -995,6 +995,13 @@ const onlineatlas = (function ($) {
 				const selectedIndex = $('#' + yearDivId).val ();
 				$('#' + navDivId + ' ul.rangelabels li').removeClass ('selected');	// Clear any existing
 				$('#' + navDivId + ' ul.rangelabels li:nth-child(' + (parseInt (selectedIndex) + 1) + ')').addClass ('selected');
+			});
+			
+			// Set value if the label is clicked on
+			$('#' + navDivId + ' form .yearrangecontrol ul.rangelabels li').on ('click', function () {
+				$('#' + navDivId + ' form .yearrangecontrol input').val (this.dataset.index);
+				$('#' + navDivId + ' form .yearrangecontrol input').trigger ('input');	// Ensure highlight function gets an event
+				$('#' + navDivId + ' form .yearrangecontrol input').trigger ('click');	// Ensure API call gets made
 			});
 		},
 		
