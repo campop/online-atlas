@@ -800,84 +800,20 @@ const onlineatlas = (function ($) {
 			const variationsControlsHtml = onlineatlas.buildVariationsControls ();
 			$('#' + mapUi.navDivId + ' form').append (variationsControlsHtml);
 			
-			// Group the fields
-			const fieldGroups = onlineatlas.groupFields (_settings.fields);
-			
-			// Build radiobutton and select list options; both are created up-front, and the relevant one hidden according when changing to/from side-by-side mode
-			let radiobuttonsHtml = '';
-			let selectHtml = '';
-			let hasGroups = false;
-			$.each (fieldGroups, function (i, fieldGroup) {
-				
-				// Determine the heading, if any
-				const heading = (fieldGroup.name.match(/^_[0-9]+$/) ? false : fieldGroup.name);	// Virtual fields use _<number>, as per virtualGroupingIndex below
-				
-				// Add heading for this group if required
-				if (heading) {
-					radiobuttonsHtml += '<h4>' + onlineatlas.htmlspecialchars (heading);
-					if (_settings.expandableHeadings) {
-						radiobuttonsHtml += ' <i class="fa fa-chevron-circle-right iconrotate"></i>';
-					} else {
-						radiobuttonsHtml += ':';
-					}
-					radiobuttonsHtml += '</h4>';
-					radiobuttonsHtml += '<div class="fieldgroup">';
-					selectHtml += '<optgroup label="' + onlineatlas.htmlspecialchars (heading) + ':">';
-					hasGroups = true;
-				}
-				
-				// Add each field
-				$.each (fieldGroup.fields, function (j, id) {
-					const field = _settings.fields[id];
-					
-					// Skip general fields, like year
-					if (field.general) {return /* i.e. continue */;}
-					
-					// Determine if this is the null field, if enabled
-					const isNullField = (_settings.nullField && (id == _settings.nullField));
-					
-					// Construct the radiobutton list (for full mode)
-					const fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (id);
-					radiobuttonsHtml += '<div class="field" title="' + onlineatlas.htmlspecialchars (field.description) + '">';
-					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldId + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
-					radiobuttonsHtml += '<label for="' + fieldId + '">';
-					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
-					if (_settings.enableFullDescriptions) {
-						if (!isNullField) {
-							radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars ((field.description ? field.description : field.label)) + '">(?)</a>';
-						}
-					}
-					radiobuttonsHtml += '</label>';
-					radiobuttonsHtml += '</div>';
-					
-					// Select widget (for side-by-side mode)
-					selectHtml += '<option value="' + onlineatlas.htmlspecialchars (id) + '">' + onlineatlas.htmlspecialchars (field.label) + '</option>';
-				});
-				
-				// End heading container for this group
-				if (heading) {
-					radiobuttonsHtml += '</div>';	// .fieldgroup
-					selectHtml += '</optgroup>';
-				}
-			});
-			
-			// Add a container for the radiobuttons
-			radiobuttonsHtml = '<div class="radiobuttons' + (_settings.expandableHeadings ? ' expandable' : '') + '">' + radiobuttonsHtml + '</div>';
-			
-			// Assemble the select widget
-			selectHtml = '<select name="field" id="field' + mapUi.index + '">' + selectHtml + '</select>';
+			// Build the field controls
+			const fieldControls = onlineatlas.buildFieldControls (mapUi.index);
 			
 			// Create the year control within the form
 			$('#' + mapUi.navDivId + ' form').append ('<h3>Show:</h3>');
-			$('#' + mapUi.navDivId + ' form').append (radiobuttonsHtml);
-			$('#' + mapUi.navDivId + ' form').append (selectHtml);
+			$('#' + mapUi.navDivId + ' form').append (fieldControls.radiobuttonsHtml);
+			$('#' + mapUi.navDivId + ' form').append (fieldControls.selectHtml);
 			
 			// Populate the year range control, now that the box sizing will be stable since all elements are now present
 			mapUi.yearDivId = 'year' + mapUi.index;
 			onlineatlas.addYearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultDataset);
 			
 			// Register a slide menu handler, if groupings are present
-			if (_settings.expandableHeadings && hasGroups) {
+			if (_settings.expandableHeadings && onlineatlas.hasGroups) {
 				$('.mapcontainer nav#' + mapUi.navDivId + ' form div.radiobuttons h4').click (function (event) {
 					
 					// Fold out menu
@@ -936,6 +872,85 @@ const onlineatlas = (function ($) {
 			
 			// Return the HTML
 			return html;
+		},
+		
+		
+		// Function to build the field controls
+		buildFieldControls: function (mapUiIndex)
+		{
+			// Group the fields
+			const fieldGroups = onlineatlas.groupFields (_settings.fields);
+			
+			// Build radiobutton and select list options; both are created up-front, and the relevant one hidden according when changing to/from side-by-side mode
+			let radiobuttonsHtml = '';
+			let selectHtml = '';
+			let hasGroups = false;
+			$.each (fieldGroups, function (i, fieldGroup) {
+				
+				// Determine the heading, if any
+				const heading = (fieldGroup.name.match(/^_[0-9]+$/) ? false : fieldGroup.name);	// Virtual fields use _<number>, as per virtualGroupingIndex below
+				
+				// Add heading for this group if required
+				if (heading) {
+					radiobuttonsHtml += '<h4>' + onlineatlas.htmlspecialchars (heading);
+					if (_settings.expandableHeadings) {
+						radiobuttonsHtml += ' <i class="fa fa-chevron-circle-right iconrotate"></i>';
+					} else {
+						radiobuttonsHtml += ':';
+					}
+					radiobuttonsHtml += '</h4>';
+					radiobuttonsHtml += '<div class="fieldgroup">';
+					selectHtml += '<optgroup label="' + onlineatlas.htmlspecialchars (heading) + ':">';
+					hasGroups = true;
+				}
+				
+				// Add each field
+				$.each (fieldGroup.fields, function (j, id) {
+					const field = _settings.fields[id];
+					
+					// Skip general fields, like year
+					if (field.general) {return /* i.e. continue */;}
+					
+					// Determine if this is the null field, if enabled
+					const isNullField = (_settings.nullField && (id == _settings.nullField));
+					
+					// Construct the radiobutton list (for full mode)
+					const fieldId = 'field' + mapUiIndex + '_' + onlineatlas.htmlspecialchars (id);
+					radiobuttonsHtml += '<div class="field" title="' + onlineatlas.htmlspecialchars (field.description) + '">';
+					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldId + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
+					radiobuttonsHtml += '<label for="' + fieldId + '">';
+					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
+					if (_settings.enableFullDescriptions) {
+						if (!isNullField) {
+							radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars ((field.description ? field.description : field.label)) + '">(?)</a>';
+						}
+					}
+					radiobuttonsHtml += '</label>';
+					radiobuttonsHtml += '</div>';
+					
+					// Select widget (for side-by-side mode)
+					selectHtml += '<option value="' + onlineatlas.htmlspecialchars (id) + '">' + onlineatlas.htmlspecialchars (field.label) + '</option>';
+				});
+				
+				// End heading container for this group
+				if (heading) {
+					radiobuttonsHtml += '</div>';	// .fieldgroup
+					selectHtml += '</optgroup>';
+				}
+			});
+			
+			// Add a container for the radiobuttons
+			radiobuttonsHtml = '<div class="radiobuttons' + (_settings.expandableHeadings ? ' expandable' : '') + '">' + radiobuttonsHtml + '</div>';
+			
+			// Assemble the select widget
+			selectHtml = '<select name="field" id="field' + mapUiIndex + '">' + selectHtml + '</select>';
+			
+			// Return the two controls
+			return {
+				radiobuttonsHtml: radiobuttonsHtml,
+				selectHtml: selectHtml,
+				hasGroups: hasGroups
+			};
 		},
 		
 		
