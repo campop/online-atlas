@@ -333,7 +333,7 @@ const onlineatlas = (function ($) {
 				// Obtain the year index
 				const yearIndex = $('#' + _mapUis[0].yearDivId).val();
 				
-				// Side-by-side mode; this adds a second map on the right, but retains the original map on the left though resizes it
+				// Side-by-side mode; this adds a second map on the right (mapcontainer1), but retains the original map (mapcontainer0) on the left though resizes it
 				// This routine creates the second map and clones in values from the first map, when side-by-side is enabled the first time (only)
 				// The field selection, on both maps, also changes from a radiobutton to a drop-down, to save space, so the value has to be kept in sync between single mode and side-by-side mode left side
 				if ( $(this).is(':checked') ) {
@@ -381,7 +381,8 @@ const onlineatlas = (function ($) {
 					
 					// Redraw the year control in the first form, to reset the layout sizing
 					const yearIndex = $('#' + _mapUis[0].yearDivId).val();
-					onlineatlas.addYearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);
+					onlineatlas.addYearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);		// Redraw current to ensure correct new sizing
+					onlineatlas.addYearRangeControl (_mapUis[1].navDivId, _mapUis[1].yearDivId, _settings.datasets[yearIndex]);		// Clone, copying in the correct year index value
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').on('change', function() {	// Re-register to refresh data on any form field change
 						onlineatlas.getData (_mapUis[0]);
 					});
