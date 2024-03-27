@@ -949,11 +949,11 @@ const onlineatlas = (function ($) {
 		
 		
 		// Function to create a year range control, including labels
-		yearRangeControl: function (navDivId, yearDivId, defaultDataset)
+		yearRangeControl: function (navDivId, yearDivId, initialYear)
 		{
 			// Determine the default value
-			if (!defaultDataset) {defaultDataset = _settings.datasets[1];}	// Second by default
-			const value = _settings.datasets.indexOf (defaultDataset);
+			if (!initialYear) {initialYear = _settings.datasets[1];}	// Second by default
+			const initialIndexValue = _settings.datasets.indexOf (initialYear);
 			
 			// Assign the width of the browser's rendering of a range handle, which we have to adjust for since it does NOT extend beyond the edge; see: https://css-tricks.com/sliding-nightmare-understanding-range-input/
 			const thumbRangeShadowDomWidth = 16;	// Chrome is 16px; Firefox is 20px
@@ -984,7 +984,7 @@ const onlineatlas = (function ($) {
 			
 			// Combine the range slider and the associated datalist
 			// Ticks have no styling support currently, though the technique here could be used: https://css-tricks.com/why-do-we-have-repeating-linear-gradient-anyway/
-			let html = '<input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + value + '" style="width: ' + sliderWidth + 'px; margin: 0 ' + sliderMargin + 'px;" list="' + datalistId + '" />';
+			let html = '<input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + initialIndexValue + '" style="width: ' + sliderWidth + 'px; margin: 0 ' + sliderMargin + 'px;" list="' + datalistId + '" />';
 			html += listHtml;
 			html += datalistHtml;
 			
