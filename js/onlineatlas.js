@@ -365,6 +365,10 @@ const onlineatlas = (function ($) {
 						const fieldValue = _mapUis[0].field;
 						$('#' + _mapUis[0].navDivId + ' form select[name="field"]').val(fieldValue);
 						
+						// Clone the year value
+						const yearIndex = $('#' + _mapUis[0].yearDivId).val();
+						onlineatlas.addYearRangeControl (_mapUis[1].navDivId, _mapUis[1].yearDivId, _settings.datasets[yearIndex]);		// Clone, copying in the correct year index value
+						
 						// Register handlers to keep the field value in sync between the single map (radiobutton) and side-by-side left map (select) display formats
 						// There is no need to synchronise other form widgets (year, varations), as their display formats do not change
 						$.each (_mapUis, function (index, mapUi) {
@@ -396,7 +400,6 @@ const onlineatlas = (function ($) {
 					// Redraw the year control in the first form, to reset the layout sizing
 					const yearIndex = $('#' + _mapUis[0].yearDivId).val();
 					onlineatlas.addYearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);		// Redraw current to ensure correct new sizing
-					onlineatlas.addYearRangeControl (_mapUis[1].navDivId, _mapUis[1].yearDivId, _settings.datasets[yearIndex]);		// Clone, copying in the correct year index value
 					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').on('change', function() {	// Re-register to refresh data on any form field change
 						onlineatlas.getData (_mapUis[0]);
 					});
