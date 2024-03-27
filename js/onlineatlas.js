@@ -169,24 +169,27 @@ const onlineatlas = (function ($) {
 			// Remove the baseUrl
 			path = path.slice (_baseUrl.length);
 			
+			// Trim starting/trailing slash
+			path = path.replace (/^\/|\/$/g, '');
+			
 			// Extract the URL into parts
 			const urlParts = path.split ('/');
 			
 			// Check if field is present and valid
-			if (!urlParts[1]) {return false;}
-			const field = onlineatlas.fieldPresent (urlParts[1]);
+			if (!urlParts[0]) {return false;}
+			const field = onlineatlas.fieldPresent (urlParts[0]);
 			if (!field) {return false;}
 			
 			// Check the year is also present and valid
-			if (!urlParts[2]) {return false;}
-			const year = parseInt (urlParts[2]);
+			if (!urlParts[1]) {return false;}
+			const year = parseInt (urlParts[1]);
 			if ($.inArray (year, _settings.datasets) == -1) {return false;}	// https://api.jquery.com/jQuery.inArray/
 			
 			// If variations are enabled, check variation is present and valid
 			let variation = false;
 			if (!$.isEmptyObject (_settings.variations)) {
-				if (!urlParts[3]) {return false;}
-				variation = onlineatlas.variationPresent (urlParts[3]);
+				if (!urlParts[2]) {return false;}
+				variation = onlineatlas.variationPresent (urlParts[2]);
 				if (!variation) {return false;}
 			}
 			
