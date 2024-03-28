@@ -359,16 +359,10 @@ const onlineatlas = (function ($) {
 						
 						// Copy the form values (year, field, variations) from the left map to the new right-hand map
 						onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + _mapUis[1].navDivId + ' form');
-						
-						// Register a handler to dim out options which are not available for the selected year
-						onlineatlas.dimUnavailableHandlerWrapper (_mapUis[1]);
 					}
 					
 					// Show the second map
 					$('#mapcontainer1').show ();
-					
-					// Register a handler to dim out options which are not available for the selected year
-					onlineatlas.dimUnavailableHandlerWrapper (_mapUis[0]);
 					
 					// Re-centre the first map
 					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
@@ -401,9 +395,6 @@ const onlineatlas = (function ($) {
 					
 					// Hide the second map
 					$('#mapcontainer1').hide ();
-					
-					// Register a handler to dim out options which are not available for the selected year
-					onlineatlas.dimUnavailableHandlerWrapper (_mapUis[0]);
 					
 					// Re-centre the first map
 					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
@@ -776,7 +767,10 @@ const onlineatlas = (function ($) {
 			}
 			
 			// Register a handler to dim out options which are not available for the selected year
-			onlineatlas.dimUnavailableHandlerWrapper (mapUi);
+			onlineatlas.dimUnavailableHandler (mapUi);
+			$('#' + mapUi.navDivId + ' form input[name="year"]').on('change', function() {
+				onlineatlas.dimUnavailableHandler (mapUi);
+			});
 		},
 		
 		
@@ -904,29 +898,30 @@ const onlineatlas = (function ($) {
 		},
 		
 		
-		// Wrapper for dimUnavailableHandler
-		dimUnavailableHandlerWrapper: function (mapUi)
-		{
-			// Scan for year value on load and on change
-			onlineatlas.dimUnavailableHandler (mapUi);
-			$('#' + mapUi.navDivId + ' form input[type="range"]').on('change', function() {
-				onlineatlas.dimUnavailableHandler (mapUi);
-			});
-		},
-		
-		
 		// Function to provide a handler to dim out options which are not available for the selected year
 		dimUnavailableHandler: function (mapUi)
 		{
 			// Obtain the year value
-			const yearIndex = $('#' + mapUi.yearDivId).val();
+			const yearIndex = $('#' + mapUi.navDivId + ' #' + mapUi.yearDivId).val();
 			const yearValue = _settings.datasets[yearIndex];
 			
 			// Loop through each field, and determine the years which are unavailable
 			$.each (_settings.fields, function (fieldKey, field) {
 				if (field.unavailable) {
-					const fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (fieldKey);
-					const paths = 'input#' + fieldId + ', label[for="' + fieldId + '"], select[id="field' + mapUi.index + '"] option[value="' + fieldKey + '"]';
+					
+					// Determine the paths of each control that should be made unavailable
+					const fieldId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (fieldKey);		// E.g. field0_P
+					const pathsList = [
+						'#' + mapUi.navDivId + ' form input[type="radio"]#' + fieldId,
+						'#' + mapUi.navDivId + ' form label[for="' + fieldId + '"]',
+						'#' + mapUi.navDivId + ' form select[id="field' + mapUi.index + '"]',
+						'#' + mapUi.navDivId + ' form option[value="' + fieldKey + '"]'
+					];
+					const paths = pathsList.join (', ');
+					
+					// Dim out options
+					// #!# This should actually make buttons unselectable, etc.
+					// #!# No support yet for variations
 					if ($.inArray (yearValue, field.unavailable) != -1) {	// https://api.jquery.com/jQuery.inArray/
 						$(paths).addClass ('unavailable');
 						//$('input#' + fieldId).prop('title', '[Not available for this year]');
