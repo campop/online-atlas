@@ -382,9 +382,8 @@ const onlineatlas = (function ($) {
 							});
 						});
 						
-						// Copy the form values (year, field, variations) from the left map to the new right-hand map, and trigger change
+						// Copy the form values (year, field, variations) from the left map to the new right-hand map
 						onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + _mapUis[1].navDivId + ' form');
-						$('#' + _mapUis[1].navDivId + ' form select[name="field"]').trigger ('change');
 						
 						// Register a handler to dim out options which are not available for the selected year
 						onlineatlas.dimUnavailableHandlerWrapper (_mapUis[1]);
@@ -591,6 +590,9 @@ const onlineatlas = (function ($) {
 			});
 			
 			// #!# Other types can be added
+			
+			// Trigger change; this is done once only at the end of the value-setting, to avoid unecessary API requests
+			$(form1QuerySelector).find ('select[name="field"]').trigger ('change');
 		},
 		
 		
