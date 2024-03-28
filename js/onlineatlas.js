@@ -1016,7 +1016,6 @@ const onlineatlas = (function ($) {
 			const totalLabels = _settings.datasets.length;
 			let labelWidth = (actualFormWidth / totalLabels).toFixed (3);
 			const sliderWidth = actualFormWidth - labelWidth + thumbRangeShadowDomWidth;		// Remove one, because there needs to be a half-width space at each end, but add half the thumb each side
-			const sliderMargin = (labelWidth / 2).toFixed (3) - halfThumbRangeShadowDomWidth;		// Half-width space at each end, minus the extra overlapping thumb
 			const smallLabelWidthThreshold = 40;
 			const rangeClass = (labelWidth < smallLabelWidthThreshold ? ' smalllabels' : '');
 			
@@ -1033,7 +1032,7 @@ const onlineatlas = (function ($) {
 			
 			// Combine the range slider and the associated datalist
 			// Ticks have no styling support currently, though the technique here could be used: https://css-tricks.com/why-do-we-have-repeating-linear-gradient-anyway/
-			let html = '<input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + initialIndexValue + '" style="width: ' + sliderWidth + 'px; margin: 0 ' + sliderMargin + 'px;" list="' + datalistId + '" />';
+			let html = '<input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + initialIndexValue + '" style="width: ' + sliderWidth + 'px;" list="' + datalistId + '" />';
 			html += listHtml;
 			html += datalistHtml;
 			
