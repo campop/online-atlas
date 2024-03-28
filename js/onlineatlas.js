@@ -337,7 +337,7 @@ const onlineatlas = (function ($) {
 			onlineatlas.syncHandling ();
 			
 			// Handle toggle
-			$('#compare').on ('click', function() {
+			$('#compare').on ('click', function () {
 				
 				// Side-by-side mode; this adds a second map on the right (mapcontainer1), but retains the original map (mapcontainer0) on the left though resizes it
 				// This routine creates the second map and clones in values from the first map, when side-by-side is enabled the first time (only)
@@ -356,16 +356,15 @@ const onlineatlas = (function ($) {
 					// Show the second map
 					$('#mapcontainer1').show ();
 					
-					// Show the syncronisation button
-					$('#syncronisebutton').show ();
-					
 					// Prevent far-out zoom, as a workaround for side-by-side interacting with maxBounds, which causes looping in Chrome and memory issues in Firefox
 					_mapUis[0].map.setMinZoom (_settings.sideBySideMinZoom);
 					_mapUis[1].map.setMinZoom (_settings.sideBySideMinZoom);
 					
+					// Show the syncronisation button
+					$('#syncronisebutton').show ();
+					
 					// Syncronise initially; see: https://github.com/jieter/Leaflet.Sync
-					_mapUis[0].map.sync (_mapUis[1].map);		// Enable sync
-					_mapUis[1].map.sync (_mapUis[0].map);
+					$('#syncronisebutton input').click ();
 					
 				// Normal, single map mode
 				} else {
@@ -396,7 +395,7 @@ const onlineatlas = (function ($) {
 		createSidebysideCheckboxes: function ()
 		{
 			let html = '<p id="comparebox">';
-			html += '<span id="syncronisebutton"><label><img src="/images/icons/arrow_refresh.png" alt="" class="icon" /> Keep map positions in sync &nbsp;<input id="syncronise" name="syncronise" type="checkbox" checked="checked"></label></span> ';
+			html += '<span id="syncronisebutton"><label><img src="/images/icons/arrow_refresh.png" alt="" class="icon" /> Keep map positions in sync &nbsp;<input id="syncronise" name="syncronise" type="checkbox"></label></span> ';
 			html += '<span id="comparebutton"><label><img src="/images/icons/application_tile_horizontal.png" alt="" class="icon" /> Compare side-by-side &nbsp;<input id="compare" name="compare" type="checkbox"></label></span>';
 			html += '</p>';
 			return html;
@@ -408,7 +407,7 @@ const onlineatlas = (function ($) {
 		{
 			// Create handlers for syncing
 			$('#syncronise').on ('click', function () {
-				if ( $(this).is(':checked') ) {
+				if ( $(this).is (':checked') ) {
 					_mapUis[0].map.sync (_mapUis[1].map);		// Enable sync
 					_mapUis[1].map.sync (_mapUis[0].map);
 				} else {
