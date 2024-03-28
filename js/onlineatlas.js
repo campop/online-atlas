@@ -10,7 +10,6 @@ const onlineatlas = (function ($) {
 	// Internal class properties
 	let _baseUrl;
 	const _mapUis = {};
-	let _secondMapLoaded = false;
 	let _variationIds = {};
 	let _title = false;
 	
@@ -346,9 +345,8 @@ const onlineatlas = (function ($) {
 					$('#mapcontainers').addClass('sidebyside');
 					
 					// Load the second map UI if not already loaded
-					if (!_secondMapLoaded) {
+					if (!$('#mapcontainer1').length) {
 						_mapUis[1] = onlineatlas.createMapUi (1);
-						_secondMapLoaded = true;	// Prevent re-entry into this cloning, as hiding/re-showing should keep previous state
 						
 						// Copy the form values (year, field, variations) from the left map to the new right-hand map
 						onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + _mapUis[1].navDivId + ' form');
