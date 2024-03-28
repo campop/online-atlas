@@ -777,11 +777,8 @@ const onlineatlas = (function ($) {
 			// Add to the map
 			navigationpanel.addTo (mapUi.map);
 			
-			// Remove any current content, e.g. due to redrawing
-			mapUi.navDivId = 'nav' + mapUi.index;
-			$('#' + mapUi.navDivId).remove();
-			
 			// Create a div for the nav within the map container
+			mapUi.navDivId = 'nav' + mapUi.index;
 			$('.' + navigationpanelDivClass).prepend ('<nav id="' + mapUi.navDivId + '"></nav>');
 			
 			// Create a form within the nav
