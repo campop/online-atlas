@@ -525,8 +525,7 @@ const onlineatlas = (function ($) {
 			});
 			
 			// Register to refresh data on any form field change
-			// This has to use late-binding, as the year control for instance can be redrawn, meaning a new control is created
-			$('#' + mapUi.containerDivId).on ('change', '#' + mapUi.navDivId + ' form :input', function () {
+			$('#' + mapUi.navDivId + ' form :input').on ('change', function () {
 				onlineatlas.getData (mapUi);
 			});
 			
