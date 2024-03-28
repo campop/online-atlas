@@ -337,9 +337,6 @@ const onlineatlas = (function ($) {
 			// Handle toggle
 			$('#compare').on ('click', function() {
 				
-				// Get the centre point
-				const centre = _mapUis[0].map.getCenter ();
-				
 				// Side-by-side mode; this adds a second map on the right (mapcontainer1), but retains the original map (mapcontainer0) on the left though resizes it
 				// This routine creates the second map and clones in values from the first map, when side-by-side is enabled the first time (only)
 				// The field selection control changes, on both maps, from a radiobutton to a drop-down, to save space
@@ -359,11 +356,6 @@ const onlineatlas = (function ($) {
 					
 					// Show the second map
 					$('#mapcontainer1').show ();
-					
-					// Re-centre the first map
-					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
-					
-					//_mapUis[0].map.flyTo (centre);
 					
 					// Show the syncronisation button
 					$('#syncronisebutton').show ();
@@ -391,9 +383,6 @@ const onlineatlas = (function ($) {
 					
 					// Hide the second map
 					$('#mapcontainer1').hide ();
-					
-					// Re-centre the first map
-					//setTimeout (function() {_mapUis[0].map.invalidateSize ()}, 400 );
 					
 					// Hide the syncronisation button
 					$('#syncronisebutton').hide ();
