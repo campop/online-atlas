@@ -347,9 +347,7 @@ const onlineatlas = (function ($) {
 					// Load the second map UI if not already loaded
 					if (!$('#mapcontainer1').length) {
 						_mapUis[1] = onlineatlas.createMapUi (1);
-						
-						// Copy the form values (year, field, variations) from the left map to the new right-hand map
-						onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + _mapUis[1].navDivId + ' form');
+						onlineatlas.cloneFormValues ();		// Copy the form values (year, field, variations) from the left map (0) to the new right-hand map (1)
 					}
 					
 					// Show the second map
@@ -502,8 +500,12 @@ const onlineatlas = (function ($) {
 		
 		
 		// Generic function to clone form values from one form to another of the same structure
-		cloneFormValues: function (form0QuerySelector, form1QuerySelector)
+		cloneFormValues: function ()
 		{
+			// Identify the two forms
+			const form0QuerySelector = '#' + _mapUis[0].navDivId + ' form';
+			const form1QuerySelector = '#' + _mapUis[1].navDivId + ' form';
+			
 			// General inputs with simple scalar values (e.g. not checkbox/button)
 			$(form0QuerySelector).find ('input:not([type=radio], [type=checkbox], [type=button])').each (function (index, input) {
 				$(form1QuerySelector).find ('input[name="' + input.name + '"]').val (input.value);
