@@ -344,9 +344,6 @@ const onlineatlas = (function ($) {
 				// Get the centre point
 				const centre = _mapUis[0].map.getCenter ();
 				
-				// Obtain the year index
-				const yearIndex = $('#' + _mapUis[0].yearDivId).val();
-				
 				// Side-by-side mode; this adds a second map on the right (mapcontainer1), but retains the original map (mapcontainer0) on the left though resizes it
 				// This routine creates the second map and clones in values from the first map, when side-by-side is enabled the first time (only)
 				// The field selection, on both maps, also changes from a radiobutton to a drop-down, to save space, so the value has to be kept in sync between single mode and side-by-side mode left side
@@ -359,28 +356,6 @@ const onlineatlas = (function ($) {
 					if (!_secondMapLoaded) {
 						_mapUis[1] = onlineatlas.createMapUi (1);
 						_secondMapLoaded = true;	// Prevent re-entry into this cloning, as hiding/re-showing should keep previous state
-						
-						// Clone the current field value in single mode (a radiobutton) to be the field value in side-by-side mode (a select), for the left map
-						// Other fields remain unchanged in the left map
-						const fieldValue = _mapUis[0].field;
-						$('#' + _mapUis[0].navDivId + ' form select[name="field"]').val(fieldValue);
-						
-						// Register handlers to keep the field value in sync between the single map (radiobutton) and side-by-side left map (select) display formats
-						// There is no need to synchronise other form widgets (year, varations), as their display formats do not change
-						$.each (_mapUis, function (index, mapUi) {
-							
-							// When main map field value (radiobutton) is changed, set the side-by-side left map value (select) to be the same
-							$('#' + mapUi.navDivId + ' form input[name="field"][type="radio"]').on ('change', function () {
-								const value = $(this).val();
-								$('#' + _mapUis[0].navDivId + ' form select[name="field"]').val (value);
-							});
-							
-							// When the side-by-side left map value (select) is changed, set the map field value (radiobutton) to be the same
-							$('#' + _mapUis[0].navDivId + ' form select[name="field"]').on ('change', function () {
-								const value = $(this).val();
-								$('#' + mapUi.navDivId + ' form input[name="field"][type="radio"][value="' + value + '"]').prop('checked', true);
-							});
-						});
 						
 						// Copy the form values (year, field, variations) from the left map to the new right-hand map
 						onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + _mapUis[1].navDivId + ' form');
@@ -444,7 +419,7 @@ const onlineatlas = (function ($) {
 					_mapUis[1].map.unsync (_mapUis[0].map);
 					
 					// Trigger change event (without actually changing the value) on the field selector, to ensure the main map is redrawn, to prevent the right side of the map being empty
-					$('#' + _mapUis[0].navDivId + ' form select[name="field"]').trigger ('change');
+					$('#' + _mapUis[0].navDivId + ' form input[name="field"]').trigger ('change');
 				}
 			});
 		},
@@ -477,10 +452,10 @@ const onlineatlas = (function ($) {
 			// Show first-run welcome message if the user is new to the site
 			onlineatlas.welcomeFirstRun ();
 			
-			// Determine the active field, and create a handler for changes, watching both the radiobuttons (single map) and select (side-by-side maps) modes, and switching between the two using getField ()
+			// Determine the active field (i.e. layer) value, by reading the radiobutton value; NB the select value is not a used value but is instead proxied to the radiobutton set
 			mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.
-			$('#' + mapUi.navDivId + ' form input[name="field"], #' + mapUi.navDivId + ' form select[name="field"]').on ('change', function () {
-				mapUi.field = onlineatlas.getVisibleFieldWidget (mapUi.navDivId);
+			$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function () {
+				mapUi.field = $('#' + mapUi.navDivId + ' form input[name="field"]:checked').val ();
 			});
 			
 			// For each variation (if any), create a handler for changes
@@ -501,13 +476,13 @@ const onlineatlas = (function ($) {
 			
 			// Create the legend for the current field, and update on changes
 			onlineatlas.createLegend (mapUi);
-			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
+			$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function() {
 				onlineatlas.setLegend (mapUi);
 			});
 			
 			// Register a summary box control
 			onlineatlas.summaryControl (mapUi);
-			$('#' + mapUi.navDivId + ' form input[type="radio"], #' + mapUi.navDivId + ' form select').on('change', function() {
+			$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function() {
 				mapUi.summary.update (mapUi.field, null, mapUi.currentZoom);
 			});
 			mapUi.map.on ('zoomend', function () {
@@ -525,7 +500,7 @@ const onlineatlas = (function ($) {
 			});
 			
 			// Register to refresh data on any form field change
-			$('#' + mapUi.navDivId + ' form :input').on ('change', function () {
+			$('#' + mapUi.navDivId + ' form :input').not ('[name*="_proxy"]').on ('change', function () {		// _proxy excluded
 				onlineatlas.getData (mapUi);
 			});
 			
@@ -540,42 +515,25 @@ const onlineatlas = (function ($) {
 		},
 		
 		
-		// Function to determine the field from the form value
-		getVisibleFieldWidget: function (navDivId)
-		{
-			// Switch between radiobuttons (full mode) and select (side-by-side mode)
-			if ( $('#' + navDivId + ' select[name="field"]').is (':visible') ) {
-				return $('#' + navDivId + ' form select[name="field"]').val ();
-			} else {
-				return $('#' + navDivId + ' form input[name="field"]:checked').val ();
-			}
-		},
-		
-		
 		// Generic function to clone form values from one form to another of the same structure
 		cloneFormValues: function (form0QuerySelector, form1QuerySelector)
 		{
 			// General inputs with simple scalar values (e.g. not checkbox/button)
 			$(form0QuerySelector).find ('input:not([type=radio], [type=checkbox], [type=button])').each (function (index, input) {
 				$(form1QuerySelector).find ('input[name="' + input.name + '"]').val (input.value);
-				$(form1QuerySelector).find ('input[name="' + input.name + '"]').trigger ('input');	// Necessar to ensure range highlight function gets an event
-			});
-			
-			// Select boxes
-			$(form0QuerySelector).find ('select').each (function (index, select) {
-				const value = $(select).find (':selected').val ();
-				$(form1QuerySelector).find ('select[name="' + select.name + '"]').val (value);
+				$(form1QuerySelector).find ('input[name="' + input.name + '"]').trigger ('input');	// Necessary to ensure range highlight function gets an event
 			});
 			
 			// Radiobuttons
 			$(form0QuerySelector).find ('input[type="radio"]:checked').each (function (index, radio) {
 				$(form1QuerySelector).find ('input[type="radio"][name="' + radio.name + '"][value="' + radio.value + '"]').prop ('checked', true);
+				$(form1QuerySelector).find ('input[type="radio"][name="' + radio.name + '"][value="' + radio.value + '"]').trigger ('input');	// Necessary to ensure proxy highlight function gets an event
 			});
 			
-			// #!# Other types can be added
+			// #!# Other types can be added; NB if adding <select>, make sure _proxy is excluded
 			
 			// Trigger change; this is done once only at the end of the value-setting, to avoid unecessary API requests
-			$(form1QuerySelector).find ('select[name="field"]').trigger ('change');
+			$(form1QuerySelector).find ('select[name="field"]').trigger ('change');		// Field radiobutton is chosen but could have been other permanent controls instead
 		},
 		
 		
@@ -773,7 +731,7 @@ const onlineatlas = (function ($) {
 			$('#' + mapUi.navDivId + ' form').append ('<div class="yearrangecontrol"></div>');
 			
 			// Build the field controls
-			const fieldControls = onlineatlas.buildFieldControls (mapUi.index);
+			const fieldControls = onlineatlas.buildFieldControls (mapUi.navDivId, mapUi.index);
 			
 			// Add the (small nav) select after the year
 			$('#' + mapUi.navDivId + ' form').append (fieldControls.selectHtml);
@@ -852,8 +810,8 @@ const onlineatlas = (function ($) {
 		},
 		
 		
-		// Function to build the field controls
-		buildFieldControls: function (mapUiIndex)
+		// Function to build the field controls - the radiobutton, and its select (which proxies to the radiobutton)
+		buildFieldControls: function (mapUiNavDivId, mapUiIndex)
 		{
 			// Group the fields
 			const fieldGroups = onlineatlas.groupFields (_settings.fields);
@@ -909,7 +867,7 @@ const onlineatlas = (function ($) {
 					radiobuttonsHtml += '</div>';
 					
 					// Select widget (for side-by-side mode)
-					selectHtml += '<option value="' + onlineatlas.htmlspecialchars (id) + '">' + onlineatlas.htmlspecialchars (field.label) + '</option>';
+					selectHtml += '<option value="' + onlineatlas.htmlspecialchars (id) + '"' + (id == _settings.defaultField ? ' selected="selected"' : '') + '>' + onlineatlas.htmlspecialchars (field.label) + '</option>';
 				});
 				
 				// End heading container for this group
@@ -923,7 +881,19 @@ const onlineatlas = (function ($) {
 			radiobuttonsHtml = '<div class="radiobuttons' + (_settings.expandableHeadings ? ' expandable' : '') + '">' + introductionHtml + radiobuttonsHtml + '</div>';
 			
 			// Assemble the select widget
-			selectHtml = '<div class="select">' + introductionHtml + '<select name="field" id="field' + mapUiIndex + '">' + selectHtml + '</select>' + '</div>';
+			selectHtml = '<div class="select">' + introductionHtml + '<select name="field_proxy" id="field' + mapUiIndex + '">' + selectHtml + '</select>' + '</div>';
+			
+			// Proxy changed select value to radiobutton value, and explicitly trigger change to the value
+			$('#' + mapUiNavDivId).on ('change', 'form select[name="field_proxy"]', function () {		// Late-binding, as doesn't yet exist
+				const value = $(this).val();
+				$('#' + mapUiNavDivId + ' form input[name="field"][type="radio"][value="' + value + '"]').prop ('checked', true).trigger ('change');
+			});
+			
+			// Copy changed radiobutton to select value, to keep the radiobutton in sync
+			$('#' + mapUiNavDivId).on ('input', 'form input[name="field"][type="radio"]', function () {		// Late-binding, as doesn't yet exist
+				const value = $(this).val();
+				$('#' + mapUiNavDivId + ' form select[name="field_proxy"]').val (value);	// No .trigger(change), to avoid loop
+			});
 			
 			// Return the two controls
 			return {
@@ -1005,7 +975,7 @@ const onlineatlas = (function ($) {
 			// Add the control to the HTML
 			$('#' + navDivId + ' form .yearrangecontrol').html (html);
 			
-			// Set highlight initially and when the value is changed
+			// Set label (list item) highlight initially and when the value is changed
 			$('#' + navDivId + ' ul.rangelabels li:nth-child(' + (parseInt (initialIndexValue) + 1) + ')').addClass ('selected');
 			$('#' + navDivId + ' form .yearrangecontrol input').on ('input', function () {
 				const selectedIndex = $('#' + yearDivId).val ();

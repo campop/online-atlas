@@ -17,8 +17,8 @@
 #onlineatlas #mapcontainers.sidebyside .navigationpanel {height: 170px;}
 #onlineatlas #mapcontainers.sidebyside nav {width: 310px;}
 #onlineatlas #mapcontainers.sidebyside nav form {padding-top: 15px; padding-bottom: 15px;}
-#onlineatlas #mapcontainers.sidebyside nav .radiobuttons {display: none;}
-#onlineatlas #mapcontainers nav .select {display: none;}
+#onlineatlas #mapcontainers.sidebyside nav .radiobuttons {display: none;}	/* In side-by-side mode, the select is shown, and the radiobuttons hidden */
+#onlineatlas #mapcontainers nav .select {display: none;}					/* In single map mode, the radiobuttons are shown, and the select hidden */
 #onlineatlas #mapcontainers.sidebyside nav .select {display: block; max-width: 100%;}
 
 /* Geocoder */
