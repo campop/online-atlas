@@ -1006,7 +1006,6 @@ const onlineatlas = (function ($) {
 			
 			// Assign the width of the browser's rendering of a range handle, which we have to adjust for since it does NOT extend beyond the edge; see: https://css-tricks.com/sliding-nightmare-understanding-range-input/
 			const thumbRangeShadowDomWidth = 16;	// Chrome is 16px; Firefox is 20px
-			const halfThumbRangeShadowDomWidth = thumbRangeShadowDomWidth / 2;
 			
 			// Get the main form width; this is the actual width available within the form (i.e. not including padding); the scrollbar rendering has already taken place
 			const actualFormWidth = $('#' + navDivId + ' form').width ();
@@ -1015,7 +1014,6 @@ const onlineatlas = (function ($) {
 			// NB Sub-pixel rendering is set to 3dp
 			const totalLabels = _settings.datasets.length;
 			let labelWidth = (actualFormWidth / totalLabels).toFixed (3);
-			const sliderWidth = actualFormWidth - labelWidth + thumbRangeShadowDomWidth;		// Remove one, because there needs to be a half-width space at each end, but add half the thumb each side
 			const smallLabelWidthThreshold = 40;
 			const rangeClass = (labelWidth < smallLabelWidthThreshold ? ' smalllabels' : '');
 			
@@ -1032,7 +1030,7 @@ const onlineatlas = (function ($) {
 			
 			// Combine the range slider and the associated datalist
 			// Ticks have no styling support currently, though the technique here could be used: https://css-tricks.com/why-do-we-have-repeating-linear-gradient-anyway/
-			let html = '<input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + initialIndexValue + '" style="width: ' + sliderWidth + 'px;" list="' + datalistId + '" />';
+			let html = '<input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + initialIndexValue + '" style="width: calc(100%' +  ' - (100% / ' + totalLabels + ') + ' + thumbRangeShadowDomWidth + 'px);" list="' + datalistId + '" />';
 			html += listHtml;
 			html += datalistHtml;
 			
