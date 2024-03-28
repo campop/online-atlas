@@ -332,21 +332,17 @@ const onlineatlas = (function ($) {
 		sideBySide: function ()
 		{
 			// Add checkbox controls to enable and syncronise side-by-side maps
-			let checkboxesHtml = '<p id="comparebox">';
-			checkboxesHtml += '<span id="syncronisebutton"><label><img src="/images/icons/arrow_refresh.png" alt="" class="icon" /> Keep map positions in sync &nbsp;<input id="syncronise" name="syncronise" type="checkbox" checked="checked"></label></span> ';
-			checkboxesHtml += '<span id="comparebutton"><label><img src="/images/icons/application_tile_horizontal.png" alt="" class="icon" /> Compare side-by-side &nbsp;<input id="compare" name="compare" type="checkbox"></label></span>';
-			checkboxesHtml += '</p>';
-			$('#mapcontainers').prepend (checkboxesHtml);
+			$('#mapcontainers').prepend (onlineatlas.createSidebysideCheckboxes ());
 			
 			// Handle toggle
-			$('#compare').on('click', function() {
+			$('#compare').on ('click', function() {
 				
 				// Get the centre point
 				const centre = _mapUis[0].map.getCenter ();
 				
 				// Side-by-side mode; this adds a second map on the right (mapcontainer1), but retains the original map (mapcontainer0) on the left though resizes it
 				// This routine creates the second map and clones in values from the first map, when side-by-side is enabled the first time (only)
-				// The field selection, on both maps, also changes from a radiobutton to a drop-down, to save space, so the value has to be kept in sync between single mode and side-by-side mode left side
+				// The field selection control changes, on both maps, from a radiobutton to a drop-down, to save space
 				if ( $(this).is(':checked') ) {
 					
 					// Set main style class
@@ -410,9 +406,21 @@ const onlineatlas = (function ($) {
 					_mapUis[1].map.unsync (_mapUis[0].map);
 					
 					// Trigger change event (without actually changing the value) on the field selector, to ensure the main map is redrawn, to prevent the right side of the map being empty
+					// #!# Ideally this should use a new map change custom event, to be more explicit about the purpose
 					$('#' + _mapUis[0].navDivId + ' form input[name="field"]').trigger ('change');
 				}
 			});
+		},
+		
+		
+		// Function to create checkbox for side-by-side mode
+		createSidebysideCheckboxes: function ()
+		{
+			let html = '<p id="comparebox">';
+			html += '<span id="syncronisebutton"><label><img src="/images/icons/arrow_refresh.png" alt="" class="icon" /> Keep map positions in sync &nbsp;<input id="syncronise" name="syncronise" type="checkbox" checked="checked"></label></span> ';
+			html += '<span id="comparebutton"><label><img src="/images/icons/application_tile_horizontal.png" alt="" class="icon" /> Compare side-by-side &nbsp;<input id="compare" name="compare" type="checkbox"></label></span>';
+			html += '</p>';
+			return html;
 		},
 		
 		
