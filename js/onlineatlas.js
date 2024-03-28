@@ -585,22 +585,22 @@ const onlineatlas = (function ($) {
 		
 		
 		// Generic function to clone form values from one form to another of the same structure
-		cloneFormValues: function (form1QuerySelector, form2QuerySelector)
+		cloneFormValues: function (form0QuerySelector, form1QuerySelector)
 		{
 			// General inputs with simple scalar values (e.g. not checkbox/button)
-			$(form1QuerySelector).find ('input:not([type=radio], [type=checkbox], [type=button])').each (function (index, input) {
-				$(form2QuerySelector).find ('input[name="' + input.name + '"]').val (input.value);
+			$(form0QuerySelector).find ('input:not([type=radio], [type=checkbox], [type=button])').each (function (index, input) {
+				$(form1QuerySelector).find ('input[name="' + input.name + '"]').val (input.value);
 			});
 			
 			// Select boxes
-			$(form1QuerySelector).find ('select').each (function (index, select) {
+			$(form0QuerySelector).find ('select').each (function (index, select) {
 				const value = $(select).find (':selected').val ();
-				$(form2QuerySelector).find ('select[name="' + select.name + '"]').val (value);
+				$(form1QuerySelector).find ('select[name="' + select.name + '"]').val (value);
 			});
 			
 			// Radiobuttons
-			$(form1QuerySelector).find ('input[type="radio"]:checked').each (function (index, radio) {
-				$(form2QuerySelector).find ('input[type="radio"][name="' + radio.name + '"][value="' + radio.value + '"]').prop ('checked', true);
+			$(form0QuerySelector).find ('input[type="radio"]:checked').each (function (index, radio) {
+				$(form1QuerySelector).find ('input[type="radio"][name="' + radio.name + '"][value="' + radio.value + '"]').prop ('checked', true);
 			});
 			
 			// #!# Other types can be added
