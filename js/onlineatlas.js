@@ -641,6 +641,9 @@ const onlineatlas = (function ($) {
 			}).setActiveArea ('activearea', /* keepCenter = */ true);	// Adjust the active area to make the visible centre (i.e. minus the sidebar, in single map mode) be the centre for zoom/similar operations
 			map.attributionControl.setPrefix ('');
 			
+			// Prevent page jumping when using +/- buttons; see: https://stackoverflow.com/questions/57184529/
+			map.getContainer().focus = function () {};
+			
 			// Set a class corresponding to the map tile layer, so that the background can be styled with CSS
 			onlineatlas.setMapBackgroundColour (tileLayers[0].options);
 			map.on('baselayerchange', function(e) {
