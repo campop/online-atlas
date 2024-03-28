@@ -1014,7 +1014,7 @@ const onlineatlas = (function ($) {
 			// Determine the width for the labels
 			// NB Sub-pixel rendering is set to 3dp
 			const totalLabels = _settings.datasets.length;
-			let labelWidth =  (actualFormWidth / totalLabels).toFixed (3);
+			let labelWidth = (actualFormWidth / totalLabels).toFixed (3);
 			const sliderWidth = actualFormWidth - labelWidth + thumbRangeShadowDomWidth;		// Remove one, because there needs to be a half-width space at each end, but add half the thumb each side
 			const sliderMargin = (labelWidth / 2).toFixed (3) - halfThumbRangeShadowDomWidth;		// Half-width space at each end, minus the extra overlapping thumb
 			const smallLabelWidthThreshold = 40;
@@ -1025,7 +1025,7 @@ const onlineatlas = (function ($) {
 			const datalistId = navDivId + 'ticks';
 			let datalistHtml = '<datalist id="' + datalistId + '">';
 			$.each (_settings.datasets, function (index, year) {
-				listHtml += '<li style="width: ' + labelWidth + 'px;" data-index="' + index + '">' + year + '</li>';
+				listHtml += '<li style="width: calc(100% / ' + totalLabels + ');" data-index="' + index + '">' + year + '</li>';
 				datalistHtml += '<option>' + index + '</option>';
 			});
 			listHtml += '</ul>';
