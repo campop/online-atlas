@@ -82,8 +82,7 @@
 #onlineatlas ul.rangelabels {width: 100%; margin: 6px 0 0 0; padding: 0; height: 10px; position: relative; top: -5px; white-space: nowrap;}
 #onlineatlas ul.rangelabels li {/* width calculated in js */ font-size: 0.87em; display: inline-block; text-align: center; margin: 0; padding: 0; cursor: pointer;}
 #onlineatlas ul.rangelabels li.selected {font-weight: bold; color: orange;}
-#onlineatlas ul.rangelabels.smalllabels li {font-size: 0.69em; outline-right: 1px solid gray;}	/* Outline used, to avoid adding extra space to the carefully-calculated sizings */
-#onlineatlas ul.rangelabels.smalllabels li:last-child {outline-right: 0;}
+#onlineatlas ul.rangelabels.smalllabels li {font-size: 0.69em; outline-right: 0; transform: rotate(-25deg);}	/* Outline used, to avoid adding extra space to the carefully-calculated sizings */
 
 /* Export */
 #onlineatlas p.export {float: right; border: 1px solid #ccc; border-radius: 4px;}

@@ -1004,18 +1004,14 @@ const onlineatlas = (function ($) {
 			if (!initialYear) {initialYear = _settings.datasets[1];}	// Second by default
 			const initialIndexValue = _settings.datasets.indexOf (initialYear);
 			
-			// Assign the width of the browser's rendering of a range handle, which we have to adjust for since it does NOT extend beyond the edge; see: https://css-tricks.com/sliding-nightmare-understanding-range-input/
-			const thumbRangeShadowDomWidth = 16;	// Chrome is 16px; Firefox is 20px
-			
-			// Get the main form width; this is the actual width available within the form (i.e. not including padding); the scrollbar rendering has already taken place
-			const actualFormWidth = $('#' + navDivId + ' form').width ();
-			
-			// Determine the width for the labels
-			// NB Sub-pixel rendering is set to 3dp
+			// Determine whether to use small labels
+			// This explicitly does not use width, as that creates complexities of having to redraw the control for side-by-side mode
+			const smallLabelThreshold = 7;		// Determined by observation
 			const totalLabels = _settings.datasets.length;
-			let labelWidth = (actualFormWidth / totalLabels).toFixed (3);
-			const smallLabelWidthThreshold = 40;
-			const rangeClass = (labelWidth < smallLabelWidthThreshold ? ' smalllabels' : '');
+			const rangeClass = (totalLabels > smallLabelThreshold ? ' smalllabels' : '');
+			
+			// Define the width of the browser's rendering of a range handle, which we have to adjust for since it does NOT extend beyond the edge; see: https://css-tricks.com/sliding-nightmare-understanding-range-input/
+			const thumbRangeShadowDomWidth = 16;	// Chrome is 16px; Firefox is 20px
 			
 			// Construct a visible list and datalist (so that ticks are created) for the year control
 			let listHtml = '<ul class="rangelabels' + rangeClass + '">';
