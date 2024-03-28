@@ -333,6 +333,9 @@ const onlineatlas = (function ($) {
 			// Add checkbox controls to enable and syncronise side-by-side maps
 			$('#mapcontainers').prepend (onlineatlas.createSidebysideCheckboxes ());
 			
+			// Create side-by-side sync handler
+			onlineatlas.syncHandling ();
+			
 			// Handle toggle
 			$('#compare').on ('click', function() {
 				
@@ -360,18 +363,9 @@ const onlineatlas = (function ($) {
 					_mapUis[0].map.setMinZoom (_settings.sideBySideMinZoom);
 					_mapUis[1].map.setMinZoom (_settings.sideBySideMinZoom);
 					
-					// By default, syncronise the map positions; see: https://github.com/jieter/Leaflet.Sync
-					_mapUis[0].map.sync (_mapUis[1].map);
+					// Syncronise initially; see: https://github.com/jieter/Leaflet.Sync
+					_mapUis[0].map.sync (_mapUis[1].map);		// Enable sync
 					_mapUis[1].map.sync (_mapUis[0].map);
-					$('#syncronise').on('click', function() {
-						if ( $(this).is(':checked') ) {
-							_mapUis[0].map.sync (_mapUis[1].map);
-							_mapUis[1].map.sync (_mapUis[0].map);
-						} else {
-							_mapUis[0].map.unsync (_mapUis[1].map);
-							_mapUis[1].map.unsync (_mapUis[0].map);
-						}
-					});
 					
 				// Normal, single map mode
 				} else {
@@ -406,6 +400,22 @@ const onlineatlas = (function ($) {
 			html += '<span id="comparebutton"><label><img src="/images/icons/application_tile_horizontal.png" alt="" class="icon" /> Compare side-by-side &nbsp;<input id="compare" name="compare" type="checkbox"></label></span>';
 			html += '</p>';
 			return html;
+		},
+		
+		
+		// Function to enable sync handling
+		syncHandling: function ()
+		{
+			// Create handlers for syncing
+			$('#syncronise').on ('click', function () {
+				if ( $(this).is(':checked') ) {
+					_mapUis[0].map.sync (_mapUis[1].map);		// Enable sync
+					_mapUis[1].map.sync (_mapUis[0].map);
+				} else {
+					_mapUis[0].map.unsync (_mapUis[1].map);		// Disable syncing
+					_mapUis[1].map.unsync (_mapUis[0].map);
+				}
+			});
 		},
 		
 		
