@@ -347,10 +347,9 @@ const onlineatlas = (function ($) {
 					// Set main style class
 					$('#mapcontainers').addClass('sidebyside');
 					
-					// Load the second map UI if not already loaded
+					// Load the second map UI if not already loaded, cloning the form values
 					if (!$('#mapcontainer1').length) {
-						_mapUis[1] = onlineatlas.createMapUi (1);
-						onlineatlas.cloneFormValues ();		// Copy the form values (year, field, variations) from the left map (0) to the new right-hand map (1)
+						_mapUis[1] = onlineatlas.createMapUi (1, true);
 					}
 					
 					// Show the second map
@@ -419,7 +418,7 @@ const onlineatlas = (function ($) {
 		
 		
 		// Main function to create a map panel
-		createMapUi: function (mapUiIndex)
+		createMapUi: function (mapUiIndex, cloneFormValues)
 		{
 			// Create a map UI collection object
 			const mapUi = {};
@@ -443,7 +442,7 @@ const onlineatlas = (function ($) {
 			onlineatlas.welcomeFirstRun ();
 			
 			// Determine the active field (i.e. layer) value, by reading the radiobutton value; NB the select value is not a used value but is instead proxied to the radiobutton set
-			mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.
+			mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.; may get changed by cloneFormValues below
 			$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function () {
 				mapUi.field = $('#' + mapUi.navDivId + ' form input[name="field"]:checked').val ();
 			});
@@ -481,6 +480,11 @@ const onlineatlas = (function ($) {
 				}
 			});
 			
+			// Clone form values; this must be done before the first getData call
+			if (cloneFormValues) {
+				onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + mapUi.navDivId + ' form');		// Copy the form values (year, field, variations) from the left map (0) to the new right-hand map (1)
+			}
+			
 			// Add the data via AJAX requests
 			onlineatlas.getData (mapUi);
 			
@@ -506,28 +510,21 @@ const onlineatlas = (function ($) {
 		
 		
 		// Generic function to clone form values from one form to another of the same structure
-		cloneFormValues: function ()
+		cloneFormValues: function (form0QuerySelector, form1QuerySelector)
 		{
-			// Identify the two forms
-			const form0QuerySelector = '#' + _mapUis[0].navDivId + ' form';
-			const form1QuerySelector = '#' + _mapUis[1].navDivId + ' form';
-			
 			// General inputs with simple scalar values (e.g. not checkbox/button)
 			$(form0QuerySelector).find ('input:not([type=radio], [type=checkbox], [type=button])').each (function (index, input) {
-				$(form1QuerySelector).find ('input[name="' + input.name + '"]').val (input.value);
+				$(form1QuerySelector).find ('input[name="' + input.name + '"]').val (input.value).trigger ('change');
 				$(form1QuerySelector).find ('input[name="' + input.name + '"]').trigger ('input');	// Necessary to ensure range highlight function gets an event
 			});
 			
 			// Radiobuttons
 			$(form0QuerySelector).find ('input[type="radio"]:checked').each (function (index, radio) {
-				$(form1QuerySelector).find ('input[type="radio"][name="' + radio.name + '"][value="' + radio.value + '"]').prop ('checked', true);
+				$(form1QuerySelector).find ('input[type="radio"][name="' + radio.name + '"][value="' + radio.value + '"]').prop ('checked', true).trigger ('change');
 				$(form1QuerySelector).find ('input[type="radio"][name="' + radio.name + '"][value="' + radio.value + '"]').trigger ('input');	// Necessary to ensure proxy highlight function gets an event
 			});
 			
 			// #!# Other types can be added; NB if adding <select>, make sure _proxy is excluded
-			
-			// Trigger change; this is done once only at the end of the value-setting, to avoid unecessary API requests
-			$(form1QuerySelector).find ('select[name="field"]').trigger ('change');		// Field radiobutton is chosen but could have been other permanent controls instead
 		},
 		
 		
@@ -794,7 +791,6 @@ const onlineatlas = (function ($) {
 				html += '<h3>' + onlineatlas.htmlspecialchars (variationLabel) + ':</h3>';
 				html += '<p id="variations">';
 				$.each (variationOptions, function (variation, label) {
-					const variationId = 'variation' + _variationIds[variationLabel] + variation;	// Prepend 'variation' to ensure valid ID
 					html += '<span>';
 					html += '<label>';
 					html += '<input type="radio" name="' + _variationIds[variationLabel].toLowerCase() + '" value="' + variation + '"' + (variation == _settings.defaultVariations[variationLabel] ? ' checked="checked"' : '') + ' />';
