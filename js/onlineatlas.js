@@ -439,9 +439,6 @@ const onlineatlas = (function ($) {
 			// Create the location overlay pane
 			onlineatlas.createLocationsOverlayPane (mapUi.map);
 			
-			// Add static GeoJSON overlay to filter out non-GB locations
-			onlineatlas.addCountryOverlay (mapUi);
-			
 			// Show first-run welcome message if the user is new to the site
 			onlineatlas.welcomeFirstRun ();
 			
@@ -576,6 +573,9 @@ const onlineatlas = (function ($) {
 			map.on('baselayerchange', function(e) {
 				onlineatlas.setMapBackgroundColour (baseLayers[e.name].options);
 			});
+			
+			// Add static GeoJSON overlay to filter out non-GB locations
+			onlineatlas.addCountryOverlay (mapUi);
 			
 			// Set the zoom and determine whether the map is zoomed out too far, set the mouse cursor
 			onlineatlas.manageZoomedOut (mapUi, map);
