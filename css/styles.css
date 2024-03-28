@@ -1,149 +1,149 @@
 
-.mapcontainer {position: relative; margin-bottom: 15px; width: auto; height: 700px;}
-.map {width: 100%; height: 100%;}
+#onlineatlas .mapcontainer {position: relative; margin-bottom: 15px; width: auto; height: 700px;}
+#onlineatlas .map {width: 100%; height: 100%;}
 
 /* Side-by-side comparison */
-#comparebox {text-align: right; margin-bottom: 15px;}
-#comparebox span label {border: 1px solid #ccc; background-color: #f7f7f7; padding: 6px 10px; margin-left: 10px; font-size: 1.2em;}
-#comparebox span label, #comparebox span label input[type=checkbox] {vertical-align: middle;}
-#comparebox #syncronisebutton {display: none;}
-#mapcontainers.sidebyside .mapcontainer {width: 49%;}
-#mapcontainers.sidebyside #mapcontainer0 {float: left;}
-#mapcontainers.sidebyside #mapcontainer1 {float: right;}
-#mapcontainers.sidebyside .mapcontainer .activearea {right: 0;}
-#mapcontainers.sidebyside .mapcontainer .leaflet-control-layers, #mapcontainers.sidebyside .mapcontainer .leaflet-control-attribution {right: 0;}
-#mapcontainers.sidebyside .mapcontainer .summary {left: 45px; top: 50px; width: 157px;}
-#mapcontainers.sidebyside .mapcontainer .geocoder input {width: 170px;}
-#mapcontainers.sidebyside .navigationpanel {height: 170px;}
-#mapcontainers.sidebyside nav {width: 310px;}
-#mapcontainers.sidebyside nav form {padding-top: 15px; padding-bottom: 15px;}
-#mapcontainers.sidebyside nav .radiobuttons {display: none;}
-#mapcontainers nav .select {display: none;}
-#mapcontainers.sidebyside nav .select {display: block; max-width: 100%;}
+#onlineatlas #comparebox {text-align: right; margin-bottom: 15px;}
+#onlineatlas #comparebox span label {border: 1px solid #ccc; background-color: #f7f7f7; padding: 6px 10px; margin-left: 10px; font-size: 1.2em;}
+#onlineatlas #comparebox span label, #onlineatlas #comparebox span label input[type=checkbox] {vertical-align: middle;}
+#onlineatlas #comparebox #syncronisebutton {display: none;}
+#onlineatlas #mapcontainers.sidebyside .mapcontainer {width: 49%;}
+#onlineatlas #mapcontainers.sidebyside #mapcontainer0 {float: left;}
+#onlineatlas #mapcontainers.sidebyside #mapcontainer1 {float: right;}
+#onlineatlas #mapcontainers.sidebyside .mapcontainer .activearea {right: 0;}
+#onlineatlas #mapcontainers.sidebyside .mapcontainer .leaflet-control-layers, #onlineatlas #mapcontainers.sidebyside .mapcontainer .leaflet-control-attribution {right: 0;}
+#onlineatlas #mapcontainers.sidebyside .mapcontainer .summary {left: 45px; top: 50px; width: 157px;}
+#onlineatlas #mapcontainers.sidebyside .mapcontainer .geocoder input {width: 170px;}
+#onlineatlas #mapcontainers.sidebyside .navigationpanel {height: 170px;}
+#onlineatlas #mapcontainers.sidebyside nav {width: 310px;}
+#onlineatlas #mapcontainers.sidebyside nav form {padding-top: 15px; padding-bottom: 15px;}
+#onlineatlas #mapcontainers.sidebyside nav .radiobuttons {display: none;}
+#onlineatlas #mapcontainers nav .select {display: none;}
+#onlineatlas #mapcontainers.sidebyside nav .select {display: block; max-width: 100%;}
 
 /* Geocoder */
-.geocoder {position: absolute; top: 10px; left: 55px; z-index: 500;}
-.geocoder input {padding: 5px; font-size: 1em; color: #603; width: 250px;}
-.geocoder input.ui-autocomplete-loading {background: white url('../images/ui-anim_basic_16x16.gif') right center no-repeat;}
-.geocoder input, .ui-autocomplete {border: 1px solid #eee; box-shadow: 5px 5px 10px 0px rgba(28,28,28,0.5);}
-.ui-autocomplete {background-color: white; z-index: 1000; width: 200px; list-style: none; margin-left: 0; padding-left: 0;}
-body .ui-front {z-index: 1000;}
-.ui-autocomplete li {list-style: none; margin-left: 0; padding-left: 0;}
-.ui-autocomplete li a {padding: 7px; display: block; color: #603;}
-.ui-autocomplete li a span {color: gray; font-size: 0.81em;}
-.ui-autocomplete li a.ui-state-active {cursor: pointer; background-color: #f7f7f7;}
+#onlineatlas .geocoder {position: absolute; top: 10px; left: 55px; z-index: 500;}
+#onlineatlas .geocoder input {padding: 5px; font-size: 1em; color: #603; width: 250px;}
+#onlineatlas .geocoder input.ui-autocomplete-loading {background: white url('../images/ui-anim_basic_16x16.gif') right center no-repeat;}
+#onlineatlas .geocoder input, #onlineatlas .ui-autocomplete {border: 1px solid #eee; box-shadow: 5px 5px 10px 0px rgba(28,28,28,0.5);}
+#onlineatlas .ui-autocomplete {background-color: white; z-index: 1000; width: 200px; list-style: none; margin-left: 0; padding-left: 0;}
+#onlineatlas  .ui-front {z-index: 1000;}
+#onlineatlas .ui-autocomplete li {list-style: none; margin-left: 0; padding-left: 0;}
+#onlineatlas .ui-autocomplete li a {padding: 7px; display: block; color: #603;}
+#onlineatlas .ui-autocomplete li a span {color: gray; font-size: 0.81em;}
+#onlineatlas .ui-autocomplete li a.ui-state-active {cursor: pointer; background-color: #f7f7f7;}
 
 /* Overlay */
-.leaflet-top.leaflet-right {height: 100%; width: 330px; padding: 0; margin: 0; /* border: 1px solid gray; */}
-.leaflet-top.leaflet-right .leaflet-control {margin: 0;}
-.navigationpanel {height: 100%;}
-#mapcontainers nav {width: 330px; height: 100%; background-color: #333; opacity: 0.92; color: white;}
-#onlineatlas nav p.closebutton a {color: white;}
-.activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
-.leaflet-control-layers, .leaflet-control-attribution {right: 330px;}
-.leaflet-control.summary {position: absolute; left: 320px;}
-#mapcontainers nav form {padding: 10px 10px 20px 15px;}
-#mapcontainers nav .yearrangecontrol {margin-top: 10px; width: 100%; padding-top: 5px; height: 55px; background-color: #666; touch-action: none;}
-#mapcontainers nav .yearrangecontrol input {touch-action: none;}
-#mapcontainers nav form h3 {margin: 10px 0 2px;}
-#mapcontainers nav form a {color: white; text-decoration: none;}
-#mapcontainers nav form #variations {margin-top: 5px;}
-#mapcontainers nav form #variations span {display: inline-block;}	/* Firefox requires this to avoid overflow of containing spans with white-space: nowrap */
-#mapcontainers nav form #variations span label {padding: 4px 6px; border: 1px solid #666; margin-right: 10px;}
-#mapcontainers nav form #variations span input, #mapcontainers nav form #variations span label {vertical-align: middle; display: inline; white-space: nowrap; line-height: 32px;}
+#onlineatlas .leaflet-top.leaflet-right {height: 100%; width: 330px; padding: 0; margin: 0; /* border: 1px solid gray; */}
+#onlineatlas .leaflet-top.leaflet-right .leaflet-control {margin: 0;}
+#onlineatlas .navigationpanel {height: 100%;}
+#onlineatlas #mapcontainers nav {width: 330px; height: 100%; background-color: #333; opacity: 0.92; color: white;}
+#onlineatlas #onlineatlas nav p.closebutton a {color: white;}
+#onlineatlas .activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
+#onlineatlas .leaflet-control-layers, #onlineatlas .leaflet-control-attribution {right: 330px;}
+#onlineatlas .leaflet-control.summary {position: absolute; left: 320px;}
+#onlineatlas #mapcontainers nav form {padding: 10px 10px 20px 15px;}
+#onlineatlas #mapcontainers nav .yearrangecontrol {margin-top: 10px; width: 100%; padding-top: 5px; height: 55px; background-color: #666; touch-action: none;}
+#onlineatlas #mapcontainers nav .yearrangecontrol input {touch-action: none;}
+#onlineatlas #mapcontainers nav form h3 {margin: 10px 0 2px;}
+#onlineatlas #mapcontainers nav form a {color: white; text-decoration: none;}
+#onlineatlas #mapcontainers nav form #variations {margin-top: 5px;}
+#onlineatlas #mapcontainers nav form #variations span {display: inline-block;}	/* Firefox requires this to avoid overflow of containing spans with white-space: nowrap */
+#onlineatlas #mapcontainers nav form #variations span label {padding: 4px 6px; border: 1px solid #666; margin-right: 10px;}
+#onlineatlas #mapcontainers nav form #variations span input, #onlineatlas #mapcontainers nav form #variations span label {vertical-align: middle; display: inline; white-space: nowrap; line-height: 32px;}
 
 /* Close button */
 #onlineatlas p.closebutton a {float: right; padding: 10px; text-decoration: none; border: 0;}
 #onlineatlas p.closebutton a:hover {background-color: transparent;}
 
 /* Controls */
-#mapcontainers nav form div {border-radius: 4px; width: 100%;}
-#mapcontainers nav form div.radiobuttons {padding-left: 3px;}
-#mapcontainers nav form div.radiobuttons div.field:hover {background-color: #666;}
-#mapcontainers nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
+#onlineatlas #mapcontainers nav form div {border-radius: 4px; width: 100%;}
+#onlineatlas #mapcontainers nav form div.radiobuttons {padding-left: 3px;}
+#onlineatlas #mapcontainers nav form div.radiobuttons div.field:hover {background-color: #666;}
+#onlineatlas #mapcontainers nav form label {padding-left: 5px; display: inline-block; width: 280px; margin: 0;}
 
 /* Unavailable entries */
-input[type="radio"].unavailable, label.unavailable {opacity: 0.5;}
-option.unavailable {color: #bbb;}
+#onlineatlas input[type="radio"].unavailable, #onlineatlas label.unavailable {opacity: 0.5;}
+#onlineatlas option.unavailable {color: #bbb;}
 
 /* Overflow for nav */
-#mapcontainers nav {overflow-y: auto; overflow-x: hidden;}
-#mapcontainers nav .radiobuttons label {width: 90%;}
+#onlineatlas #mapcontainers nav {overflow-y: auto; overflow-x: hidden;}
+#onlineatlas #mapcontainers nav .radiobuttons label {width: 90%;}
 
 /* Expandable menu */
-#mapcontainers nav form div.radiobuttons {margin-top: 1em;}
-#mapcontainers nav form div.radiobuttons.expandable .fieldgroup {display: none;}
-#mapcontainers nav form div.radiobuttons h4 {margin-top: 0.6em; margin-bottom: 0.4em;}
-#mapcontainers nav form div.radiobuttons.expandable h4 {margin-top: 1.2em; cursor: pointer;}
-#mapcontainers nav form div.radiobuttons h4 i {margin-left: 2px; transition-duration: 0.4s;}
+#onlineatlas #mapcontainers nav form div.radiobuttons {margin-top: 1em;}
+#onlineatlas #mapcontainers nav form div.radiobuttons.expandable .fieldgroup {display: none;}
+#onlineatlas #mapcontainers nav form div.radiobuttons h4 {margin-top: 0.6em; margin-bottom: 0.4em;}
+#onlineatlas #mapcontainers nav form div.radiobuttons.expandable h4 {margin-top: 1.2em; cursor: pointer;}
+#onlineatlas #mapcontainers nav form div.radiobuttons h4 i {margin-left: 2px; transition-duration: 0.4s;}
 
 /* Year range */
-#mapcontainers nav form input[type="range"] {/* width and margin-left calculated in js */}
-ul.rangelabels {width: 100%; margin: 6px 0 0 0; padding: 0; height: 10px; position: relative; top: -5px; white-space: nowrap;}
-ul.rangelabels li {/* width calculated in js */ font-size: 0.87em; display: inline-block; text-align: center; margin: 0; padding: 0; cursor: pointer;}
-ul.rangelabels li.selected {font-weight: bold; color: orange;}
-ul.rangelabels.smalllabels li {font-size: 0.69em; outline-right: 1px solid gray;}	/* Outline used, to avoid adding extra space to the carefully-calculated sizings */
-ul.rangelabels.smalllabels li:last-child {outline-right: 0;}
+#onlineatlas #mapcontainers nav form input[type="range"] {/* width and margin-left calculated in js */}
+#onlineatlas ul.rangelabels {width: 100%; margin: 6px 0 0 0; padding: 0; height: 10px; position: relative; top: -5px; white-space: nowrap;}
+#onlineatlas ul.rangelabels li {/* width calculated in js */ font-size: 0.87em; display: inline-block; text-align: center; margin: 0; padding: 0; cursor: pointer;}
+#onlineatlas ul.rangelabels li.selected {font-weight: bold; color: orange;}
+#onlineatlas ul.rangelabels.smalllabels li {font-size: 0.69em; outline-right: 1px solid gray;}	/* Outline used, to avoid adding extra space to the carefully-calculated sizings */
+#onlineatlas ul.rangelabels.smalllabels li:last-child {outline-right: 0;}
 
 /* Export */
-p.export {float: right; border: 1px solid #ccc; border-radius: 4px;}
-p.export a {color: white; display: inline-block; padding: 3px 2px 5px 6px !important;}
-p.export a:last-child {padding-left: 0px; padding-right: 6px;}
-p.export a:hover {text-decoration: none;}
+#onlineatlas p.export {float: right; border: 1px solid #ccc; border-radius: 4px;}
+#onlineatlas p.export a {color: white; display: inline-block; padding: 3px 2px 5px 6px !important;}
+#onlineatlas p.export a:last-child {padding-left: 0px; padding-right: 6px;}
+#onlineatlas p.export a:hover {text-decoration: none;}
 
 /* Legend and summary */
-.info, .navigationpanel {font: 14px/16px Verdana, Arial, Helvetica, sans-serif;}
-.info {padding: 15px 12px; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
-.info h4 {margin: 0 0 5px; color: #777;}
-.legend {width: 170px; text-align: left; line-height: 18px; color: #555;}
+#onlineatlas .info, #onlineatlas .navigationpanel {font: 14px/16px Verdana, Arial, Helvetica, sans-serif;}
+#onlineatlas .info {padding: 15px 12px; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
+#onlineatlas .info h4 {margin: 0 0 5px; color: #777;}
+#onlineatlas .legend {width: 170px; text-align: left; line-height: 18px; color: #555;}
 #onlineatlas .legend a {color: black;}
-.legend table {border-collapse: collapse; width: 100%;}
-.legend table td {background-color: transparent; padding: 0;}
-.legend table td:first-child {width: 16px;}
-.legend i {width: 16px; height: 16px; float: left; margin-right: 8px; opacity: 0.7; border: 1px solid white; /* Colour is overridden in JS */}
-.summary {width: 300px;}
+#onlineatlas .legend table {border-collapse: collapse; width: 100%;}
+#onlineatlas .legend table td {background-color: transparent; padding: 0;}
+#onlineatlas .legend table td:first-child {width: 16px;}
+#onlineatlas .legend i {width: 16px; height: 16px; float: left; margin-right: 8px; opacity: 0.7; border: 1px solid white; /* Colour is overridden in JS */}
+#onlineatlas .summary {width: 300px;}
 
 /* More details box */
-a.moredetails {color: white; background-color: #111; font-size: 0.83em; border-radius: 5px; padding: 2px;}
-#aboutfields {display: none;}
-.vex.vex-theme-plain.wider .vex-content {width: 75%; padding: 25px; min-height: 300px;}
-#moredetailsboxcontent {max-height: 500px; overflow-y: scroll;}
+#onlineatlas a.moredetails {color: white; background-color: #111; font-size: 0.83em; border-radius: 5px; padding: 2px;}
+#onlineatlas #aboutfields {display: none;}
+#onlineatlas .vex.vex-theme-plain.wider .vex-content {width: 75%; padding: 25px; min-height: 300px;}
+#onlineatlas #moredetailsboxcontent {max-height: 500px; overflow-y: scroll;}
 
 /* Popup styling */
-.map .leaflet-popup {min-width: 350px;}
-table#chart {table-layout: fixed; width: 100%;}
-table#chart tr:first-child td {padding-bottom: 1em;}
-table#chart td:first-child {width: 170px;}
-table#chart tr.RAW_TFR td {padding-top: 1em;}
-table#chart tr.RAW_TFR td, table#chart tr.EBS_TFR td {color: #603;}
+#onlineatlas .map .leaflet-popup {min-width: 350px;}
+#onlineatlas table#chart {table-layout: fixed; width: 100%;}
+#onlineatlas table#chart tr:first-child td {padding-bottom: 1em;}
+#onlineatlas table#chart td:first-child {width: 170px;}
+#onlineatlas table#chart tr.RAW_TFR td {padding-top: 1em;}
+#onlineatlas table#chart tr.RAW_TFR td, #onlineatlas table#chart tr.EBS_TFR td {color: #603;}
 
 /* Tooltips */
-.ui-tooltip.moredetails {background-color: crimson; color: white;}
+#onlineatlas .ui-tooltip.moredetails {background-color: crimson; color: white;}
 
 /* Loading spinner */
-#loading {position: absolute; width: 50px; height: 50px; top: 180px; left: 3px; z-index: 500;}
+#onlineatlas #loading {position: absolute; width: 50px; height: 50px; top: 180px; left: 3px; z-index: 500;}
 
 /* Static pages */
-img.resource {padding: 2px; box-shadow: 4px 4px 25px #aaa; margin-bottom: 10px;}
+#onlineatlas img.resource {padding: 2px; box-shadow: 4px 4px 25px #aaa; margin-bottom: 10px;}
 
 /* Mobile styles; see: https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions */
-#nav-mobile {display: none;}
+#onlineatlas #nav-mobile {display: none;}
 @media only screen and (min-width: 320px) and (max-width: 768px) {
-	#nav-mobile {display: block; cursor: pointer; position: absolute; z-index: 999; top: 10px; left: 5px; background: white url('../images/hamburger.svg') no-repeat center center; opacity: 0.9; height: 10px; width: 10px; padding: 17px; border-radius: 16px; box-shadow: 5px 5px 5px #aaa;}
-	#mapcontainers nav {display: none;}	/* Default, toggled in JS */
-	#mapcontainers nav {width: 90%; z-index: 999;}
-	#logo, #comparebox, p.export, .summary, .ui-tooltip {display: none;}
-	.leaflet-control-fullscreen, .leaflet-control-zoom {display: none;}
-	.leaflet-control-locate {position: fixed; top: 60px;}
-	.leaflet-top.leaflet-left, .leaflet-bottom.leaflet-left {z-index: 500;}
-	.geocoder {top: 14px; left: 65px; right: 25px;}
-	.geocoder input {width: 100%;}
-	input[name="location"] {font-size: 11px;}
-	#nav0 ul.rangelabels li {font-size: 65%;}
-	.activearea {right: 0;}
-	.leaflet-control-layers, .leaflet-control-attribution {right: 0;}
-	.map .leaflet-popup {min-width: 200px; max-width: 90%; background-color: red;}
-	table#chart td:first-child {width: auto;}
-	.leaflet-bottom.leaflet-left {margin-bottom: 15px;}
-	.info.legend {padding: 2px 10px;}
+	#onlineatlas #nav-mobile {display: block; cursor: pointer; position: absolute; z-index: 999; top: 10px; left: 5px; background: white url('../images/hamburger.svg') no-repeat center center; opacity: 0.9; height: 10px; width: 10px; padding: 17px; border-radius: 16px; box-shadow: 5px 5px 5px #aaa;}
+	#onlineatlas #mapcontainers nav {display: none;}	/* Default, toggled in JS */
+	#onlineatlas #mapcontainers nav {width: 90%; z-index: 999;}
+	#onlineatlas #logo, #onlineatlas #comparebox, #onlineatlas p.export, #onlineatlas .summary, #onlineatlas .ui-tooltip {display: none;}
+	#onlineatlas .leaflet-control-fullscreen, #onlineatlas .leaflet-control-zoom {display: none;}
+	#onlineatlas .leaflet-control-locate {position: fixed; top: 60px;}
+	#onlineatlas .leaflet-top.leaflet-left, #onlineatlas .leaflet-bottom.leaflet-left {z-index: 500;}
+	#onlineatlas .geocoder {top: 14px; left: 65px; right: 25px;}
+	#onlineatlas .geocoder input {width: 100%;}
+	#onlineatlas input[name="location"] {font-size: 11px;}
+	#onlineatlas #nav0 ul.rangelabels li {font-size: 65%;}
+	#onlineatlas .activearea {right: 0;}
+	#onlineatlas .leaflet-control-layers, #onlineatlas .leaflet-control-attribution {right: 0;}
+	#onlineatlas .map .leaflet-popup {min-width: 200px; max-width: 90%; background-color: red;}
+	#onlineatlas table#chart td:first-child {width: auto;}
+	#onlineatlas .leaflet-bottom.leaflet-left {margin-bottom: 15px;}
+	#onlineatlas .info.legend {padding: 2px 10px;}
 }
