@@ -365,10 +365,6 @@ const onlineatlas = (function ($) {
 						const fieldValue = _mapUis[0].field;
 						$('#' + _mapUis[0].navDivId + ' form select[name="field"]').val(fieldValue);
 						
-						// Clone the year value
-						const yearIndex = $('#' + _mapUis[0].yearDivId).val();
-						onlineatlas.addYearRangeControl (_mapUis[1].navDivId, _mapUis[1].yearDivId, _settings.datasets[yearIndex]);		// Clone, copying in the correct year index value
-						
 						// Register handlers to keep the field value in sync between the single map (radiobutton) and side-by-side left map (select) display formats
 						// There is no need to synchronise other form widgets (year, varations), as their display formats do not change
 						$.each (_mapUis, function (index, mapUi) {
@@ -396,13 +392,6 @@ const onlineatlas = (function ($) {
 					
 					// Show the second map
 					$('#mapcontainer1').show ();
-					
-					// Redraw the year control in the first form, to reset the layout sizing
-					const yearIndex = $('#' + _mapUis[0].yearDivId).val();
-					onlineatlas.addYearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);		// Redraw current to ensure correct new sizing
-					$('#' + _mapUis[0].navDivId + ' form .yearrangecontrol').on('change', function() {	// Re-register to refresh data on any form field change
-						onlineatlas.getData (_mapUis[0]);
-					});
 					
 					// Register a handler to dim out options which are not available for the selected year
 					onlineatlas.dimUnavailableHandlerWrapper (_mapUis[0]);
@@ -438,9 +427,6 @@ const onlineatlas = (function ($) {
 					
 					// Hide the second map
 					$('#mapcontainer1').hide ();
-					
-					// Redraw the year control, to reset the layout sizing
-					onlineatlas.addYearRangeControl (_mapUis[0].navDivId, _mapUis[0].yearDivId, _settings.datasets[yearIndex]);
 					
 					// Register a handler to dim out options which are not available for the selected year
 					onlineatlas.dimUnavailableHandlerWrapper (_mapUis[0]);
@@ -590,6 +576,7 @@ const onlineatlas = (function ($) {
 			// General inputs with simple scalar values (e.g. not checkbox/button)
 			$(form0QuerySelector).find ('input:not([type=radio], [type=checkbox], [type=button])').each (function (index, input) {
 				$(form1QuerySelector).find ('input[name="' + input.name + '"]').val (input.value);
+				$(form1QuerySelector).find ('input[name="' + input.name + '"]').trigger ('input');	// Necessar to ensure range highlight function gets an event
 			});
 			
 			// Select boxes
