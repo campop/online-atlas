@@ -305,7 +305,7 @@ class onlineAtlas extends frontControllerApplication
 			<link href="' . $this->baseUrl . '/js/lib/leaflet-fullscreen/dist/leaflet.fullscreen.css" rel="stylesheet" />
 			
 			<!-- Geolocation control; see: https://github.com/domoritz/leaflet-locatecontrol -->
-			<script src="' . $this->baseUrl . '/js/lib/leaflet.locatecontrol//dist/L.Control.Locate.min.js"></script>
+			<script src="' . $this->baseUrl . '/js/lib/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
 			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
 			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/font-awesome/css/font-awesome.min.css">
 			
@@ -418,7 +418,7 @@ class onlineAtlas extends frontControllerApplication
 		# Define the introduction HTML
 		$fileCreationInstructionsHtml  = "\n\t" . '<p>Create the shapefile, and zip up the contents of the folder.</p>';
 		
-		# Run the import UI (which will output HTML)
+		# Run the import UI (which will output HTML), which runs the callback doImport below
 		$html = $this->importUi ($importFiles, $importTypes, $fileCreationInstructionsHtml, 'zip', $echoHtml = false);
 		
 		# Show the HTML
@@ -608,6 +608,18 @@ class onlineAtlas extends frontControllerApplication
 		# Start a timer
 		$timeStart = microtime (true);
 		
+		# Obtain the supplied field
+		$field = (isSet ($_GET['field']) && array_key_exists ($_GET['field'], $this->settings['fields']) ? $_GET['field'] : false);
+		if (!$field) {
+			return array ('error' => 'A valid field must be supplied.');
+		}
+		
+		# Obtain the supplied year
+		$year = (isSet ($_GET['year']) && ctype_digit ($_GET['year']) ? $_GET['year'] : false);
+		if (!$year) {
+			return array ('error' => 'A valid year must be supplied.');
+		}
+		
 		# Obtain the supplied BBOX (W,S,E,N)
 		$bbox = (isSet ($_GET['bbox']) && (substr_count ($_GET['bbox'], ',') == 3) && preg_match ('/^([-.,0-9]+)$/', $_GET['bbox']) ? explode (',', $_GET['bbox'], 4) : false);
 		if (!$bbox) {
@@ -620,18 +632,6 @@ class onlineAtlas extends frontControllerApplication
 			return array ('error' => 'A valid zoom must be supplied.');
 		}
 		$zoomedOut = ($this->settings['zoomedOut'] ? ($zoom <= $this->settings['zoomedOut']) : false);
-		
-		# Obtain the supplied year
-		$year = (isSet ($_GET['year']) && ctype_digit ($_GET['year']) ? $_GET['year'] : false);
-		if (!$year) {
-			return array ('error' => 'A valid year must be supplied.');
-		}
-		
-		# Obtain the supplied field
-		$field = (isSet ($_GET['field']) && array_key_exists ($_GET['field'], $this->settings['fields']) ? $_GET['field'] : false);
-		if (!$field) {
-			return array ('error' => 'A valid field must be supplied.');
-		}
 		
 		# Obtain the supplied field
 		$variation = NULL;
