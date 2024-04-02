@@ -324,8 +324,8 @@ var autocomplete = (function ($) {
 	    // Form result object
 	    var result = {
 			value: item.properties.name + ', ' + item.properties.near,	// Feeding it back into the query seems to be the best way of getting a repeatable result.
-			label: item.properties.name,
-			desc: item.properties.near,
+			label: item.properties.name + ', ' + item.properties.near,
+			desc: item.properties.type,
 			lat: item.geometry.coordinates[1],
 			lon: item.geometry.coordinates[0],
 			feature: item

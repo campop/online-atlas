@@ -674,7 +674,7 @@ const onlineatlas = (function ($) {
 			
 			// Attach the autocomplete library behaviour to the location control
 			autocomplete.addTo ('#' + geocoderDivId + ' input', {
-				sourceUrl: _settings.geocoderApiBaseUrl + '?key=' + _settings.geocoderApiKey + '&bounded=1&bbox=' + _settings.autocompleteBbox,
+				sourceUrl: _settings.geocoderApiBaseUrl + '?key=' + _settings.geocoderApiKey + '&bounded=1&fields=name,near,type,bbox&bbox=' + _settings.autocompleteBbox,
 				appendTo: '#' + geocoderDivId,
 				select: function (event, ui) {
 					const bbox = ui.item.feature.properties.bbox.split(',');
