@@ -57,6 +57,11 @@ var autocomplete = (function ($) {
 		element.data('autocompleteCache', options.cacheResults ? {} : false);
 	    }
 
+	    // Control caching of results
+	    if (options.appendTo === undefined) {
+			options.appendTo = '#cyclestreets-content';
+	    }
+		
 	    // Run on document ready
 	    $(function () {
 			
@@ -68,7 +73,7 @@ var autocomplete = (function ($) {
 			
  		// Add the autocomplete to the element
 		$(inputElement).autocomplete({
-		    appendTo: '#cyclestreets-content',	// Ensures this is within the CSS scopes defined by the application, rather than being attached to the surrounding GUI's body which may have different CSS
+		    appendTo: options.appendTo,	// Ensures this is within the CSS scopes defined by the application, rather than being attached to the surrounding GUI's body which may have different CSS
 		    source: options.source,
 		    minLength: 3,
 		    focus: function (event, ui) {
