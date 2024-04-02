@@ -23,7 +23,7 @@
 
 /* Geocoder */
 #onlineatlas .geocoder {position: absolute; top: 10px; left: 55px; z-index: 500;}
-#onlineatlas .geocoder input {padding: 5px; font-size: 1em; color: #603; width: 250px;}
+#onlineatlas .geocoder input {padding: 5px; color: #603; width: 250px;}
 #onlineatlas .geocoder input.ui-autocomplete-loading {background: white url('../images/ui-anim_basic_16x16.gif') right center no-repeat;}
 #onlineatlas .geocoder input, #onlineatlas .ui-autocomplete {border: 1px solid #eee; box-shadow: 5px 5px 10px 0px rgba(28,28,28,0.5);}
 #onlineatlas .ui-autocomplete {background-color: white; z-index: 1000; width: 200px; list-style: none; margin-left: 0; padding-left: 0;}
