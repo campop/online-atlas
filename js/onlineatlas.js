@@ -97,6 +97,7 @@ const onlineatlas = (function ($) {
 		// Export mode enabled
 		export: true,
 		pdfLink: false,
+		pdfBaseUrl: '%baseUrl/resources/',		// %baseUrl supported
 		
 		// Welcome message
 		firstRunMessageHtml: ''
@@ -1175,7 +1176,7 @@ const onlineatlas = (function ($) {
 					});
 					variationsSlug = variationsComponents.join ('_') + '_';
 				}
-				const pdfMapUrl = _baseUrl + '/resources/' + apiData.field.toLowerCase() + '_' + variationsSlug + apiData.year + '.pdf';	// E.g. /resources/bld_m_a_1851.pdf
+				const pdfMapUrl = _settings.pdfBaseUrl.replace ('%baseUrl', _baseUrl) + apiData.field.toLowerCase() + '_' + variationsSlug + apiData.year + '.pdf';	// E.g. /resources/bld_m_a_1851.pdf
 				$('#' + mapUi.navDivId + ' p.export a.pdfmap').attr('href', pdfMapUrl);
 			}
 			

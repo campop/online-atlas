@@ -41,6 +41,7 @@ class onlineAtlas extends frontControllerApplication
 			'apiJsonPretty' => false,
 			'downloadFilenameBase' => 'onlineatlas',	// Or false to disable
 			'pdfLink' => false,
+			'pdfBaseUrl' => '%baseUrl/resources/',		// %baseUrl supported
 			'downloadInitialNotice' => false,
 			'bodyClass' => '',
 			'disableTabs' => true,
@@ -337,6 +338,7 @@ class onlineAtlas extends frontControllerApplication
 					colourUnknown: ' . ($this->settings['colourUnknown'] ? "'{$this->settings['colourUnknown']}'" : 'false') . ',
 					export: ' . ($this->settings['downloadFilenameBase'] ? 'true' : 'false') . ',
 					pdfLink: ' . ($this->settings['pdfLink'] ? 'true' : 'false') . ',
+					pdfBaseUrl: \'' . $this->settings['pdfBaseUrl'] . '\',
 					firstRunMessageHtml: \'' . $this->settings['firstRunMessageHtml'] . '\',
 					nullField: ' . ($this->settings['nullField'] ? "'{$this->settings['nullField']}'" : 'false') . ',
 					enableFullDescriptions: ' . ($this->settings['enableFullDescriptions'] ? 'true' : 'false') . '
