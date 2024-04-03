@@ -37,7 +37,7 @@
 #onlineatlas .leaflet-top.leaflet-right .leaflet-control {margin: 0;}
 #onlineatlas .navigationpanel {height: 100%;}
 #onlineatlas #mapcontainers nav {width: 330px; height: 100%; background-color: #333; opacity: 0.92; color: white;}
-#onlineatlas #onlineatlas nav p.closebutton a {color: white;}
+#onlineatlas nav p.closebutton a {color: white;}
 #onlineatlas .activearea {position: absolute; top: 0; left: 0; right: 330px; height: 100%;}
 #onlineatlas .leaflet-control-layers, #onlineatlas .leaflet-control-attribution {right: 330px;}
 #onlineatlas .leaflet-control.summary {position: absolute; left: 320px;}
