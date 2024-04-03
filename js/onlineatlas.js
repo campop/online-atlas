@@ -1359,6 +1359,11 @@ const onlineatlas = (function ($) {
 		// Assign colour from lookup table
 		getColour: function (value, field)
 		{
+			// If the field has a colour set, just return that
+			if (_settings.fields[field].hasOwnProperty ('colour')) {
+				return _settings.fields[field].colour;
+			}
+			
 			// Create a simpler variable for the intervals field
 			const intervals = _settings.fields[field].intervals;
 			
@@ -1607,7 +1612,9 @@ const onlineatlas = (function ($) {
 			let html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].label) + '</h4>';
 			html += '<div id="legenddetail">';
 			html += '<p>' + (_settings.fields[mapUi.field].descriptionLegendHtml ? _settings.fields[mapUi.field].descriptionLegendHtml : onlineatlas.htmlspecialchars (_settings.fields[mapUi.field].description)) + '</p>';
-			html += '<table>' + labelsRows.join ('\n') + '</table>';
+			if (!_settings.fields[mapUi.field].hasOwnProperty ('static')) {
+				html += '<table>' + labelsRows.join ('\n') + '</table>';
+			}
 			html += '</div>';
 			
 			// Add tooltips if <abbr> present in legend extended description
@@ -1641,9 +1648,13 @@ const onlineatlas = (function ($) {
 			// Register a method to update the control based on feature properties passed
 			mapUi.summary.update = function (field, feature, currentZoom) {
 				let html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + '</h4>';
-				html += (feature ?
-					onlineatlas.summaryHtml (field, feature, currentZoom)
-					: 'Hover over an area to view details.');
+				if (_settings.fields[field].hasOwnProperty ('static')) {
+					html += '';
+				} else {
+					html += (feature ?
+						onlineatlas.summaryHtml (field, feature, currentZoom)
+						: 'Hover over an area to view details.');
+				}
 				this._div.innerHTML = html;
 			};
 			

@@ -174,6 +174,11 @@ class onlineAtlas extends frontControllerApplication
 	# Additional processing
 	public function main ()
 	{
+		# Determine the application (repository) directory
+		$backtrace = debug_backtrace (DEBUG_BACKTRACE_IGNORE_ARGS);
+		$clientClassFile = $backtrace[0]['file'];
+		$this->clientApplicationDirectory = dirname ($clientClassFile);		// Not slash-terminated
+		
 		# Flatten variations to create a list to which the main fields will be multiplexed
 		$this->settings['variationsFlattened'] = application::array_key_combinations ($this->settings['variations']);
 		
@@ -213,8 +218,8 @@ class onlineAtlas extends frontControllerApplication
 		$fields = array ();
 		foreach ($this->settings['fields'] as $fieldId => $field) {
 			
-			# Determine if the field is a data field, or a general/null field
-			$isDataField = (!isSet ($field['general']) && $fieldId != $this->settings['nullField']);
+			# Determine if the field is a data field, or a general/null field, or a static field
+			$isDataField = (!isSet ($field['general']) && $fieldId != $this->settings['nullField'] && !isSet ($field['static']));
 			
 			# If a general/null field, copy the data without change
 			if (!$isDataField) {
@@ -612,6 +617,14 @@ class onlineAtlas extends frontControllerApplication
 		$field = (isSet ($_GET['field']) && array_key_exists ($_GET['field'], $this->settings['fields']) ? $_GET['field'] : false);
 		if (!$field) {
 			return array ('error' => 'A valid field must be supplied.');
+		}
+		
+		# For static datasets, serve the data directly
+		if (isSet ($this->settings['fields'][$field]['static'])) {
+			$file = $this->clientApplicationDirectory . '/data-static/' . $this->settings['fields'][$field]['static'];
+			$data = file_get_contents ($file);
+			$geojson = json_decode ($data, true);
+			return $geojson;
 		}
 		
 		# Obtain the supplied year
