@@ -132,7 +132,7 @@
 	#onlineatlas #mapcontainers nav {width: 90%; margin-left: 10%; z-index: 999;}
 	#onlineatlas #logo, #onlineatlas #comparebox, #onlineatlas p.export, #onlineatlas .summary, #onlineatlas .ui-tooltip {display: none;}
 	#onlineatlas .leaflet-control-fullscreen, #onlineatlas .leaflet-control-zoom {display: none;}
-	#onlineatlas .leaflet-control-locate {position: fixed; top: 60px;}
+	#onlineatlas .leaflet-control-locate {position: absolute; top: 60px;}
 	#onlineatlas .leaflet-top.leaflet-left, #onlineatlas .leaflet-bottom.leaflet-left {z-index: 500;}
 	#onlineatlas .geocoder {top: 14px; left: 65px; right: 25px;}
 	#onlineatlas .geocoder input {width: 100%;}
