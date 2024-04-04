@@ -263,12 +263,13 @@ const onlineatlas = (function ($) {
 			}
 			
 			// Toggle visibility clickable
-			$('#nav-mobile').click(function () {
+			$('#nav-mobile').click (function (e) {
 				if ($('#onlineatlas nav').is(':visible')) {
 					$('#onlineatlas nav').hide ('slide', {direction: 'right'}, 250);
 				} else {
 					$('#onlineatlas nav').animate ({width:'toggle'}, 250);
 				}
+				e.stopPropagation ();
 			});
 			
 			// Open menu by default on mobile
@@ -277,10 +278,11 @@ const onlineatlas = (function ($) {
 			}
 			
 			// Disable title tooltips
-			$('#nav-mobile').click(function () {
+			$('#nav-mobile').click (function (e) {
 				if ($('#onlineatlas nav').is(':visible')) {
 					$('.radiobuttons .field').removeAttr ('title');
 				}
+				e.stopPropagation ();
 			});
 			
 			/*
@@ -591,7 +593,7 @@ const onlineatlas = (function ($) {
 			if (_settings.zoomedOut) {
 				map.on ('click', function (e) {
 					if (mapUi.zoomedOut) {
-						map.setZoomAround (e.latlng, (_settings.zoomedOut + 1));
+						map.setZoomAround (e.latlng, (_settings.zoomedOut + 1));	// Will zoom towards the direction of the clicked location
 					}
 				});
 			}
