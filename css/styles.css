@@ -95,11 +95,17 @@
 #onlineatlas .info h4 {margin: 0 0 5px; color: #777;}
 #onlineatlas .legend {width: 170px; text-align: left; line-height: 18px; color: #555;}
 #onlineatlas .legend a {color: black;}
-#onlineatlas .legend table {border-collapse: collapse; width: 100%;}
+#onlineatlas .legend table {border-collapse: collapse; width: 100%; margin-bottom: 10px;}
 #onlineatlas .legend table td {background-color: transparent; padding: 0;}
 #onlineatlas .legend table td:first-child {width: 16px;}
 #onlineatlas .legend i {width: 16px; height: 16px; float: left; margin-right: 8px; opacity: 0.7; border: 1px solid white; /* Colour is overridden in JS */}
 #onlineatlas .summary {width: 300px;}
+#onlineatlas .legend #legendclose, #onlineatlas .legend #legendshow {margin: 0; padding: 0;}
+#onlineatlas .legend p.closebutton a {padding: 0 0 10px 10px;}
+#onlineatlas .legend.mobile #legendshow {display: none;}
+#onlineatlas .legend.mobile.minimised #legendshow {display: block;}
+#onlineatlas .legend.mobile.minimised #legendclose {display: none;}
+#onlineatlas .legend.mobile.minimised #legenddetail {display: none;}
 
 /* More details box */
 #onlineatlas a.moredetails {color: white; background-color: #111; font-size: 0.83em; border-radius: 5px; padding: 2px;}
@@ -143,5 +149,5 @@
 	#onlineatlas .map .leaflet-popup {min-width: 200px; max-width: 90%;}
 	#onlineatlas table#chart td:first-child {width: auto;}
 	#onlineatlas .leaflet-bottom.leaflet-left {margin-bottom: 15px;}
-	#onlineatlas .info.legend {padding: 2px 10px;}
+	#onlineatlas .info.legend {padding: 10px;}
 }

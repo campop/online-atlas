@@ -308,20 +308,26 @@ const onlineatlas = (function ($) {
 			
 			// Minimise legend on mobile by default
 			if ($('#nav-mobile').is(':visible')) {
-				$('#legenddetail').after ('<p id="legendshow"><a href="#">Show details &raquo;</a></p>');
+				
+				// Add mobile class to legend, so that state can be handled in CSS
+				$('.legend').addClass ('mobile');
+				
+				// Set minimised by default
+				$('.legend').addClass ('minimised');
+				
+				// Add the X and Show details controls
 				$('.legend').prepend ('<p id="legendclose" class="closebutton"><a href="#">&#10006;</a></p>');
-				$('#legenddetail').hide ();
-				$('#legendclose a').hide ();
+				$('.legend').append ('<p id="legendshow"><a href="#">Show details &raquo;</a></p>');
+				
+				// When the show details link is clicked, show the detail, hide the link and show the X
 				$('#legendshow a').click (function (e) {
-					$('#legenddetail').show ();
-					$('#legendshow a').hide ();
-					$('#legendclose a').show ();
+					$('.legend').removeClass ('minimised');
 					e.preventDefault ();
 				});
+				
+				// When the close button is clicked, hide the detail, show the link and hide the X
 				$('#legendclose a').click (function (e) {
-					$('#legenddetail').hide ();
-					$('#legendshow a').show ();
-					$('#legendclose a').hide ();
+					$('.legend').addClass ('minimised');
 					e.preventDefault ();
 				});
 			}
@@ -1565,6 +1571,7 @@ const onlineatlas = (function ($) {
 			legend.onAdd = function () {
 				const panelDiv = L.DomUtil.create ('div', 'info legend');
 				L.DomEvent.disableClickPropagation (panelDiv);		// Prevent drag/click propagating to the map; see: https://stackoverflow.com/a/37629102/
+				$(panelDiv).append ('<div id="legendcontainer"></div>');
 				return panelDiv;
 			};
 			
@@ -1582,7 +1589,7 @@ const onlineatlas = (function ($) {
 			// Handle null field
 			if (_settings.nullField) {
 				if (mapUi.field == _settings.nullField) {
-					$('#' + mapUi.mapDivId + ' .legend').html ('');
+					$('#' + mapUi.mapDivId + ' .legend #legenddetail').html ('');
 					$('#' + mapUi.mapDivId + ' .legend').hide ();
 					return;
 				}
@@ -1626,7 +1633,7 @@ const onlineatlas = (function ($) {
 			}
 			
 			// Set the HTML
-			$('#' + mapUi.mapDivId + ' .legend').html (html);
+			$('#' + mapUi.mapDivId + ' .legend #legendcontainer').html (html);
 		},
 		
 		
