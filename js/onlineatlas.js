@@ -752,7 +752,7 @@ const onlineatlas = (function ($) {
 			onlineatlas.addYearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultDataset);
 			
 			// Register a slide menu handler, if groupings are present
-			if (_settings.expandableHeadings && onlineatlas.hasGroups) {
+			if (_settings.expandableHeadings && fieldControls.hasGroups) {
 				$('.mapcontainer nav#' + mapUi.navDivId + ' form div.radiobuttons h4').click (function (event) {
 					
 					// Fold out menu
