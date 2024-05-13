@@ -110,7 +110,7 @@
 /* More details box */
 #onlineatlas a.moredetails {color: white; background-color: #111; font-size: 0.83em; border-radius: 5px; padding: 2px;}
 #onlineatlas #aboutfields {display: none;}
-#onlineatlas .vex.vex-theme-plain.wider .vex-content {width: 75%; padding: 25px; min-height: 300px;}
+body .vex.vex-theme-plain.wider .vex-content {width: 75%; padding: 25px; min-height: 300px;}
 #onlineatlas #moredetailsboxcontent {max-height: 500px; overflow-y: scroll;}
 
 /* Popup styling */
