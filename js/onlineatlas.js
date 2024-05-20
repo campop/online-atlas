@@ -968,7 +968,7 @@ const onlineatlas = (function ($) {
 			let datalistHtml = '<datalist id="' + datalistId + '">';
 			$.each (_settings.datasets, function (index, year) {
 				listHtml += '<li style="width: calc(100% / ' + totalLabels + ');" data-index="' + index + '">' + year + '</li>';
-				datalistHtml += '<option>' + index + '</option>';
+				datalistHtml += '<option value="' + index + '"></option>';
 			});
 			listHtml += '</ul>';
 			datalistHtml += '</datalist>';
