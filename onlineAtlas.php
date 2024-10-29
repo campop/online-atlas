@@ -539,15 +539,8 @@ class onlineAtlas extends frontControllerApplication
 			return false;
 		}
 		
-		# Assemble as a set of inserts
-		$inserts = array ();
+		# Clean features
 		foreach ($geojson['features'] as $index => $feature) {
-			
-			# Start an insert with fixed properties
-			$insert = array (
-				'id'	=> NULL,	// Auto-assign
-				'year'	=> $year,
-			);
 			
 			# If present, replace CEN_1851, CEN_1861, etc. with CEN
 			$fieldname = 'CEN_' . $year;
@@ -564,10 +557,24 @@ class onlineAtlas extends frontControllerApplication
 			}
 			
 			# Filter properties for supported fields only
-			$properties = application::arrayFields ($feature['properties'], array_keys ($this->fieldsExpanded));
+			$feature['properties'] = application::arrayFields ($feature['properties'], array_keys ($this->fieldsExpanded));
+			
+			# Write back the new feature to the collection
+			$geojson['features'][$index] = $feature;
+		}
+		
+		# Assemble as a set of inserts
+		$inserts = array ();
+		foreach ($geojson['features'] as $feature) {
+			
+			# Start an insert with fixed properties
+			$insert = array (
+				'id'	=> NULL,	// Auto-assign
+				'year'	=> $year,
+			);
 			
 			# Add the properties
-			$insert += $properties;
+			$insert += $feature['properties'];
 			
 			# If support for close datasets is enabled, set the value
 			if ($this->settings['closeDatasets']) {
