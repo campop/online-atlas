@@ -540,28 +540,7 @@ class onlineAtlas extends frontControllerApplication
 		}
 		
 		# Clean features
-		foreach ($geojson['features'] as $index => $feature) {
-			
-			# If present, replace CEN_1851, CEN_1861, etc. with CEN
-			$fieldname = 'CEN_' . $year;
-			if (isSet ($feature['properties'][$fieldname])) {
-				$feature['properties']['CEN'] = $feature['properties'][$fieldname];
-				unset ($feature['properties'][$fieldname]);
-			}
-			
-			# Handle division-by-zero errors in the data
-			foreach ($feature['properties'] as $key => $value) {
-				if ($value === '#DIV/0!') {		// Have to use exact equality comparator, as otherwise (float) 0 matches string '#DIV/0!'
-					$feature['properties'][$key] = NULL;
-				}
-			}
-			
-			# Filter properties for supported fields only
-			$feature['properties'] = application::arrayFields ($feature['properties'], array_keys ($this->fieldsExpanded));
-			
-			# Write back the new feature to the collection
-			$geojson['features'][$index] = $feature;
-		}
+		$geojson = $this->filterGeojsonProperties ($geojson, $year);
 		
 		# Assemble as a set of inserts
 		$inserts = array ();
@@ -597,6 +576,38 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Return success
 		return true;
+	}
+	
+	
+	# Function to amend the GeoJSON data
+	private function filterGeojsonProperties ($geojson, $year)
+	{
+		# Process each feature
+		foreach ($geojson['features'] as $index => $feature) {
+			
+			# If present, replace CEN_1851, CEN_1861, etc. with CEN
+			$fieldname = 'CEN_' . $year;
+			if (isSet ($feature['properties'][$fieldname])) {
+				$feature['properties']['CEN'] = $feature['properties'][$fieldname];
+				unset ($feature['properties'][$fieldname]);
+			}
+			
+			# Handle division-by-zero errors in the data
+			foreach ($feature['properties'] as $key => $value) {
+				if ($value === '#DIV/0!') {		// Have to use exact equality comparator, as otherwise (float) 0 matches string '#DIV/0!'
+					$feature['properties'][$key] = NULL;
+				}
+			}
+			
+			# Filter properties for supported fields only
+			$feature['properties'] = application::arrayFields ($feature['properties'], array_keys ($this->fieldsExpanded));
+			
+			# Write back the new feature to the collection
+			$geojson['features'][$index] = $feature;
+		}
+		
+		# Return the GeoJSON
+		return $geojson;
 	}
 	
 	
