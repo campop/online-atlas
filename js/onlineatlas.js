@@ -35,22 +35,22 @@ const onlineatlas = (function ($) {
 		defaultTileLayer: 'bartholomew',
 		tileUrls: {
 			'bartholomew': [
-				'https://geo.nls.uk/mapdata2/bartholomew/great_britain/{z}/{x}/{y}.png',	// E.g. http://geo.nls.uk/mapdata2/bartholomew/great_britain/12/2046/2745.png
+				'https://mapseries-tilesets.s3.amazonaws.com/bartholomew_great_britain/{z}/{x}/{y}.png',	// E.g. https://mapseries-tilesets.s3.amazonaws.com/bartholomew_great_britain/12/2052/1344.png
 				{maxZoom: 15, attribution: '&copy; <a href="http://maps.nls.uk/copyright.html">National Library of Scotland</a>', 'backgroundColour': '#a2c3ba'},
 				'NLS - Bartholomew Half Inch, 1897-1907'
 			],
 			'os1inch': [
-				'https://geo.nls.uk/maps/os/1inch_2nd_ed/{z}/{x}/{y}.png',	// E.g. https://geo.nls.uk/maps/os/1inch_2nd_ed/15/16395/10793.png
+				'https://mapseries-tilesets.s3.amazonaws.com/1inch_2nd_ed/{z}/{x}/{y}.png',	// E.g. https://mapseries-tilesets.s3.amazonaws.com/1inch_2nd_ed/15/16395/10793.png
 				{maxZoom: 15, attribution: '&copy; <a href="https://maps.nls.uk/copyright.html">National Library of Scotland</a>', backgroundColour: '#f0f1e4', key: '/images/mapkeys/os1inch.jpg'},
 				'NLS - OS One Inch, 1885-1900'
 			],
 			'mapnik': [
-				'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',	// E.g. http://a.tile.openstreetmap.org/16/32752/21788.png
+				'https://tile.openstreetmap.org/{z}/{x}/{y}.png',	// E.g. https://tile.openstreetmap.org/16/32752/21788.png
 				{maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'},
 				'OpenStreetMap style (modern)'
 			],
 			'osopendata': [
-				'https://{s}.os.openstreetmap.org/sv/{z}/{x}/{y}.png',	// E.g. http://a.os.openstreetmap.org/sv/18/128676/81699.png
+				'https://os.openstreetmap.org/sv/{z}/{x}/{y}.png',	// E.g. https://os.openstreetmap.org/sv/18/128676/81699.png
 				{maxZoom: 19, attribution: 'Contains Ordnance Survey data &copy; Crown copyright and database right 2010'},
 				'OS Open Data (modern)'
 			]
