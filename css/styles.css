@@ -111,7 +111,7 @@
 #onlineatlas a.moredetails {color: white; background-color: #111; font-size: 0.83em; border-radius: 5px; padding: 2px;}
 #onlineatlas #aboutfields {display: none;}
 body .vex.vex-theme-plain.wider .vex-content {width: 75%; padding: 25px; min-height: 300px;}
-#onlineatlas #moredetailsboxcontent {max-height: 500px; overflow-y: scroll;}
+body /* vex needs to be attached to body as otherwise is buggy */ #moredetailsboxcontent {max-height: 500px; overflow-y: scroll;}
 
 /* Popup styling */
 #onlineatlas .map .leaflet-popup {min-width: 350px;}
