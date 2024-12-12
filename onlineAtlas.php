@@ -14,35 +14,22 @@ class onlineAtlas extends frontControllerApplication
 			'applicationName' => 'Online atlas',
 			'pageHeader' => 'Online atlas',
 			'div' => 'onlineatlas',
-			'hostname' => 'localhost',
-			'database' => 'onlineatlas',
-			'username' => 'onlineatlas',
-			'password' => NULL,
-			'table' => 'data',
-			'databaseStrictWhere' => true,
-			'nativeTypes' => true,
+			'database' => false,
+			'table' => false,
 			'administrators' => true,
 			'geocoderApiKey' => NULL,
-			// 'importsSectionsMode' => true,
 			'defaultLocation' => array (
-				'latitude' => 53.035,
-				'longitude' => -1.082,
-				'zoom' => 7,
+				'latitude' => 53.615,
+				'longitude' => -1.53,
+				'zoom' => 5.8,
 			),
 			'datasets' => NULL,	// Must supply an array of datasets
-			'closeDatasets' => array (),
-			'closeName' => false,
-			'closeZoom' => false,
-			'closeField' => false,
-			'farField' => NULL,
-			'closeModeSimplifyFar' => false,
-			'zoomedOut' => 8,	// Level at which the interface shows only overviews without detail to keep data size down, or false to disable
-			'apiUsername' => true,
-			'apiJsonPretty' => false,
+			'areaNameField' => 'SUBDIST',
+			'areaNameFallbackField' => 'REGDIST',
 			'downloadFilenameBase' => 'onlineatlas',	// Or false to disable
 			'pdfLink' => false,
 			'pdfBaseUrl' => '%baseUrl/resources/',		// %baseUrl supported
-			'downloadInitialNotice' => false,
+			'downloadInitialNotice' => false,		// Must not contain double-quotes
 			'bodyClass' => '',
 			'disableTabs' => true,
 			'authLinkVisibility' => false,
@@ -52,6 +39,7 @@ class onlineAtlas extends frontControllerApplication
 			'defaultDataset' => false,
 			'defaultField' => NULL,
 			'defaultVariations' => array (),
+			'datasetsAttribution' => 'Campop',
 			'intervalsMode' => false,
 			'valueUnknown' => false,	// For all decimal fields, special value which represents unknown data
 			'valueUnknownString' => 'Unknown',
@@ -102,18 +90,6 @@ class onlineAtlas extends frontControllerApplication
 				'tab' => $this->settings['applicationName'],
 				'icon' => 'map',
 			),
-			'exportcsv' => array (
-				'description' => false,
-				'url' => 'data.csv',
-				'export' => true,
-				'enableIf' => $this->settings['downloadFilenameBase'],
-			),
-			'exportgeojson' => array (
-				'description' => false,
-				'url' => 'data.geojson',
-				'export' => true,
-				'enableIf' => $this->settings['downloadFilenameBase'],
-			),
 			'import' => array (
 				'description' => false,
 				'url' => 'import/',
@@ -128,49 +104,6 @@ class onlineAtlas extends frontControllerApplication
 	}
 	
 	
-	# Database structure definition
-	public function databaseStructure ()
-	{
-		# Get the domain-specific fields
-		$specificFields = $this->databaseStructureSpecificFields ();
-		
-		# Define the base SQL
-		$sql = "
-			CREATE TABLE administrators (
-			  username varchar(255) NOT NULL COMMENT 'Username',
-			  active enum('','Yes','No') NOT NULL DEFAULT 'Yes' COMMENT 'Currently active?',
-			  PRIMARY KEY (username)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='System administrators';
-			
-			CREATE TABLE `data` (
-			  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Automatic key' PRIMARY KEY,
-			  `year` INT(4) NOT NULL COMMENT 'Year',
-			  " . ($this->settings['closeDatasets'] ? "`close` INT(1) NULL COMMENT 'Close'," : '') . "
-			  
-			  {$specificFields}
-			  
-			  `geometry` GEOMETRY NOT NULL COMMENT 'Geometry',
-			  INDEX(`year`)
-			  " . ($this->settings['closeDatasets'] ? ", INDEX(`close`)" : '') . "
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Data';
-		";
-		
-		# Return the SQL
-		return $sql;
-	}
-	
-	
-	# Database structure, which the implementation should override
-	public function databaseStructureSpecificFields ()
-	{
-		# Return the SQL
-		return $sql = "
-			  /* Domain-specific fields to be added here */
-			  
-		";
-	}
-	
-	
 	# Additional processing
 	public function main ()
 	{
@@ -182,21 +115,19 @@ class onlineAtlas extends frontControllerApplication
 		# Flatten variations to create a list to which the main fields will be multiplexed
 		$this->settings['variationsFlattened'] = application::array_key_combinations ($this->settings['variations']);
 		
-		# Set the fields after expansion to deal with variations, which represents the actual database fields
+		# Set the fields after expansion to deal with variations, which represents the actual data fields
 		$this->fieldsExpanded = $this->fieldsVariationsProcessed ();
 		
 		# Ensure the number of intervals in each field matches the number of colour stops
 		if ($this->settings['colourStopsIntervalsConsistent']) {
-			if ($this->action != 'api') {
-				$totalColourStops = count ($this->settings['colourStops']);
-				foreach ($this->fieldsExpanded as $fieldId => $field) {
-					if ($field['intervals']) {
-						if (is_string ($field['intervals'])) {	// Array type has its own colour set, defined associatively, so only string type needs to be checked
-							$totalIntervals = count (explode (', ', $field['intervals']));
-							if ($totalIntervals != $totalColourStops) {
-								echo "\n<p class=\"error\">Setup error: the number of intervals defined for the <em>{$fieldId}</em> field ({$totalIntervals}) does not match the number of colour stops defined ({$totalColourStops}).</p>";
-								return false;
-							}
+			$totalColourStops = count ($this->settings['colourStops']);
+			foreach ($this->fieldsExpanded as $fieldId => $field) {
+				if ($field['intervals']) {
+					if (is_string ($field['intervals'])) {	// Array type has its own colour set, defined associatively, so only string type needs to be checked
+						$totalIntervals = count (explode (', ', $field['intervals']));
+						if ($totalIntervals != $totalColourStops) {
+							echo "\n<p class=\"error\">Setup error: the number of intervals defined for the <em>{$fieldId}</em> field ({$totalIntervals}) does not match the number of colour stops defined ({$totalColourStops}).</p>";
+							return false;
 						}
 					}
 				}
@@ -286,38 +217,22 @@ class onlineAtlas extends frontControllerApplication
 			<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css">
 			<script src="' . $this->baseUrl . '/js/lib/@benmajor/jquery-touch-events/src/jquery.mobile-events.min.js"></script>
 			
-			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/leaflet/dist/leaflet.css" />
-			<script src="' . $this->baseUrl . '/js/lib/leaflet/dist/leaflet.js"></script>
+			<script src="' . $this->baseUrl . '/js/lib/maplibre-gl/dist/maplibre-gl.js"></script>
+			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/maplibre-gl/dist/maplibre-gl.css" />
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/geocoder.js"></script>
-			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-fullhash/leaflet-fullHash.js"></script>
-			
-			<!-- Leaflet-active-area; see: https://github.com/Mappy/Leaflet-active-area -->
-			<script src="' . $this->baseUrl . '/js/lib/leaflet-active-area/src/leaflet.activearea.js"></script>
 			
 			<!-- Cookie support -->
 			<script src="' . $this->baseUrl . '/js/lib/js-cookie/src/js.cookie.js"></script>
 			
 			<!-- Vex dialogs; see: http://github.hubspot.com/vex/ -->
 			<script src="' . $this->baseUrl . '/js/lib/vex-js/dist/js/vex.combined.min.js"></script>
-			<script>vex.defaultOptions.className = \'vex-theme-plain\'</script>
 			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/vex-js/dist/css/vex.css" />
 			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/vex-js/dist/css/vex-theme-plain.css" />
 			
-			<!-- Full screen control; see: https://github.com/Leaflet/Leaflet.fullscreen -->
-			<script src="' . $this->baseUrl . '/js/lib/leaflet-fullscreen/dist/Leaflet.fullscreen.min.js"></script>
-			<link href="' . $this->baseUrl . '/js/lib/leaflet-fullscreen/dist/leaflet.fullscreen.css" rel="stylesheet" />
-			
-			<!-- Geolocation control; see: https://github.com/domoritz/leaflet-locatecontrol -->
-			<script src="' . $this->baseUrl . '/js/lib/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
-			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
-			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/font-awesome/css/font-awesome.min.css">
-			
 			<!-- Side-by-side sync -->
-			<script src="' . $this->baseUrl . '/js/lib/leaflet.sync/L.Map.Sync.js"></script>
-			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/lib/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
+			<script>const module = {};</script>
+			<script src="' . $this->baseUrl . '/js/lib/@mapbox/mapbox-gl-sync-move/index.js"></script>
 			
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/onlineatlas.js"></script>
 			<script type="text/javascript">
@@ -325,11 +240,10 @@ class onlineAtlas extends frontControllerApplication
 				var config = {
 					defaultLocation: ' . json_encode ($this->settings['defaultLocation']) . ',
 					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
-					zoomedOut: ' . ($this->settings['zoomedOut'] ? $this->settings['zoomedOut'] : 'false') . ',
-					closeZoom: ' . ($this->settings['closeZoom'] ? $this->settings['closeZoom'] : 'false') . ',
-					closeField: ' . ($this->settings['closeField'] ? "'{$this->settings['closeField']}'" : 'false') . ',
-					farField: ' . ($this->settings['farField'] ? "'{$this->settings['farField']}'" : 'false') . ',
-					datasets: ' . json_encode ($this->settings['datasets']) . ',
+					areaNameField: ' . ($this->settings['areaNameField'] ? "'{$this->settings['areaNameField']}'" : 'false') . ',
+					areaNameFallbackField: ' . ($this->settings['areaNameFallbackField'] ? "'{$this->settings['areaNameFallbackField']}'" : 'false') . ',
+					availableGeneralFields: ' . json_encode ($this->availableGeneralFields) . ',
+					years: ' . json_encode ($this->settings['datasets']) . ',
 					defaultDataset: ' . ($this->settings['defaultDataset'] ? (is_numeric ($this->settings['defaultDataset']) ? $this->settings['defaultDataset'] : "'{$this->settings['defaultDataset']}'") : 'false') . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
 					expandableHeadings: ' . ($this->settings['expandableHeadings'] ? 'true' : 'false') . ',
@@ -381,22 +295,6 @@ class onlineAtlas extends frontControllerApplication
 	}
 	
 	
-	# Function to get the fields used by the popups
-	private function getFieldHeadings ()
-	{
-		# Get the dataset fields
-		$fields = $this->databaseConnection->getHeadings ($this->settings['database'], $this->settings['table']);
-		
-		# Add each year
-		foreach ($this->settings['datasets'] as $dataset) {
-			$fields['CEN_' . $dataset] = '#';
-		}
-		
-		# Return the fields
-		return $fields;
-	}
-	
-	
 	# Function to import the data files, clearing any existing import
 	public function import ()
 	{
@@ -405,18 +303,9 @@ class onlineAtlas extends frontControllerApplication
 			'full' => 'Full import'
 		);
 		
-		# If there are datasets for close in, merge those in
-		$datasets = $this->settings['datasets'];
-		if ($this->settings['closeDatasets']) {
-			foreach ($this->settings['closeDatasets'] as $dataset) {
-				$datasets[] = $dataset . $this->settings['closeName'];
-			}
-			natsort ($datasets);
-		}
-		
 		# Create the list of import files
 		$importFiles = array ();
-		foreach ($datasets as $dataset) {
+		foreach ($this->settings['datasets'] as $dataset) {
 			$importFiles[] = sprintf ('dataset_%s', $dataset);
 		}
 		
@@ -432,7 +321,7 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Function to do the actual import
-	public function doImport ($exportFiles, $importType, &$html, $date)
+	public function doImport ($exportFiles, $importType_ignored, &$html, $date)
 	{
 		# Start the HTML
 		$html = '';
@@ -447,32 +336,19 @@ class onlineAtlas extends frontControllerApplication
 			return false;
 		}
 		
-		# Truncate the table for the first file; requires the DROP privilege
-		if (!$this->databaseConnection->truncate ($this->settings['database'], $this->settings['table'])) {
-			$html = "\n<p class=\"warning\">ERROR: truncation of old data failed.</p>";
-			return false;
-		}
-		
 		# Loop through each file
 		foreach ($exportFiles as $dataset => $file) {
-			
-			# If support for close datasets is enabled, extract from the filename
-			$close = false;
-			if ($this->settings['closeDatasets']) {
-				if (preg_match ("/^(.+)({$this->settings['closeName']})$/", $dataset, $matches)) {
-					$close = true;
-					$dataset = $matches[1];
-				}
-			}
 			
 			# Extract the year
 			preg_match ('/([0-9]{4})/', $dataset, $matches);
 			$year = $matches[1];
 			
 			# Remove existing data file if present
-			$geojson = "{$exportsTmpDir}/{$year}.geojson";
-			if (is_file ($geojson)) {
-				unlink ($geojson);
+			$outputDirectory = $this->extendedApplicationRoot . '/datasets/';
+			$geojsonFile = "data{$year}.geojson";
+			$geojsonFilename = "{$outputDirectory}/{$geojsonFile}";
+			if (is_file ($geojsonFilename)) {
+				unlink ($geojsonFilename);
 			}
 			
 			# Unzip the shapefile
@@ -482,97 +358,76 @@ class onlineAtlas extends frontControllerApplication
 			exec ($command, $output);
 			// application::dumpData ($output);
 			
-			# In close mode, simplify far-out items if required
-			#!# This should be moved to the API output stage when ST_Simplify is available
-			$simplify = '';
-			if ($this->settings['closeDatasets']) {
-				if ($this->settings['closeModeSimplifyFar']) {
-					if (!$close) {
-						$simplify = '-simplify ' . $this->settings['closeModeSimplifyFar'];
-					}
-				}
-			}
-			
-			# Convert to GeoJSON
+			# Convert to GeoJSON, to be used both for vector conversion and as an export file
 			$currentDirectory = getcwd ();
 			chdir ($tempDir);
-			$command = "ogr2ogr -f GeoJSON -lco COORDINATE_PRECISION=4 -t_srs EPSG:4326 {$simplify} {$geojson} *.shp";	// E.g.: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 1911.geojson RSD_1911.shp
+			$command = "ogr2ogr -f GeoJSON -lco COORDINATE_PRECISION=4 -lco RFC7946=YES -lco WRITE_NAME=NO -lco DESCRIPTION=\"{$this->settings['downloadInitialNotice']}\" -t_srs EPSG:4326 {$geojsonFilename} *.shp";	// E.g.: ogr2ogr -f GeoJSON -s_srs EPSG:3857 -t_srs EPSG:4326 1911.geojson RSD_1911.shp
 			exec ($command, $output);
 			// application::dumpData ($output);
 			chdir ($currentDirectory);	// Change back
 			
-			# Remove the shapefile files and containing directory
+			# Convert to CSV
+			if ($this->settings['downloadFilenameBase']) {
+				$csvFile = "data{$year}.csv";
+				$csvFilename = "{$outputDirectory}/{$csvFile}";
+				$command = "ogr2ogr -f 'CSV' {$csvFilename} {$geojsonFilename} -dialect sqlite -sql 'SELECT AsGeoJSON(geometry) AS location, * FROM data{$year}'";
+				exec ($command, $output);
+				if ($this->settings['downloadInitialNotice']) {
+					file_put_contents ($csvFilename, $this->settings['downloadInitialNotice'] . "\n\n" . file_get_contents ($csvFilename));
+				}
+			}
+			
+			# Remove the unpacked shapefile files and containing directory
 			array_map ('unlink', glob ("{$tempDir}/*.*"));	// http://php.net/unlink#109971
 			array_map ('unlink', glob ("{$tempDir}/.*.*"));	// E.g. .esri.gz file
 			rmdir ($tempDir);
 			
-			# Import the GeoJSON contents into the database
-			if (!$this->importGeojson ($geojson, $year, $close, $errorHtml /* returned by reference */)) {
+			# Convert the GeoJSON to vector tiles
+			if (!$this->geojsonToVectorTiles ($geojsonFile, $year, $outputDirectory, $errorHtml /* returned by reference */)) {
 				$html = "\n<p class=\"warning\">{$errorHtml}</p>";
 				return false;
 			}
 			
-			# Remove the GeoJSON file after use
-			unlink ($geojson);
+			# Remove the GeoJSON file after use, if exporting functionality is not enabled
+			if (!$this->settings['downloadFilenameBase']) {
+				unlink ($geojsonFilename);
+			}
 		}
-		
-		# Set the update date
-		$tableComment = 'Dataset last updated: ' . DateTime::createFromFormat ('Ymd H:i:s', $date . ' 12:00:00')->format ('jS F Y');
-		$this->databaseConnection->setTableComment ($this->settings['database'], $this->settings['table'], $tableComment);
 		
 		# Return success
 		return true;
 	}
 	
 	
-	# Function to import contents of a GeoJSON file into the database
-	private function importGeojson ($geojsonFilename, $year, $close, &$errorHtml = false)
+	# Function to convert GeoJSON to MVT vector tiles
+	private function geojsonToVectorTiles ($geojsonFile, $year, $outputDirectory, &$errorHtml = false)
 	{
+		# Work in the output directory
+		$currentDirectory = getcwd ();
+		chdir ($outputDirectory);
+		
 		# Read the file and decode to GeoJSON
-		$string = file_get_contents ($geojsonFilename);
+		$string = file_get_contents ($geojsonFile);
 		$geojson = json_decode ($string, true);
 		
 		# Check for JSON decoding failures; e.g. error 5 is a UTF-8 encoding failure, and the problematic line can be found using `grep -axv '.*' file.geojson`
 		if (is_null ($geojson)) {
 			$error = json_last_error ();
-			$errorHtml = "ERROR: JSON decoding of {$geojsonFilename} failed with <a href=\"https://www.php.net/json-last-error/#106644\" target=\"_blank\">JSON error #{$error}</a>.";
+			$errorHtml = "ERROR: JSON decoding of {$geojsonFile} failed with <a href=\"https://www.php.net/json-last-error/#106644\" target=\"_blank\">JSON error #{$error}</a>.";
 			return false;
 		}
 		
-		# Clean features
+		# Filter features and create a filtered file
 		$geojson = $this->filterGeojsonProperties ($geojson, $year);
+		file_put_contents ($geojsonFile, json_encode ($geojson));
 		
-		# Assemble as a set of inserts
-		$inserts = array ();
-		foreach ($geojson['features'] as $feature) {
-			
-			# Start an insert with fixed properties
-			$insert = array (
-				'id'	=> NULL,	// Auto-assign
-				'year'	=> $year,
-			);
-			
-			# Add the properties
-			$insert += $feature['properties'];
-			
-			# If support for close datasets is enabled, set the value
-			if ($this->settings['closeDatasets']) {
-				$insert['close'] = ($close ? 1 : NULL);
-			}
-			
-			# Add the geometry
-			#!# Upgrade all ST_ functions to use SRID=4326 rather than SRID=0, when MySQL has support in ST_Centroid for SRID=4326
-			$insert['geometry'] = "ST_GeomFromGeoJSON('" . json_encode ($feature['geometry']) . "', 1, 0)";
-			
-			# Register the insert
-			$inserts[] = $insert;
-		}
+		# Convert to MVT
+		$command = "tippecanoe --name='Data for {$year}' --description='Data for {$year}' --no-tile-size-limit --output-to-directory=data{$year}/ --attribution='{$this->settings['datasetsAttribution']}' --maximum-zoom=11 --minimum-zoom=0 --detect-shared-borders --generate-ids --base-zoom=0 --force " . $geojsonFile;
+		exec ($command, $output);
+		//application::dumpData ($output);
 		
-		# Insert the data, showing any error
-		if (!$this->databaseConnection->insertMany ($this->settings['database'], $this->settings['table'], $inserts, $chunking = 100)) {
-			echo "\n<p class=\"warning\">ERROR while processing {$year}" . ($this->settings['closeDatasets'] ? ($close ? ' in close mode' : '') : '') . ':</p>';
-			application::dumpData ($this->databaseConnection->error ());
-		}
+		# Revert directory
+		chdir ($currentDirectory);
 		
 		# Return success
 		return true;
@@ -608,339 +463,6 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Return the GeoJSON
 		return $geojson;
-	}
-	
-	
-	# Export as CSV, essentially just a nicer URL to the API
-	public function exportcsv ()
-	{
-		return $this->apiCall_locations (true);
-	}
-	
-	
-	# Export as GeoJSON, essentially just a nicer URL to the API
-	public function exportgeojson ()
-	{
-		return $this->apiCall_locations (false, true);
-	}
-	
-	
-	# API call to retrieve data
-	public function apiCall_locations ($exportCsv = false, $exportGeojson = false)
-	{
-		# Start a timer
-		$timeStart = microtime (true);
-		
-		# Obtain the supplied field
-		$field = (isSet ($_GET['field']) && array_key_exists ($_GET['field'], $this->settings['fields']) ? $_GET['field'] : false);
-		if (!$field) {
-			return array ('error' => 'A valid field must be supplied.');
-		}
-		
-		# For static datasets, serve the data directly
-		if (isSet ($this->settings['fields'][$field]['static'])) {
-			$file = $this->clientApplicationDirectory . '/data-static/' . $this->settings['fields'][$field]['static'];
-			$data = file_get_contents ($file);
-			$geojson = json_decode ($data, true);
-			return $geojson;
-		}
-		
-		# Obtain the supplied year
-		$year = (isSet ($_GET['year']) && ctype_digit ($_GET['year']) ? $_GET['year'] : false);
-		if (!$year) {
-			return array ('error' => 'A valid year must be supplied.');
-		}
-		
-		# Obtain the supplied BBOX (W,S,E,N)
-		$bbox = (isSet ($_GET['bbox']) && (substr_count ($_GET['bbox'], ',') == 3) && preg_match ('/^([-.,0-9]+)$/', $_GET['bbox']) ? explode (',', $_GET['bbox'], 4) : false);
-		if (!$bbox) {
-			return array ('error' => 'A valid BBOX must be supplied.');
-		}
-		
-		# Obtain the supplied zoom
-		$zoom = (isSet ($_GET['zoom']) && ctype_digit ($_GET['zoom']) ? $_GET['zoom'] : false);
-		if (!$zoom) {
-			return array ('error' => 'A valid zoom must be supplied.');
-		}
-		$zoomedOut = ($this->settings['zoomedOut'] ? ($zoom <= $this->settings['zoomedOut']) : false);
-		
-		# Obtain the supplied field
-		$variation = NULL;
-		if ($this->settings['variations']) {
-			
-			# Determine normalised variation variable names
-			$variationIds = $this->normaliseVariationIds ();
-			
-			# Obtain the variations data
-			$variationsValues = array ();
-			foreach ($variationIds as $variationsLabel => $variationId) {
-				$variationField = strtolower ($variationId);	// E.g. 'gender'
-				if (!isSet ($_GET[$variationField])) {
-					return array ('error' => 'A valid variation must be supplied.');
-				}
-				$variationsValues[$variationsLabel] = (isSet ($_GET[$variationField]) ? $_GET[$variationField] : false);
-			}
-			
-			# Compile the variation values to a single extension
-			$variation = '_' . implode ('_', $variationsValues);
-		}
-		
-		# Construct the BBOX WKT string
-		$bboxGeom = "Polygon(({$bbox[0]} {$bbox[1]},{$bbox[2]} {$bbox[1]},{$bbox[2]} {$bbox[3]},{$bbox[0]} {$bbox[3]},{$bbox[0]} {$bbox[1]}))";
-		
-		# Determine the fields to obtain
-		$fields = array ();
-		if (!$zoomedOut || $exportCsv) {
-			foreach ($this->availableGeneralFields as $generalField) {
-				if (array_key_exists ($generalField, $this->fieldsExpanded)) {
-					$fields[] = $generalField;
-				}
-			}
-		}
-		$orderBy = $fields;		// Set order-by to the main fields defined
-		$fields[] = $field . ($this->settings['variations'] ? "{$variation} AS {$field}" : '');
-		if ($exportCsv) {
-			$fields[] = "IF(ST_IsValid(geometry), ST_Y(ST_Centroid(geometry)), '') AS latitude";
-			$fields[] = "IF(ST_IsValid(geometry), ST_X(ST_Centroid(geometry)), '') AS longitude";
-		} else {
-			if ($zoomedOut && !$exportCsv) {
-				# Simplify the lines to reduce data volume
-				$fields[] = 'ST_AsGeoJSON(ST_Simplify(geometry, 0.01)) AS geometry';	// 0.01 is approx 1,000m; see: https://en.wikipedia.org/wiki/Decimal_degrees
-			} else {
-				$fields[] = 'ST_AsGeoJSON(geometry) AS geometry';
-			}
-		}
-		$fields = implode (', ', $fields);
-		
-		# In export mode, order the data
-		$orderBySql = ($exportCsv && $orderBy ? 'ORDER BY ' . implode (',', $orderBy) : '');
-		
-		# Support close datasets for GeoJSON output when zoomed in; CSV export gets the close dataset
-		$closeSql = '';
-		if ($this->settings['closeDatasets']) {
-			if ($exportCsv) {
-				$closeSql = 'AND close IS NOT NULL';
-			} else {
-				if (in_array ($year, $this->settings['closeDatasets'])) {
-					$closeSql = 'AND close ' . ($zoom >= $this->settings['closeZoom'] ? '= 1' : 'IS NULL');
-				}
-			}
-		}
-		
-		# Construct the query
-		$query = "
-			SELECT
-				{$fields}
-			FROM {$this->settings['database']}.{$this->settings['table']}
-			WHERE
-				ST_Intersects(geometry, ST_GeomFromText('{$bboxGeom}') )
-				AND year = {$year}
-				{$closeSql}
-			{$orderBySql}
-		;";
-		
-		# If exporting, serve CSV and end
-		$filenameBase = "{$this->settings['downloadFilenameBase']}_{$field}_{$year}";
-		if ($exportCsv) {
-			if ($this->settings['downloadInitialNotice']) {
-				$updateNotice = $this->databaseConnection->getTableComment ($this->settings['database'], $this->settings['table']);
-				$this->settings['downloadInitialNotice'] .= ' ' . $updateNotice . '.';
-			}
-			$headings = $this->databaseConnection->getHeadings ($this->settings['database'], $this->settings['table']);
-			$this->databaseConnection->serveCsv ($query, array (), $filenameBase, $timestamp = true, $headings, false, false, true, 500, $this->settings['downloadInitialNotice']);
-			die;
-		}
-		
-		# Get the data, except for no-variable option
-		if ($field == $this->settings['nullField']) {
-			$data = array ();
-		} else {
-			$data = $this->databaseConnection->getData ($query);
-		}
-		
-		# Format decimal fields, handling explicitly unknown values, conversion to 2 decimal places, and removing trailing zeroes
-		$data = $this->formatDecimalFields ($data, $variation, $decimalPlaces = 2);
-		
-		# If required, convert exact values to intervals
-		if ($this->settings['intervalsMode']) {
-			$data = $this->convertToIntervals ($data);
-		}
-		
-		# Convert to GeoJSON
-		$data = application::datasetToGeojson ($data);
-		
-		# GeoJSON export; essentially a standard GeoJSON API output but with Content-Disposition to push as file
-		if ($exportGeojson) {
-			$filenameBase .= '_savedAt' . date ('Ymd-His');
-			$filename = $filenameBase . '.geojson';
-			header ('Content-Disposition: attachment; filename="' . $filename . '"');
-			
-			# Encode the JSON
-			$flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
-			if ($this->settings['apiJsonPretty']) {
-				$flags = JSON_PRETTY_PRINT | $flags;
-			}
-			$json = json_encode ($data, $flags);	// Enable pretty-print; see: http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api#pretty-print-gzip
-			
-			# Send the data
-			header ('Content-type: application/json; charset=UTF-8');
-			echo $json;
-			die;
-		}
-		
-		# Add timings in a top-level metadata field
-		$timeFinish = microtime (true);
-		$time = $timeFinish - $timeStart;
-		$metadata = array (
-			'properties' => array (
-				'time' => round ($time, 3),
-			)
-		);
-		$data = array_merge ($metadata, $data);
-		
-		# Return the data
-		return $data;
-	}
-	
-	
-	# Function to create a list of normalised variation form IDs, e.g. 'Some field' becomes 'Somefield', or 'Gender' stays as 'Gender'; PHP equivalent of onlineatlas.js: normaliseVariationIds()
-	private function normaliseVariationIds ()
-	{
-		# Normalise each
-		$variationIds = array ();
-		foreach ($this->settings['variations'] as $variationsLabel => $variations) {
-			$variationIds[$variationsLabel] = ucfirst (preg_replace ('/[\W]+/', '', strtolower ($variationsLabel)));
-		}
-		
-		# Return the IDs
-		return $variationIds;
-	}
-	
-	
-	# Function to format numbers, handling explicitly unknown values, conversion to 2 decimal places, and removing trailing zeroes
-	private function formatDecimalFields ($data, $variation = false, $decimalPlaces)
-	{
-		# Determine fields that are DECIMAL
-		$fields = $this->databaseConnection->getFields ($this->settings['database'], $this->settings['table']);
-		$decimalFields = array ();
-		foreach ($fields as $field => $attributes) {
-			if (substr_count (strtolower ($attributes['Type']), 'decimal')) {
-				$decimalFields[] = $field;
-			}
-		}
-		
-		# Convert to decimal for supported fields
-		foreach ($data as $index => $record) {
-			foreach ($record as $field => $value) {
-				
-				# Determine the actual database field (e.g. for public field 'Mine' with variation '_F', this would be 'Mine_F')
-				$databaseField = $field;
-				if ($this->settings['variations']) {
-					$databaseField .= $variation;
-				}
-				
-				# If the database field is present in the supported DECIMAL fields list (e.g. 'Mine_F'), convert the emitted data field (e.g. 'Mine')
-				if (in_array ($databaseField, $decimalFields)) {
-					
-					# Do not change values that are explicitly NULL
-					if ($data[$index][$field] === NULL) {continue;}
-					
-					# Convert explicitly unknown values to the string symbol
-					if ($this->settings['valueUnknown']) {
-						if (floatval ($data[$index][$field]) == $this->settings['valueUnknown']) {
-							$data[$index][$field] = $this->settings['valueUnknownString'];
-							continue;
-						}
-					}
-					
-					# Format numbers to specified decimal places, removing trailing zeroes
-					#!# Ideally the trailing zeroes handling would be handled natively by the database library
-					$data[$index][$field] = number_format ($data[$index][$field], $decimalPlaces, '.', '');
-					$data[$index][$field] = floatval ($data[$index][$field]);
-				}
-			}
-		}
-		
-		# Return the data
-		return $data;
-	}
-	
-	
-	# Function to quantize a value to an interval, e.g. "2.3" with ranges "1-3, 3-5, 5-7" would become "3-5"
-	private function convertToIntervals ($data)
-	{
-		# Determine fields to quantize and their ranges
-		$quantizeFields = array ();
-		foreach ($this->settings['fields'] as $fieldId => $field) {
-			if ($field['intervals']) {
-				if (is_string ($field['intervals'])) {	// Array type has its own colour set, defined associatively, so only string type needs to be checked
-					$quantizeFields[$fieldId] = preg_split ('/,\s*/', $field['intervals']);	// Split by comma/comma-whitespace
-				}
-			}
-		}
-		
-		# Quantize to an interval for the specified field(s)
-		foreach ($data as $id => $location) {
-			foreach ($quantizeFields as $field => $intervals) {
-				if (array_key_exists ($field, $data[$id])) {
-					$data[$id][$field] = $this->getInterval ($data[$id][$field], $intervals);
-				}
-			}
-		}
-		
-		# Return the modified dataset
-		return $data;
-	}
-	
-	
-	# Function to determine the interval; this is the server-side equivalent of the getColour algorithm in the javascript (but returning an interval, not the colour itself)
-	private function getInterval ($value, $intervals)
-	{
-		# Return non-numeric values unmodified
-		if (!is_numeric ($value)) {return $value;}
-		
-		# Loop through to find the correct range
-		$lastInterval = count ($intervals) - 1;
-		foreach ($intervals as $index => $interval) {
-			
-			// Exact value, e.g. '0'
-			if (preg_match ('/^([.0-9]+)$/', $interval, $matches)) {
-				if ($value == $matches[1]) {
-					return $interval;
-				}
-			}
-			
-			# Up-to range, e.g. '<10'
-			if (preg_match ('/^<([.0-9]+)$/', $interval, $matches)) {
-				if ($value < $matches[1]) {
-					return $interval;
-				}
-			}
-			
-			# Range, e.g. '5-10' or '5 - <10'
-			if (preg_match ('/^([.0-9]+)(-| - <)([.0-9]+)$/', $interval, $matches)) {
-				if (($value >= $matches[1]) && ($value < $matches[3])) {	// 10 treated as matching in 10-20, not 5-10
-					return $interval;
-				}
-				
-				# Deal with last, where (e.g.) 90-100 is implied to include 100
-				if ($index == $lastInterval) {
-					if ($value == $matches[2]) {
-						return $interval;
-					}
-				}
-			}
-			
-			# Excess value, e.g. '100+' or '≥100'
-			if (preg_match ('/^([.0-9]+)\+$/', $interval, $matches) || preg_match ('/^≥([.0-9]+)$/', $interval, $matches)) {
-				if ($value >= $matches[1]) {
-					return $interval;
-				}
-			}
-		}
-		
-		# Unknown/other, if other checks have not matched
-		return NULL;	// Unmatched value
 	}
 }
 

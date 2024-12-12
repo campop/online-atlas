@@ -18,7 +18,7 @@
 	Alias $baseUrl/css/ $repoPath/vendor/campop/online-atlas/css/
 	Alias $baseUrl/data/ $repoPath/vendor/campop/online-atlas/data/
 	Alias $baseUrl/images/icons/ $repoPath/vendor/campop/online-atlas/images/icons/
-	AliasMatch ^$baseUrl/images/(beta.png|hamburger.svg|spinner.svg|ui-anim_basic_16x16.gif)$ $repoPath/vendor/campop/online-atlas/images/$1
+	AliasMatch ^$baseUrl/images/(beta.png|hamburger.svg|spinner.svg|ui-anim_basic_16x16.gif|layers.png)$ $repoPath/vendor/campop/online-atlas/images/$1
 	Alias $baseUrl/js/ $repoPath/vendor/campop/online-atlas/js/
 	
 	Use MacroFrontControllerApplication "$baseUrl/" "$name"
@@ -43,6 +43,11 @@
 		php_value memory_limit 100M
 	</Location>
 	
+	# Data tiles
+	<FilesMatch "\.pbf$">
+		Header append  Content-Encoding gzip
+	</FilesMatch>
+	
 	# Large file uploads for import page
 	<Location $baseUrl/import/>
 		php_value upload_max_filesize 100M
@@ -50,9 +55,10 @@
 	</Location>
 	
 	# Export
-	<Location $baseUrl/data.csv>
+	<LocationMatch $baseUrl/datasets/data([0-9]+).(geojson|csv)>
+		Header set Content-Disposition attachment
 		php_value auto_prepend_file none
 		php_value auto_append_file none
-	</Location>
+	</LocationMatch>
 	
 </Macro>

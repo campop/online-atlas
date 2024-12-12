@@ -1,59 +1,72 @@
 // Online atlas application code
 
 /*jslint browser: true, white: true, single: true, for: true */
-/*global alert, console, window, Cookies, $, jQuery, L, autocomplete, vex */
+/*global alert, console, window, Cookies, $, jQuery, maplibregl, syncMaps, autocomplete, vex */
 
 const onlineatlas = (function ($) {
 	
 	'use strict';
 	
+	
 	// Internal class properties
 	let _baseUrl;
 	const _mapUis = {};
+	const _manualAttribution = null;
+	const _backgroundMapStyles = {};
+	const _backgroundStylesInternalPrefix = 'background-';
 	let _variationIds = {};
 	let _title = false;
+	let _popup;
+	
 	
 	// Settings
 	const _settings = {
 		
 		// Default map view
+		// #!# This is being restated - should use the PHP side and not duplicate it
 		defaultLocation: {
-			latitude: 53.035,
-			longitude: -1.082,
-			zoom: 7
+			latitude: 53.615,
+			longitude: -1.53,
+			zoom: 5.8
 		},
 		
 		// Max/min zoom
 		maxZoom: 13,	// Zoomed in
 		minZoom: 5,		// Zoomed out
-		sideBySideMinZoom: 7,
 		
 		// Max bounds
-		maxBounds: [[47, -14], [62, 12]],	// South, West ; North, East
+		maxBounds: [[-14, 47], [12, 62]],	// South, West ; North, East
 		
 		// Tileservers; historical map sources are listed at: http://wiki.openstreetmap.org/wiki/National_Library_of_Scotland
 		defaultTileLayer: 'bartholomew',
 		tileUrls: {
-			'bartholomew': [
-				'https://mapseries-tilesets.s3.amazonaws.com/bartholomew_great_britain/{z}/{x}/{y}.png',	// E.g. https://mapseries-tilesets.s3.amazonaws.com/bartholomew_great_britain/12/2052/1344.png
-				{maxZoom: 15, attribution: '&copy; <a href="http://maps.nls.uk/copyright.html">National Library of Scotland</a>', 'backgroundColour': '#a2c3ba'},
-				'NLS - Bartholomew Half Inch, 1897-1907'
-			],
-			'os1inch': [
-				'https://mapseries-tilesets.s3.amazonaws.com/1inch_2nd_ed/{z}/{x}/{y}.png',	// E.g. https://mapseries-tilesets.s3.amazonaws.com/1inch_2nd_ed/15/16395/10793.png
-				{maxZoom: 15, attribution: '&copy; <a href="https://maps.nls.uk/copyright.html">National Library of Scotland</a>', backgroundColour: '#f0f1e4', key: '/images/mapkeys/os1inch.jpg'},
-				'NLS - OS One Inch, 1885-1900'
-			],
-			'mapnik': [
-				'https://tile.openstreetmap.org/{z}/{x}/{y}.png',	// E.g. https://tile.openstreetmap.org/16/32752/21788.png
-				{maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'},
-				'OpenStreetMap style (modern)'
-			],
-			'osopendata': [
-				'https://os.openstreetmap.org/sv/{z}/{x}/{y}.png',	// E.g. https://os.openstreetmap.org/sv/18/128676/81699.png
-				{maxZoom: 19, attribution: 'Contains Ordnance Survey data &copy; Crown copyright and database right 2010'},
-				'OS Open Data (modern)'
-			]
+			bartholomew: {
+				tiles: 'https://mapseries-tilesets.s3.amazonaws.com/bartholomew_great_britain/{z}/{x}/{y}.png',	// E.g. https://mapseries-tilesets.s3.amazonaws.com/bartholomew_great_britain/12/2052/1344.png
+				label: 'NLS - Bartholomew Half Inch, 1897-1907',
+				maxZoom: 15,
+				attribution: '&copy; <a href="http://maps.nls.uk/copyright.html">National Library of Scotland</a>',
+				backgroundColour: '#a2c3ba'
+			},
+			os1inch: {
+				tiles: 'https://mapseries-tilesets.s3.amazonaws.com/1inch_2nd_ed/{z}/{x}/{y}.png',	// E.g. https://mapseries-tilesets.s3.amazonaws.com/1inch_2nd_ed/15/16395/10793.png
+				label: 'NLS - OS One Inch, 1885-1900',
+				maxZoom: 15,
+				attribution: '&copy; <a href="https://maps.nls.uk/copyright.html">National Library of Scotland</a>',
+				backgroundColour: '#f0f1e4',
+				key: '/images/mapkeys/os1inch.jpg'
+			},
+			mapnik: {
+				tiles: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',	// E.g. https://tile.openstreetmap.org/16/32752/21788.png
+				label: 'OpenStreetMap style (modern)',
+				maxZoom: 19,
+				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+			},
+			osopendata: {
+				tiles: 'https://os.openstreetmap.org/sv/{z}/{x}/{y}.png',	// E.g. https://os.openstreetmap.org/sv/18/128676/81699.png
+				label: 'OS Open Data (modern)',
+				maxZoom: 19,
+				attribution: 'Contains Ordnance Survey data &copy; Crown copyright and database right 2010'
+			}
 		},
 		
 		// Geocoder
@@ -62,13 +75,14 @@ const onlineatlas = (function ($) {
 		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924',
 		
 		// Dataset years
-		datasets: [],	// Will be supplied
-		defaultDataset: false,
+		years: [],	// Will be supplied
+		defaultYear: false,
 		
 		// Fields and their labels
 		fields: {},		// Will be supplied
 		defaultField: '',		// Will be supplied
 		nullField: '',
+		availableGeneralFields: [],	// Will be supplied
 		expandableHeadings: false,
 		variations: {},	// Will be supplied
 		variationsFlattened: {},	// Will be supplied
@@ -86,13 +100,9 @@ const onlineatlas = (function ($) {
 		// Null data values
 		nullDataMessage: '[Data not available]',
 		
-		// Zoomed out mode
-		zoomedOut: false,
-		
-		// Close zoom mode
-		closeZoom: false,
-		closeField: false,
-		farField: false,
+		// Area names
+		areaNameField: false,
+		areaNameFallbackField: false,
 		
 		// Export mode enabled
 		export: true,
@@ -100,7 +110,10 @@ const onlineatlas = (function ($) {
 		pdfBaseUrl: '%baseUrl/resources/',		// %baseUrl supported
 		
 		// Welcome message
-		firstRunMessageHtml: ''
+		firstRunMessageHtml: '',
+		
+		// Number rounding
+		popupsRoundingDP: 2
 	};
 	
 	
@@ -118,7 +131,7 @@ const onlineatlas = (function ($) {
 			
 			// Parse out the intervals in each field into an array, for use as colour stops
 			$.each (_settings.fields, function (field, value) {
-				if (typeof value.intervals == 'string') {
+				if (typeof value.intervals == 'string' && value.intervals.length > 0) {		// Intervals = '' indicates no intervals
 					_settings.fields[field].intervals = value.intervals.split(', ');
 				}
 			});
@@ -136,10 +149,10 @@ const onlineatlas = (function ($) {
 			onlineatlas.defaultsFromUrl ();
 			
 			// Create the map panel and associated controls
-			_mapUis[0] = onlineatlas.createMapUi (0);
+			onlineatlas.createMapUi (0);
 			
-			// Create mobile navigation
-			onlineatlas.createMobileNavigation ();
+			// Show first-run welcome message if the user is new to the site
+			onlineatlas.welcomeFirstRun ();
 			
 			// Add support for side-by-side comparison
 			onlineatlas.sideBySide ();
@@ -183,7 +196,7 @@ const onlineatlas = (function ($) {
 			// Check the year is also present and valid
 			if (!urlParts[1]) {return false;}
 			const year = parseInt (urlParts[1]);
-			if ($.inArray (year, _settings.datasets) == -1) {return false;}	// https://api.jquery.com/jQuery.inArray/
+			if ($.inArray (year, _settings.years) == -1) {return false;}	// https://api.jquery.com/jQuery.inArray/
 			
 			// If variations are enabled, check variation is present and valid
 			let variations = false;
@@ -194,7 +207,7 @@ const onlineatlas = (function ($) {
 			
 			// Set the default field and year
 			_settings.defaultField = field;
-			_settings.defaultDataset = year;
+			_settings.defaultYear = year;
 			if (!$.isEmptyObject (_settings.variations)) {
 				_settings.defaultVariations = variations;	// Override code-supplied default
 			}
@@ -287,12 +300,13 @@ const onlineatlas = (function ($) {
 			
 			/*
 			// Enable implicit click/touch on map as close menu
-			if ($('#nav-mobile').is(':visible')) {
-				if (!$('#onlineatlas nav').is(':visible')) {
-					$('.map').click(function () {
+			if ($('#nav-mobile').is (':visible')) {
+				$('#onlineatlas .map').click (function (e) {		// #!# Use of .activearea is a poor dependency, but using .map causes autoclose, presumably due to a .trigger('click') somewhere
+					if ($('#onlineatlas nav').is (':visible')) {
 						$('#onlineatlas nav').hide ('slide', {direction: 'right'}, 250);
-					});
-				};
+						e.preventDefault ();
+					}
+				});
 			}
 			*/
 			
@@ -340,10 +354,7 @@ const onlineatlas = (function ($) {
 		sideBySide: function ()
 		{
 			// Add checkbox controls to enable and syncronise side-by-side maps
-			$('#mapcontainers').prepend (onlineatlas.createSidebysideCheckboxes ());
-			
-			// Create side-by-side sync handler
-			onlineatlas.syncHandling ();
+			$('#mapcontainers').prepend (onlineatlas.createSidebysideCheckbox ());
 			
 			// Handle toggle
 			$('#compare').on ('click', function () {
@@ -358,76 +369,33 @@ const onlineatlas = (function ($) {
 					
 					// Load the second map UI if not already loaded, cloning the form values
 					if (!$('#mapcontainer1').length) {
-						_mapUis[1] = onlineatlas.createMapUi (1, true);
+						onlineatlas.createMapUi (1, true, true);
 					}
 					
 					// Show the second map
 					$('#mapcontainer1').show ();
 					
-					// Prevent far-out zoom, as a workaround for side-by-side interacting with maxBounds, which causes looping in Chrome and memory issues in Firefox
-					_mapUis[0].map.setMinZoom (_settings.sideBySideMinZoom);
-					_mapUis[1].map.setMinZoom (_settings.sideBySideMinZoom);
-					
-					// Show the syncronisation button
-					$('#syncronisebutton').show ();
-					
-					// Syncronise initially; see: https://github.com/jieter/Leaflet.Sync
-					$('#syncronisebutton input').click ();
-					
-				// Normal, single map mode
+				// Revert to normal, single map mode
 				} else {
-					$('#mapcontainers').removeClass('sidebyside');
-					
-					// Hide the second map
 					$('#mapcontainer1').hide ();
-					
-					// Hide the syncronisation button
-					$('#syncronisebutton').hide ();
-					
-					// Reset the min zoom level
-					_mapUis[0].map.setMinZoom (_settings.minZoom);
-					
-					// Unsyncronise the map positions
-					_mapUis[0].map.unsync (_mapUis[1].map);
-					_mapUis[1].map.unsync (_mapUis[0].map);
-					
-					// Trigger change event (without actually changing the value) on the field selector, to ensure the main map is redrawn, to prevent the right side of the map being empty
-					// #!# Ideally this should use a new map change custom event, to be more explicit about the purpose
-					$('#' + _mapUis[0].navDivId + ' form input[name="field"]').trigger ('change');
+					$('#mapcontainers').removeClass('sidebyside');
 				}
 			});
 		},
 		
 		
 		// Function to create checkbox for side-by-side mode
-		createSidebysideCheckboxes: function ()
+		createSidebysideCheckbox: function ()
 		{
 			let html = '<p id="comparebox">';
-			html += '<span id="syncronisebutton"><label><img src="/images/icons/arrow_refresh.png" alt="" class="icon" /> Keep map positions in sync &nbsp;<input id="syncronise" name="syncronise" type="checkbox"></label></span> ';
 			html += '<span id="comparebutton"><label><img src="/images/icons/application_tile_horizontal.png" alt="" class="icon" /> Compare side-by-side &nbsp;<input id="compare" name="compare" type="checkbox"></label></span>';
 			html += '</p>';
 			return html;
 		},
 		
 		
-		// Function to enable sync handling
-		syncHandling: function ()
-		{
-			// Create handlers for syncing
-			$('#syncronise').on ('click', function () {
-				if ( $(this).is (':checked') ) {
-					_mapUis[0].map.sync (_mapUis[1].map);		// Enable sync
-					_mapUis[1].map.sync (_mapUis[0].map);
-				} else {
-					_mapUis[0].map.unsync (_mapUis[1].map);		// Disable syncing
-					_mapUis[1].map.unsync (_mapUis[0].map);
-				}
-			});
-		},
-		
-		
 		// Main function to create a map panel
-		createMapUi: function (mapUiIndex, cloneFormValues)
+		createMapUi: function (mapUiIndex, cloneFormValues, enableSync)
 		{
 			// Create a map UI collection object
 			const mapUi = {};
@@ -441,80 +409,111 @@ const onlineatlas = (function ($) {
 			mapUi.mapDivId = 'map' + mapUi.index;
 			onlineatlas.createMap (mapUi);
 			
-			// Create the nav panel
-			onlineatlas.createNav (mapUi);
-			
-			// Create the location overlay pane
-			onlineatlas.createLocationsOverlayPane (mapUi.map);
-			
-			// Show first-run welcome message if the user is new to the site
-			onlineatlas.welcomeFirstRun ();
-			
-			// Determine the active field (i.e. layer) value, by reading the radiobutton value; NB the select value is not a used value but is instead proxied to the radiobutton set
-			mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.; may get changed by cloneFormValues below
-			$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function () {
-				mapUi.field = $('#' + mapUi.navDivId + ' form input[name="field"]:checked').val ();
-			});
-			
-			// For each variation (if any), create a handler for changes
-			if (!$.isEmptyObject (_settings.variations)) {
-				mapUi.variations = {};
-				$.each (_settings.variations, function (variationLabel, variationOptions) {
-					
-					// Initial value
-					const fieldname = _variationIds[variationLabel].toLowerCase();
-					mapUi.variations[fieldname] = _settings.defaultVariations[variationLabel];	// E.g. F, M, etc.
-					
-					// Changes, which simply read off the field name/value pairs
-					$('#' + mapUi.navDivId + ' form input[name="' + fieldname + '"]').on ('change', function (e) {
-						mapUi.variations[this.name] = this.value;
+			// Set up the layers when the map load is ready
+			mapUi.map.on ('load', function () {
+				
+				// Initialise the data layers on map load and on style change
+				mapUi.sourceId = [];
+				_settings.years.forEach (function (year) {
+					onlineatlas.initialiseDataLayer (mapUi, year);
+				});
+				$(document).on ('style-changed-' + mapUiIndex, function () {
+					_settings.years.forEach (function (year) {
+						onlineatlas.initialiseDataLayer (mapUi, year);
 					});
 				});
-			}
-			
-			// Create the legend for the current field, and update on changes
-			onlineatlas.createLegend (mapUi);
-			$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function() {
-				onlineatlas.setLegend (mapUi);
-			});
-			
-			// Register a summary box control
-			onlineatlas.summaryControl (mapUi);
-			$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function() {
-				mapUi.summary.update (mapUi.field, null, mapUi.currentZoom);
-			});
-			mapUi.map.on ('zoomend', function () {
-				if (mapUi.zoomedOut) {
-					mapUi.summary.update (mapUi.field, null, mapUi.currentZoom);	// Feature as null resets the status
+				
+				// Create the nav UI
+				onlineatlas.createNav (mapUi);
+				
+				// Create the locations overlay pane; this is done after the data layer loading so that these appear on top
+				onlineatlas.createLocationsOverlayPane (mapUi.map);
+				
+				// Add static GeoJSON overlay to filter out non-GB locations; this is done ater the locations overlay to avoid floating place names
+				onlineatlas.addCountryOverlay (mapUi.map);
+				
+				// Determine the active field (i.e. layer) value, by reading the radiobutton value; NB the select value is not a used value but is instead proxied to the radiobutton set
+				mapUi.field = _settings.defaultField;	// E.g. TMFR, TFR, etc.; may get changed by cloneFormValues below
+				$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function () {
+					mapUi.field = $('#' + mapUi.navDivId + ' form input[name="field"]:checked').val ();
+				});
+				
+				// Determine the active year index
+				mapUi.year = _settings.years[ $('#' + mapUi.yearDivId).val () ];
+				$('#' + mapUi.yearDivId).on ('change', function () {
+					mapUi.year = _settings.years[ $('#' + mapUi.yearDivId).val () ];
+				});
+				
+				// For each variation (if any), create a handler for changes
+				if (!$.isEmptyObject (_settings.variations)) {
+					mapUi.variations = {};
+					$.each (_settings.variations, function (variationLabel, variationOptions) {
+						
+						// Initial value
+						const fieldname = _variationIds[variationLabel].toLowerCase();
+						mapUi.variations[fieldname] = _settings.defaultVariations[variationLabel];	// E.g. F, M, etc.
+						
+						// Changes, which simply read off the field name/value pairs
+						$('#' + mapUi.navDivId + ' form input[name="' + fieldname + '"]').on ('change', function (e) {
+							mapUi.variations[this.name] = this.value;
+						});
+					});
+				}
+				
+				// Create the legend for the current field, and update on changes
+				onlineatlas.createLegend (mapUi);
+				$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function() {
+					onlineatlas.setLegend (mapUi);
+				});
+				
+				// Register a summary box control
+				onlineatlas.summaryControl (mapUi);
+				$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function() {
+					onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, null);
+				});
+				mapUi.map.on ('zoomend', function () {
+					onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, null);	// Feature as null resets the status
+				});
+				
+				// Clone form values; this must be done before the first call to get data
+				if (cloneFormValues) {
+					onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + mapUi.navDivId + ' form');		// Copy the form values (year, field, variations) from the left map (0) to the new right-hand map (1)
+				}
+				
+				// Initial view
+				_settings.years.forEach (function (year) {
+					onlineatlas.showData (mapUi, year);
+				});
+				$(document).on ('style-changed-' + mapUiIndex, function () {
+					_settings.years.forEach (function (year) {
+						onlineatlas.showData (mapUi, year);
+					});
+				});
+				
+				// Register to refresh data on any form field change
+				$('#' + mapUi.navDivId + ' form :input').not ('[name*="_proxy"]').on ('change', function () {		// _proxy excluded
+					_settings.years.forEach (function (year) {
+						onlineatlas.showData (mapUi, year);
+					});
+				});
+				
+				// Add tooltips to the forms
+				onlineatlas.tooltips ();
+				
+				// Register a dialog dialog box handler, giving a link to more information
+				onlineatlas.moreDetails ();
+				
+				// Mobile navigation adjustments
+				onlineatlas.createMobileNavigation ();
+				
+				// Register the mapUi handle
+				_mapUis[mapUiIndex] = mapUi;
+				
+				// Run callback if supplied
+				if (enableSync) {
+					syncMaps (_mapUis[0].map, _mapUis[1].map);		// #!# Cannot currently unsync using this plugin, so such functionality is no longer present; see: https://github.com/mapbox/mapbox-gl-sync-move/issues/16
 				}
 			});
-			
-			// Clone form values; this must be done before the first getData call
-			if (cloneFormValues) {
-				onlineatlas.cloneFormValues ('#' + _mapUis[0].navDivId + ' form', '#' + mapUi.navDivId + ' form');		// Copy the form values (year, field, variations) from the left map (0) to the new right-hand map (1)
-			}
-			
-			// Add the data via AJAX requests
-			onlineatlas.getData (mapUi);
-			
-			// Register to refresh data on map move
-			mapUi.map.on ('moveend', function (e) {
-				onlineatlas.getData (mapUi);
-			});
-			
-			// Register to refresh data on any form field change
-			$('#' + mapUi.navDivId + ' form :input').not ('[name*="_proxy"]').on ('change', function () {		// _proxy excluded
-				onlineatlas.getData (mapUi);
-			});
-			
-			// Add tooltips to the forms
-			onlineatlas.tooltips ();
-			
-			// Register a dialog dialog box handler, giving a link to more information
-			onlineatlas.moreDetails ();
-			
-			// Return the mapUi handle
-			return mapUi;
 		},
 		
 		
@@ -544,15 +543,8 @@ const onlineatlas = (function ($) {
 			$('#' + mapUi.containerDivId).append ('<div id="' + mapUi.mapDivId + '" class="map"></div>');
 			
 			// Add the tile layers
-			const tileLayers = [];		// Background tile layers
-			const baseLayers = {};		// Labels, by name
-			const baseLayersById = {};	// Layers, by id
 			$.each (_settings.tileUrls, function (tileLayerId, tileLayerAttributes) {
-				const layer = L.tileLayer(tileLayerAttributes[0], tileLayerAttributes[1]);
-				tileLayers.push (layer);
-				const name = tileLayerAttributes[2];
-				baseLayers[name] = layer;
-				baseLayersById[tileLayerId] = layer;
+				_backgroundMapStyles[_backgroundStylesInternalPrefix + tileLayerId] = onlineatlas.defineRasterTilesLayer (tileLayerAttributes, _backgroundStylesInternalPrefix + tileLayerId);
 			});
 			
 			// Parse any hash in the URL to obtain any default position
@@ -561,65 +553,107 @@ const onlineatlas = (function ($) {
 			const defaultTileLayer = (urlParameters.defaultTileLayer || _settings.defaultTileLayer);
 			
 			// Create the map
-			const map = L.map (mapUi.mapDivId, {
-				center: [defaultLocation.latitude, defaultLocation.longitude],
+			const map = new maplibregl.Map ({
+				container: mapUi.mapDivId,
+				style: _backgroundMapStyles[_backgroundStylesInternalPrefix + defaultTileLayer],
+				center: [defaultLocation.longitude, defaultLocation.latitude],
 				zoom: defaultLocation.zoom,
-				layers: baseLayersById[defaultTileLayer],	// Documentation suggests tileLayers is all that is needed, but that shows all together
 				maxZoom: _settings.maxZoom,
 				minZoom: _settings.minZoom,
-				maxBounds: _settings.maxBounds
-			}).setActiveArea ('activearea', /* keepCenter = */ true);	// Adjust the active area to make the visible centre (i.e. minus the sidebar, in single map mode) be the centre for zoom/similar operations
-			map.attributionControl.setPrefix ('');
-			
-			// Prevent page jumping when using +/- buttons; see: https://stackoverflow.com/questions/57184529/
-			map.getContainer().focus = function () {};
-			
-			// Set a class corresponding to the map tile layer, so that the background can be styled with CSS
-			onlineatlas.setMapBackgroundColour (tileLayers[0].options);
-			map.on('baselayerchange', function(e) {
-				onlineatlas.setMapBackgroundColour (baseLayers[e.name].options);
+				maxBounds: _settings.maxBounds,
+				hash: (mapUi.index == 0),	// If more than one map on the page, apply only to the first one
+				attributionControl: false,	// Added manually below, in compact format
+				boxZoom: true
 			});
 			
-			// Add static GeoJSON overlay to filter out non-GB locations
-			onlineatlas.addCountryOverlay (mapUi);
+			// Add attribution control
+			map.addControl (new maplibregl.AttributionControl ({compact: true}));
 			
-			// Set the zoom and determine whether the map is zoomed out too far, set the mouse cursor
-			onlineatlas.manageZoomedOut (mapUi, map);
+			// Enable zoom in/out buttons
+			map.addControl (new maplibregl.NavigationControl (), 'top-left');
+			
+			// Set current zoom
+			mapUi.currentZoom = map.getZoom ();
 			map.on ('zoomend', function () {
-				onlineatlas.manageZoomedOut (mapUi, map);
+				mapUi.currentZoom = map.getZoom ();
 			});
-			
-			// Zoom in on single click if zoomed out, if enabled
-			if (_settings.zoomedOut) {
-				map.on ('click', function (e) {
-					if (mapUi.zoomedOut) {
-						map.setZoomAround (e.latlng, (_settings.zoomedOut + 1));	// Will zoom towards the direction of the clicked location
-					}
-				});
-			}
 			
 			// Add the base (background) layer switcher
-			L.control.layers(baseLayers, null, {position: 'bottomright'}).addTo(map);
+			onlineatlas.styleSwitcher (map, mapUi.index);
 			
 			// Add geocoder control
 			onlineatlas.createGeocoder (mapUi);
 			
-			// Add hash support
-			if (mapUi.index == 0) {		// If more than one map on the page, apply only to the first one
-				new L.Hash (map, baseLayersById);
-			}
-			
 			// Add full screen control
-			map.addControl(new L.Control.Fullscreen({pseudoFullscreen: true}));
+			map.addControl (new maplibregl.FullscreenControl (), 'top-left');
 			
-			// Add geolocation control
-			L.control.locate({
-				icon: 'fa fa-location-arrow',
-				locateOptions: {maxZoom: 12}
-			}).addTo(map);
+			// Add full screen controlAdd geolocation control
+			map.addControl (new maplibregl.GeolocateControl ({fitBoundsOptions: {maxZoom: 12}}), 'top-left');
 			
 			// Attach the map to the mapUi
 			mapUi.map = map;
+		},
+		
+		
+		// Function to define a raster tiles map layer, for background map tiles or for foreground tile-based layers
+		defineRasterTilesLayer: function (tileLayerAttributes, id)
+		{
+			// Determine if this is a TMS (i.e. {-y}) tilesource; see: https://docs.mapbox.com/mapbox-gl-js/style-spec/#sources-raster-scheme
+			var scheme = 'xyz';
+			if (tileLayerAttributes.tiles.indexOf('{-y}') != -1) {
+				tileLayerAttributes.tiles = tileLayerAttributes.tiles.replace ('{-y}', '{y}');
+				scheme = 'tms';
+			}
+		
+			// Expand {s} server to a,b,c if present
+			if (tileLayerAttributes.tiles.indexOf('{s}') != -1) {
+				tileLayerAttributes.tiles = [
+					tileLayerAttributes.tiles.replace ('{s}', 'a'),
+					tileLayerAttributes.tiles.replace ('{s}', 'b'),
+					tileLayerAttributes.tiles.replace ('{s}', 'c')
+				];
+			}
+			
+			// Convert string (without {s}) to array
+			if (typeof tileLayerAttributes.tiles === 'string') {
+				tileLayerAttributes.tiles = [
+					tileLayerAttributes.tiles
+				];
+			}
+			
+			// Register the definition
+			var sources = {};
+			sources[id] = {
+				type: 'raster',
+				scheme: scheme,
+				tiles: tileLayerAttributes.tiles,
+				tileSize: (tileLayerAttributes.tileSize ? tileLayerAttributes.tileSize : 256),	// NB Mapbox GL default is 512
+				attribution: tileLayerAttributes.attribution
+			};
+			var layerDefinition = {
+				version: 8,
+				sources: sources,	// Defined separately so that the id can be specified as a key
+				layers: [{
+					id: id,
+					type: 'raster',
+					source: id,
+					paint : {'raster-opacity' : 0.7}	// https://stackoverflow.com/a/48016804/180733
+				}]
+			};
+			
+			// Add background colour if required
+			if (tileLayerAttributes.backgroundColour) {
+				layerDefinition.layers.unshift ({		// Must be before the raster layer
+					id: '_backgroundStylesInternalPrefix-backgroundColour',
+					type: 'background',
+					paint: {
+						'background-color': tileLayerAttributes.backgroundColour
+					}
+				});
+			}
+			
+			// Return the layer definition
+			return layerDefinition;
 		},
 		
 		
@@ -633,7 +667,9 @@ const onlineatlas = (function ($) {
 			urlParameters.defaultLocation = null;
 			urlParameters.defaultTileLayer = null;
 			if (window.location.hash) {
-				const hashParts = window.location.hash.match (/^#([0-9]{1,2})\/([\-.0-9]+)\/([\-.0-9]+)\/([a-z0-9]+)$/);	// E.g. #17/51.51137/-0.10498/bartholomew
+				// #!# Need to reinstate support for map base inclusion in permalinks
+				//const hashParts = window.location.hash.match (/^#([\-.0-9]+)\/([\-.0-9]+)\/([\-.0-9]+)\/([a-z0-9]+)$/);	// E.g. #17.4/51.51137/-0.10498/bartholomew
+				const hashParts = window.location.hash.match (/^#([\-.0-9]+)\/([\-.0-9]+)\/([\-.0-9]+)$/);	// E.g. #17.4/51.51137/-0.10498
 				if (hashParts) {
 					urlParameters.defaultLocation = {
 						latitude: hashParts[2],
@@ -658,15 +694,336 @@ const onlineatlas = (function ($) {
 		},
 		
 		
-		// Manage behaviour when zoomed-out
-		manageZoomedOut: function (mapUi, map)
+		// Function to add style (background layer) switching
+		// https://www.mapbox.com/mapbox-gl-js/example/setstyle/
+		// https://bl.ocks.org/ryanbaumann/7f9a353d0a1ae898ce4e30f336200483/96bea34be408290c161589dcebe26e8ccfa132d7
+		styleSwitcher: function (map, mapIndex)
 		{
-			// Determine if zoomed out
-			mapUi.currentZoom = map.getZoom ();
-			mapUi.zoomedOut = (_settings.zoomedOut ? (mapUi.currentZoom <= _settings.zoomedOut) : false);
+			// Add style switcher UI control
+			const containerId = 'styleswitcher' + mapIndex;
+			onlineatlas.createControl (map, containerId, 'bottom-right', 'styleswitcher expandable');
+			$('.styleswitcher').css ('backgroundImage', "url('" + _baseUrl + "/images/layers.png')");
 			
-			// Set mouse cursor based on zoom status
-			$('#' + mapUi.mapDivId).css ('cursor', (mapUi.zoomedOut ? 'zoom-in' : 'auto'));
+			// Determine the container path
+			const container = '#' + containerId;
+			
+			// Construct HTML for style switcher
+			let styleSwitcherHtml = '<ul>';
+			$.each (_backgroundMapStyles, function (styleId, style) {
+				const unprefixedStyleId = styleId.replace (_backgroundStylesInternalPrefix, '');
+				const name = (_settings.tileUrls[unprefixedStyleId].label ? _settings.tileUrls[unprefixedStyleId].label : layerviewer.ucfirst (unprefixedStyleId));
+				styleSwitcherHtml += '<li><input id="' + unprefixedStyleId + mapIndex + '" type="radio" name="styleswitcher' + mapIndex + '" value="' + unprefixedStyleId + '"' + (unprefixedStyleId == _settings.defaultTileLayer ? ' checked="checked"' : '') + '>';
+				styleSwitcherHtml += '<label for="' + unprefixedStyleId + mapIndex + '">' + name + '</label></li>';
+			});
+			styleSwitcherHtml += '</ul>';
+			$(container).append (styleSwitcherHtml);
+			
+			// Function to switch to selected style
+			const switchStyle = function (selectedStyle)
+			{
+				const tileLayerId = selectedStyle.target.value;
+				const style = _backgroundMapStyles[_backgroundStylesInternalPrefix + tileLayerId];
+				map.setStyle (style);
+				
+				// Set manual attribution if required
+				//onlineatlas.handleManualAttribution (map, tileLayerId);
+				
+				// Save this style as a cookie
+				Cookies.set ('mapstyle', tileLayerId);
+				
+				// Fire an event; see: https://javascript.info/dispatch-events
+				onlineatlas.styleChanged (map, mapIndex);
+			}
+			
+			// Enable for each input
+			const inputs = $(container + ' ul input');
+			let i;
+			for (i = 0; i < inputs.length; i++) {
+				inputs[i].onclick = switchStyle;
+			}
+		},
+		
+		
+		// Function to handle attribution manually where required
+		// Where a vector style is not a mapbox://... type, its URL will not be sufficient to set the attribution, so an attribution value must be set in the layer specification
+		// This function when called always clears any existing attribution and then sets a customAttribution using map.addControl if needed
+		handleManualAttribution: function (map, styleId)
+		{
+			// Clear anything if present, so that any change starts from no control
+			if (_manualAttribution !== null) {
+				map.removeControl (_manualAttribution);
+				_manualAttribution = null;
+			}
+			
+			// Set attribution
+			if (_backgroundMapStylesManualAttributions[styleId]) {
+				_manualAttribution = new mapboxgl.AttributionControl ({
+					customAttribution: _backgroundMapStylesManualAttributions[styleId]
+				});
+				map.addControl (_manualAttribution);
+			}
+		},
+		
+		
+		// Function to trigger style changed, checking whether it is actually loading; see: https://stackoverflow.com/a/47313389/180733
+		// Cannot use _map.on(style.load) directly, as that does not fire when loading a raster after another raster: https://github.com/mapbox/mapbox-gl-js/issues/7579
+		styleChanged: function (map, mapIndex)
+		{
+			// Delay for a short while in a loop until the style is loaded; see: https://stackoverflow.com/a/47313389/180733
+			if (!map.isStyleLoaded()) {
+				setTimeout (function () {
+					onlineatlas.styleChanged (map, mapIndex);	// Done inside a function to avoid "Maximum Call Stack Size Exceeded"
+				}, 250);
+				return;
+			}
+			
+			// Fire a custom event that client code can pick up when the style is changed
+			var myEvent = new Event ('style-changed-' + mapIndex, {'bubbles': true});
+			document.dispatchEvent (myEvent);
+		},
+		
+		
+		// Function to create a control in a corner
+		// See: https://www.mapbox.com/mapbox-gl-js/api/#icontrol
+		createControl: function (map, id, position, className)
+		{
+			function myControl() { }
+			
+			myControl.prototype.onAdd = function(map) {
+				this._map = map;
+				this._container = document.createElement('div');
+				this._container.setAttribute ('id', id);
+				this._container.className = 'maplibregl-ctrl-group maplibregl-ctrl local';
+				if (className) {
+					this._container.className += ' ' + className;
+				}
+				return this._container;
+			};
+			
+			myControl.prototype.onRemove = function () {
+				this._container.parentNode.removeChild(this._container);
+				this._map = undefined;
+			};
+			
+			// #!# Need to add icon and hover; partial example at: https://github.com/schulzsebastian/mapboxgl-legend/blob/master/index.js
+			
+			// Instiantiate and add the control
+			map.addControl (new myControl (), position);
+		},
+		
+		
+		// Function to initalise the data layer for a dataset year
+		initialiseDataLayer: function (mapUi, year)
+		{
+			// Initialise the data source
+			const sourceLayer = 'data' + year;	// String prefix used, to avoid "source-layer: string expected, number found" error
+			mapUi.sourceId[sourceLayer] = sourceLayer + '-' + mapUi.index;
+			
+			// Add vector source
+			mapUi.map.addSource (mapUi.sourceId[sourceLayer], {
+				type: 'vector',
+				tiles: [
+					window.location.origin + _baseUrl + `/datasets/data${year}/{z}/{x}/{y}.pbf`
+				]
+			});
+			
+			// Initialise the layer with this source
+			const polygonLayerId = mapUi.sourceId[sourceLayer] + '-fill';	// Use same value for simplicity
+			mapUi.map.addLayer ({
+				id: polygonLayerId,
+				source: mapUi.sourceId[sourceLayer],
+				type: 'fill',
+				layout: {visibility: 'none'},	// Will be enabled later, based on current year
+				// filter will be set in showData to handle NULL values, as that has to specify the fieldname; see: https://docs.mapbox.com/mapbox-gl-js/example/cluster/
+				paint: {
+					'fill-color': '#666',	// Will be overwritten later when data shown, as this is layer-specific
+					'fill-opacity': [
+						'case',
+						['boolean', ['feature-state', 'hover'], false],
+						0.6,
+						0.85
+					]
+				},
+				'source-layer': sourceLayer
+			});
+			mapUi.map.addLayer ({
+				id: mapUi.sourceId[sourceLayer] + '-outline',		// Use same value for simplicity
+				source: mapUi.sourceId[sourceLayer],
+				type: 'line',
+				layout: {visibility: 'none'},	// Will be enabled later, based on current year
+				paint: {
+					'line-width': [
+						'case',
+						['boolean', ['feature-state', 'hover'], false],
+						4,
+						1
+					],
+					'line-color': [
+						'case',
+						['boolean', ['feature-state', 'hover'], false],
+						'#555',
+						'#777'
+					]
+					// line-dasharray will be overriden/set in showData, as it needs support for checking for NULL values, which is field-dependent
+				},
+				'source-layer': sourceLayer
+			});
+			
+			// Set hover cursor
+			onlineatlas.setHoverCursor (mapUi.map, polygonLayerId);
+			
+			// Create status indication on hover
+			// See: https://github.com/mapbox/mapbox-gl-js/issues/5539#issuecomment-340311798 and https://gis.stackexchange.com/questions/451766/popup-on-hover-with-mapbox
+			let lastFeatureId = null;
+			mapUi.map.on ('mousemove', polygonLayerId, function (e) {
+				
+				// Check for feature change (for efficiency, to avoid repeated lookups as the mouse is slightly moved)
+				const feature = e.features[0];
+				if (feature.id !== lastFeatureId) {		// Relies on generateId being used, or --generate-ids in Tippecanoe
+					
+					// Reset feature-state of an existing feature if already set, to avoid creating multiple highlighted features; see: https://docs.mapbox.com/mapbox-gl-js/example/hover-styles/
+					if (lastFeatureId !== null) {
+						mapUi.map.setFeatureState ({id: lastFeatureId, source: mapUi.sourceId[sourceLayer], sourceLayer: sourceLayer}, {hover: false});
+					}
+					
+					// Update the feature state
+					lastFeatureId = feature.id;
+					mapUi.map.setFeatureState ({id: lastFeatureId, source: mapUi.sourceId[sourceLayer], sourceLayer: sourceLayer}, {hover: true});
+					
+					/*
+					// Get the centroid
+					//const coordinates = onlineatlas.getCentre (feature.geometry);		// #!# Does not work, because the popup ends up in the way so the top half of a feature doesn't get mousemove - seems buggy
+					const coordinates = e.lngLat;
+					
+					// Ensure that if the map is zoomed out such that multiple copies of the feature are visible, the popup appears over the copy being pointed to.
+					while (Math.abs (e.lngLat.lng - coordinates[0]) > 180) {
+						coordinates[0] += (e.lngLat.lng > coordinates[0] ? 360 : -360);
+					}
+					
+					// Create a popup and set its co-ordinates based on the feature found
+					const popupHtml = onlineatlas.popupHtml (feature, mapUi.field);
+					popup.setLngLat (coordinates).setHTML (popupHtml).addTo (mapUi.map);
+					*/
+					
+					// Update the summary box
+					onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, feature);
+				}
+			});
+			mapUi.map.on ('mouseleave', polygonLayerId, function (e) {
+				if (lastFeatureId) {
+					mapUi.map.setFeatureState ({id: lastFeatureId, source: mapUi.sourceId[sourceLayer], sourceLayer: sourceLayer}, {hover: false});
+					lastFeatureId = null;
+				}
+				
+				// Update the summary box
+				onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, null);
+			});
+			
+			// Add popup on click
+			_popup = new maplibregl.Popup ();
+			mapUi.map.on ('click', polygonLayerId, function (e) {
+				const feature = e.features[0];
+				const coordinates = e.lngLat;
+				const popupHtml = onlineatlas.popupHtml (feature, mapUi.field);
+				_popup.setLngLat (coordinates).setHTML (popupHtml).addTo (mapUi.map);
+			});
+		},
+		
+		
+		// Function to set hover cursor on features in a layer
+		setHoverCursor: function (map, layerReferenceId)
+		{
+			map.on ('mouseenter', layerReferenceId, () => {
+				map.getCanvas ().style.cursor = 'pointer';
+			});
+			map.on ('mouseleave', layerReferenceId, () => {
+				map.getCanvas ().style.cursor = '';
+			});
+		},
+		
+		
+		// Helper function to get the centre-point of a geometry
+		// Based on code by CycleStreets Ltd, GPL3; see: https://github.com/cyclestreets/Mapboxgljs.LayerViewer/blob/master/src/layerviewer.js#L5272
+		getCentre: function (geometry)
+		{
+			// Determine the centre point
+			var centre = {};
+			switch (geometry.type) {
+				
+				case 'Point':
+					centre = {
+						lat: geometry.coordinates[1],
+						lon: geometry.coordinates[0]
+					};
+					break;
+					
+				case 'LineString':
+					var longitudes = [];
+					var latitudes = [];
+					geometry.coordinates.forEach (function (lonLat) {
+						longitudes.push (lonLat[0]);
+						latitudes.push (lonLat[1]);
+					});
+					centre = {
+						lat: ((Math.max.apply (null, latitudes) + Math.min.apply (null, latitudes)) / 2),
+						lon: ((Math.max.apply (null, longitudes) + Math.min.apply (null, longitudes)) / 2)
+					};
+					break;
+					
+				case 'MultiLineString':
+				case 'Polygon':
+					var longitudes = [];
+					var latitudes = [];
+					geometry.coordinates.forEach (function (line) {
+						line.forEach (function (lonLat) {
+							longitudes.push (lonLat[0]);
+							latitudes.push (lonLat[1]);
+						});
+					});
+					centre = {
+						lat: ((Math.max.apply (null, latitudes) + Math.min.apply (null, latitudes)) / 2),
+						lon: ((Math.max.apply (null, longitudes) + Math.min.apply (null, longitudes)) / 2)
+					};
+					break;
+					
+				case 'MultiPolygon':
+					var longitudes = [];
+					var latitudes = [];
+					geometry.coordinates.forEach (function (polygon) {
+						polygon.forEach (function (line) {
+							line.forEach (function (lonLat) {
+								longitudes.push (lonLat[0]);
+								latitudes.push (lonLat[1]);
+							});
+						});
+					});
+					centre = {
+						lat: ((Math.max.apply (null, latitudes) + Math.min.apply (null, latitudes)) / 2),
+						lon: ((Math.max.apply (null, longitudes) + Math.min.apply (null, longitudes)) / 2)
+					};
+					break;
+					
+				case 'GeometryCollection':
+					var longitudes = [];
+					var latitudes = [];
+					var centre;
+					geometry.geometries.forEach (function (geometryItem) {
+						centre = onlineatlas.getCentre (geometryItem);		// Iterate
+						longitudes.push (centre.lon);
+						latitudes.push (centre.lat);
+					});
+					centre = {
+						lat: ((Math.max.apply (null, latitudes) + Math.min.apply (null, latitudes)) / 2),
+						lon: ((Math.max.apply (null, longitudes) + Math.min.apply (null, longitudes)) / 2)
+					};
+					break;
+					
+				default:
+					console.log ('Unsupported geometry type: ' + geometry.type, geometry);
+			}
+			
+			// Return the centre
+			return centre;
 		},
 		
 		
@@ -685,9 +1042,9 @@ const onlineatlas = (function ($) {
 				sourceUrl: _settings.geocoderApiBaseUrl + '?key=' + _settings.geocoderApiKey + '&bounded=1&fields=name,near,type,bbox&bbox=' + _settings.autocompleteBbox,
 				appendTo: '#' + geocoderDivId,
 				select: function (event, ui) {
-					const bbox = ui.item.feature.properties.bbox.split(',');
-					mapUi.map.fitBounds([ [bbox[1], bbox[0]], [bbox[3], bbox[2]] ]);
-					event.preventDefault();
+					const bbox = ui.item.feature.properties.bbox.split (',');
+					mapUi.map.fitBounds (bbox);
+					event.preventDefault ();
 				}
 			});
 		},
@@ -696,24 +1053,13 @@ const onlineatlas = (function ($) {
 		// Function to create the navigation panel
 		createNav: function (mapUi)
 		{
-			// Affix the legend
-			const navigationpanel = L.control({position: 'topright'});
-			
-			// Define its contents
-			const navigationpanelDivClass = 'navigationpanel' + mapUi.index;
-			navigationpanel.onAdd = function () {
-				const panelDiv = L.DomUtil.create ('div', 'navigationpanel ' + navigationpanelDivClass);
-				L.DomEvent.disableClickPropagation (panelDiv);		// Prevent drag/click propagating to the map; see: https://stackoverflow.com/a/37629102/
-				L.DomEvent.on (panelDiv, 'mousewheel', L.DomEvent.stopPropagation);		// Prevent scroll wheel changes propagating to the map, as this panel may be scrollable; see: https://gis.stackexchange.com/a/154592
-				return panelDiv;
-			};
-			
-			// Add to the map
-			navigationpanel.addTo (mapUi.map);
+			// Create the panel, as a control
+			const containerId = 'navigationpanel' + mapUi.index;
+			onlineatlas.createControl (mapUi.map, containerId, 'top-right', 'navigationpanel ' + containerId);
 			
 			// Create a div for the nav within the map container
 			mapUi.navDivId = 'nav' + mapUi.index;
-			$('.' + navigationpanelDivClass).prepend ('<nav id="' + mapUi.navDivId + '"></nav>');
+			$('#' + containerId).prepend ('<nav id="' + mapUi.navDivId + '"></nav>');
 			
 			// Create a form within the nav
 			$('#' + mapUi.navDivId).append ('<form></form>');
@@ -721,7 +1067,7 @@ const onlineatlas = (function ($) {
 			// Create a CSV export link
 			if (_settings.export) {
 				const exportDivId = 'export' + mapUi.index;
-				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export"><a class="exportcsv" href="#" title="Export the current view (as shown on the map) as raw data in CSV format">Exports: <img src="/images/icons/page_excel.png" alt="" /></a> <a class="exportgeojson" href="#" title="Export the current view (as shown on the map) as raw data in GeoJSON format (for GIS)"><img src="/images/icons/page_code.png" alt="" /></a></p>');
+				$('#' + mapUi.navDivId + ' form').prepend ('<p id="' + exportDivId + '" class="export">Exports: <a class="exportcsv" href="#" title="Export the data for the selected year in CSV format"><img src="/images/icons/page_excel.png" alt="" /></a> <a class="exportgeojson" href="#" title="Export the data for the selected year in GeoJSON format (for GIS)"><img src="/images/icons/page_code.png" alt="" /></a></p>');
 			}
 			
 			// Create a PDF export link
@@ -749,7 +1095,7 @@ const onlineatlas = (function ($) {
 			
 			// Populate the year range control, now that the box sizing will be stable since all elements are now present
 			mapUi.yearDivId = 'year' + mapUi.index;
-			onlineatlas.addYearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultDataset);
+			onlineatlas.addYearRangeControl (mapUi.navDivId, mapUi.yearDivId, _settings.defaultYear);
 			
 			// Register a slide menu handler, if groupings are present
 			if (_settings.expandableHeadings && fieldControls.hasGroups) {
@@ -915,7 +1261,7 @@ const onlineatlas = (function ($) {
 		{
 			// Obtain the year value
 			const yearIndex = $('#' + mapUi.navDivId + ' #' + mapUi.yearDivId).val();
-			const yearValue = _settings.datasets[yearIndex];
+			const yearValue = _settings.years[yearIndex];
 			
 			// Loop through each field, and determine the years which are unavailable
 			$.each (_settings.fields, function (fieldKey, field) {
@@ -950,13 +1296,13 @@ const onlineatlas = (function ($) {
 		addYearRangeControl: function (navDivId, yearDivId, initialYear)
 		{
 			// Determine the default value
-			if (!initialYear) {initialYear = _settings.datasets[1];}	// Second by default
-			const initialIndexValue = _settings.datasets.indexOf (initialYear);
+			if (!initialYear) {initialYear = _settings.years[1];}	// Second by default
+			const initialIndexValue = _settings.years.indexOf (initialYear);
 			
 			// Determine whether to use small labels
 			// This explicitly does not use width, as that creates complexities of having to redraw the control for side-by-side mode
 			const smallLabelThreshold = 7;		// Determined by observation
-			const totalLabels = _settings.datasets.length;
+			const totalLabels = _settings.years.length;
 			const rangeClass = (totalLabels > smallLabelThreshold ? ' smalllabels' : '');
 			
 			// Define the width of the browser's rendering of a range handle, which we have to adjust for since it does NOT extend beyond the edge; see: https://css-tricks.com/sliding-nightmare-understanding-range-input/
@@ -966,7 +1312,7 @@ const onlineatlas = (function ($) {
 			let listHtml = '<ul class="rangelabels' + rangeClass + '">';
 			const datalistId = navDivId + 'ticks';
 			let datalistHtml = '<datalist id="' + datalistId + '">';
-			$.each (_settings.datasets, function (index, year) {
+			$.each (_settings.years, function (index, year) {
 				listHtml += '<li style="width: calc(100% / ' + totalLabels + ');" data-index="' + index + '">' + year + '</li>';
 				datalistHtml += '<option value="' + index + '"></option>';
 			});
@@ -975,7 +1321,7 @@ const onlineatlas = (function ($) {
 			
 			// Combine the range slider and the associated datalist
 			// Ticks have no styling support currently, though the technique here could be used: https://css-tricks.com/why-do-we-have-repeating-linear-gradient-anyway/
-			let html = '<input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.datasets.length - 1) + '" step="1" value="' + initialIndexValue + '" style="width: calc(100%' +  ' - (100% / ' + totalLabels + ') + ' + thumbRangeShadowDomWidth + 'px);" list="' + datalistId + '" />';
+			let html = '<input type="range" name="year" id="' + yearDivId + '" min="0" max="' + (_settings.years.length - 1) + '" step="1" value="' + initialIndexValue + '" style="width: calc(100%' +  ' - (100% / ' + totalLabels + ') + ' + thumbRangeShadowDomWidth + 'px);" list="' + datalistId + '" />';
 			html += listHtml;
 			html += datalistHtml;
 			
@@ -1032,48 +1378,46 @@ const onlineatlas = (function ($) {
 		},
 		
 		
-		// Function to create a location overlay pane; see: http://leafletjs.com/examples/map-panes/
+		// Function to create a location overlay pane; this is done after the data layer loading so that these appear on top
 		createLocationsOverlayPane: function (map)
 		{
-			// Create a pane
-			map.createPane('labels');
-			map.getPane('labels').style.zIndex = 650;
-			map.getPane('labels').style.pointerEvents = 'none';
-			
-			// Create a labels layer; see: https://carto.com/location-data-services/basemaps/
-			//const locationLabels = L.tileLayer('http://tiles.oobrien.com/shine_labels_cdrc/{z}/{x}/{y}.png', {
-			const locationLabels = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png', {
-				attribution: '&copy; OpenStreetMap, &copy; CartoDB',
-				pane: 'labels'
-			});
-			
-			// Add to the map
-			locationLabels.addTo(map);
+			// Define the source and layer
+			const layer = {
+				id: 'locationsoverlay',
+				type: 'raster',
+				source: {
+					type: 'raster',
+					tiles: ['https://cartodb-basemaps-a.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png'],
+					tileSize: 256,
+					attribution: 'CartoDB'
+				},
+			};
+			map.addLayer (layer);
 		},
 		
 		
-		// Function to create a country overlay
-		addCountryOverlay: function (mapUi)
+		// Function to create a country overlay, which is a negative polygon used to blank out surrounding areas
+		addCountryOverlay: function (map)
 		{
 			// Get the GeoJSON data
 			fetch (_baseUrl + '/overlay.geojson')
 				.then (function (response) { return response.json (); })
 				.then (function (geojson) {
 					
-					// Set the overlay
-					mapUi.map.createPane ('overlay');	// See: https://leafletjs.com/examples/map-panes/
-					mapUi.map.getPane ('overlay').style.zIndex = 700;	// Names layer is 650
-					const overlayOptions = {
-						style: {
-							color: 'transparent',	// Line colour
-							fillColor: '#a5c2ba',
-							fillOpacity: 1
+					// Define and add the overlay
+					const layer = {
+						id: 'countryoverlay',
+						type: 'fill',
+						source: {
+							'type': 'geojson',
+							'data': geojson
 						},
-						pane: 'overlay',
-						interactive: false
+						paint: {
+							'fill-color': '#a5c2ba',
+							'fill-opacity': 1
+						}
 					};
-					const overlay = L.geoJSON (geojson, overlayOptions).addTo (mapUi.map);
-					overlay.bringToFront ();
+					map.addLayer (layer);
 			});
 		},
 		
@@ -1092,6 +1436,7 @@ const onlineatlas = (function ($) {
 			Cookies.set (name, '1', {expires: 14});
 			
 			// Show the dialog
+			vex.defaultOptions.className = 'vex-theme-plain';
 			vex.dialog.alert ({unsafeMessage: _settings.firstRunMessageHtml});
 		},
 		
@@ -1135,114 +1480,47 @@ const onlineatlas = (function ($) {
 		},
 		
 		
-		// Function to add data to the map via an AJAX API call
-		getData: function (mapUi)
+		// Function to show the map data
+		showData: function (mapUi, year)
 		{
-			// Start API data parameters
-			const apiData = {};
+			// Set the colouring
+			const styleDefinition = onlineatlas.getColours (mapUi.field);
+			mapUi.map.setPaintProperty (mapUi.sourceId['data' + year] + '-fill', 'fill-color', styleDefinition);
 			
-			// Supply the bbox and zoom
-			apiData.bbox = mapUi.map.getBounds().toBBoxString();
-			apiData.zoom = mapUi.currentZoom;
+			// Set the line style for the outline, to deal with NULL values (shown as transparent with a dashed line)
+			//mapUi.map.setPaintProperty (mapUi.sourceId['data' + year] + '-outline', 'line-dasharray', ['case', ['has', mapUi.field], ['literal', [3, 1]], ['literal', [1]]]);		// #!# Support pending; see: https://github.com/maplibre/maplibre-gl-js/issues/1235 and https://maplibre.org/maplibre-style-spec/layers/#line-dasharray
 			
-			// Set the field, based on the layer radiobutton/dropdown value
-			apiData.field = mapUi.field;
+			// Set the visibility, based on match of the current year
+			const visibility = (mapUi.year == year ? 'visible' : 'none');
+			mapUi.map.setLayoutProperty (mapUi.sourceId['data' + year] + '-fill',    'visibility', visibility);
+			mapUi.map.setLayoutProperty (mapUi.sourceId['data' + year] + '-outline', 'visibility', visibility);
 			
-			// Set the year, based on the slider value
-			const yearIndex = $('#' + mapUi.yearDivId).val();
-			apiData.year = _settings.datasets[yearIndex];
-			
-			// Append the variation, if supported
-			if (!$.isEmptyObject (_settings.variations)) {
-				$.each (_settings.variations, function (variationLabel, variationOptions) {
-					const fieldname = _variationIds[variationLabel].toLowerCase ();
-					apiData[fieldname] = mapUi.variations[fieldname];
-				});
+			// Set the export values to the selected year
+			if (mapUi.year == year) {
+				$('#' + mapUi.navDivId + ' p.export a.exportcsv'    ).attr ('href', _baseUrl + '/datasets/data' + year + '.csv');
+				$('#' + mapUi.navDivId + ' p.export a.exportgeojson').attr ('href', _baseUrl + '/datasets/data' + year + '.geojson');
 			}
 			
-			// Update the URL
-			if (mapUi.index == 0) {		// Apply to left only in side-by-side
-				onlineatlas.updateUrl (apiData);
-			}
-			
-			// Update the export link with the new parameters
-			if (_settings.export) {
-				const requestSerialised = $.param (apiData);
-				const csvExportUrl = _baseUrl + '/data.csv?' + requestSerialised;
-				$('#' + mapUi.navDivId + ' p.export a.exportcsv').attr('href', csvExportUrl);
-				const geojsonExportUrl = _baseUrl + '/data.geojson?' + requestSerialised;
-				$('#' + mapUi.navDivId + ' p.export a.exportgeojson').attr('href', geojsonExportUrl);
-			}
-			
-			// Update the PDF link with the new parameters
-			if (_settings.pdfLink) {
-				let variationsSlug = '';
-				if (!$.isEmptyObject (_settings.variations)) {
-					const variationsComponents = [];
-					$.each (_settings.variations, function (variationLabel, variationOptions) {
-						const fieldname = _variationIds[variationLabel].toLowerCase();
-						variationsComponents.push (mapUi.variations[fieldname].toLowerCase());
-					});
-					variationsSlug = variationsComponents.join ('_') + '_';
-				}
-				const pdfMapUrl = _settings.pdfBaseUrl.replace ('%baseUrl', _baseUrl) + apiData.field.toLowerCase() + '_' + variationsSlug + apiData.year + '.pdf';	// E.g. /resources/bld_m_a_1851.pdf
-				$('#' + mapUi.navDivId + ' p.export a.pdfmap').attr('href', pdfMapUrl);
-			}
-			
-			// Start spinner, initially adding it to the page
-			if (!$('#' + mapUi.containerDivId + ' #loading').length) {
-				$('#' + mapUi.containerDivId).append('<img id="loading" src="' + _baseUrl + '/images/spinner.svg" />');
-			}
-			$('#' + mapUi.containerDivId + ' #loading').show();
-			
-			// Fetch data
-			$.ajax ({
-				url: _baseUrl + '/api/locations',
-				dataType: (onlineatlas.browserSupportsCors () ? 'json' : 'jsonp'),		// Fall back to JSON-P for IE9
-				crossDomain: true,	// Needed for IE<=9; see: https://stackoverflow.com/a/12644252/
-				data: apiData,
-				error: function (jqXHR, error, exception) {
-					
-					// Show error, unless deliberately aborted
-					if (jqXHR.statusText != 'abort') {
-						const errorData = $.parseJSON(jqXHR.responseText);
-						alert ('Error: ' + errorData.error);
-					}
-				},
-				success: function (data, textStatus, jqXHR) {
-					
-					// Remove spinner
-					$('#' + mapUi.containerDivId + ' #loading').hide();
-					
-					// Show API-level error if one occured
-					// #!# This is done here because the API still returns Status code 200
-					if (data.error) {
-						onlineatlas.removeLayer (mapUi);
-						vex.dialog.alert ('Error: ' + data.error);
-						return {};
-					}
-					
-					// Show the data successfully
-					onlineatlas.showCurrentData (mapUi, data);
-				}
-			});
+			// Set the URL
+			onlineatlas.updateUrl (mapUi);
 		},
 		
 		
 		// Function to update the URL, to provide persistency when a link is circulated
 		// Format is /<baseUrl>/<layerId>/<year>/#<mapHashWithStyle> ; side-by-side is not supported
-		updateUrl: function (parameters)
+		updateUrl: function (mapUi)
 		{
 			// End if not supported, e.g. IE9
 			if (!history.pushState) {return;}
 			
 			// Construct the URL slug
-			const field = parameters.field;
-			const year = parameters.year;
+			const field = mapUi.field;
+			const year = mapUi.year;
 			let urlSlug = '/' + field.toLowerCase() + '/' + year + '/';
 			if (Object.keys (_settings.variations).length) {
 				$.each (_settings.variations, function (variationLabel, variationOptions) {
-					urlSlug += parameters[variationLabel.toLowerCase ()].toLowerCase () + '/';	// E.g. 'female/'
+					// #!# Not yet correct - variation is not yet in the mapUi
+					urlSlug += mapUi[variationLabel.toLowerCase ()].toLowerCase () + '/';	// E.g. 'female/'
 				});
 			}
 			
@@ -1262,91 +1540,6 @@ const onlineatlas = (function ($) {
 		},
 		
 		
-		// Function to show the data for a layer
-		showCurrentData: function (mapUi, data)
-		{
-			// If this layer already exists, remove it so that it can be redrawn
-			onlineatlas.removeLayer (mapUi);
-			
-			// Define the data layer
-			mapUi.dataLayer = L.geoJson (data, {
-				
-				// Handle each feature (popups, highlighting, and setting summary box data)
-				// NB this has to be inlined, and cannot be refactored to a 'onEachFeature' method, as the field is needed as a parameter
-				onEachFeature: function (feature, layer) {
-					
-					// Highlight features on hover; see: http://leafletjs.com/examples/choropleth/
-					layer.on({
-						
-						// Highlight feature
-						// NB this has to be inlined, and cannot be refactored to a 'highlightFeature' method, as the field is needed as a parameter
-						mouseover: function (e) {
-							
-							// Set the style for this feature
-							const thisLayer = e.target;
-							thisLayer.setStyle({
-								weight: 4
-							});
-							if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-								thisLayer.bringToFront();
-							}
-							
-							// Update the summary box
-							mapUi.summary.update (mapUi.field, thisLayer.feature, mapUi.currentZoom);
-						},
-						
-						// Reset highlighting
-						// NB this has to be inlined, and cannot be refactored to a 'resetHighlight' method, as the field is needed as a parameter
-						mouseout: function (e) {
-							
-							// Reset the style
-							const thisLayer = e.target;
-							thisLayer.setStyle({
-								weight: (mapUi.zoomedOut ? 0 : 1)
-							});
-							
-							// Update the summary box
-							mapUi.summary.update (mapUi.field, null, mapUi.currentZoom);
-						}
-					});
-					
-					// Enable popups (if close enough)
-					if (!mapUi.zoomedOut) {
-						const popupHtml = onlineatlas.popupHtml (feature);
-						layer.bindPopup(popupHtml, {autoPan: false});
-					}
-				},
-				
-				// Style: base the colour on the specified colour field
-				style: function (feature) {
-					if (feature.properties[mapUi.field] == null) {
-						return {
-							color: '#333',
-							dashArray: '5, 5',
-							fillColor: 'white',
-							weight: (mapUi.zoomedOut ? 0 : 1),
-							fillOpacity: 0.25
-						};
-					} else {
-						return {
-							color: '#777',
-							fillColor: onlineatlas.getColour (feature.properties[mapUi.field], mapUi.field),
-							weight: (mapUi.zoomedOut ? 0 : 1),
-							fillOpacity: 0.85
-						};
-					}
-				},
-						
-				// Interactivity
-				interactive: (!mapUi.zoomedOut)
-			});
-			
-			// Add to the map
-			mapUi.dataLayer.addTo(mapUi.map);
-			
-		},
-		
-		
 		// Helper function to enable fallback to JSON-P for older browsers like IE9; see: https://stackoverflow.com/a/1641582
 		browserSupportsCors: function ()
 		{
@@ -1354,133 +1547,74 @@ const onlineatlas = (function ($) {
 		},
 		
 		
-		// Function to remove the data layer
-		removeLayer: function (mapUi)
-		{
-			// Remove the layer, checking first to ensure it exists
-			if (mapUi.dataLayer) {
-				mapUi.map.removeLayer (mapUi.dataLayer);
-			}
-		},
-		
-		
 		// Assign colour from lookup table
-		getColour: function (value, field)
+		getColours: function (field)
 		{
+			// Start a list of tokens
+			let tokens = [];
+			
+			// Define value for NULL data
+			const colourUnknown = _settings.colourUnknown || 'transparent';
+			
 			// If the field has a colour set, just return that
 			if (_settings.fields[field].hasOwnProperty ('colour')) {
-				return _settings.fields[field].colour;
+				tokens.push (_settings.fields[field].colour);
+				return tokens;
 			}
 			
 			// Create a simpler variable for the intervals field
 			const intervals = _settings.fields[field].intervals;
 			
-			// For a wildcard, return either the wildcard colour if there is a value, or the unknown value if not
-			/* Example structure - note that the second value (NULL) is ignored, but NULL will then be styled in the legend as a dashed transparent box
-				'intervalsWildcard' => 'Town (by name)',
-				'intervals' => array (
-					'Town (by name)'	=> 'blue',
-					'Other areas'		=> NULL,
-				),
-			*/
+			// If no intervals, return the string token of transparent
+			if (intervals.length == '') {return 'transparent';}
+			
+			// For a wildcard, return the wildcard colour
 			if (_settings.fields[field].hasOwnProperty ('intervalsWildcard')) {
-				return (value ? intervals[_settings.fields[field].intervalsWildcard] : _settings.colourUnknown);
+				tokens.push (intervals[_settings.fields[field].intervalsWildcard]);
+				return tokens;
 			}
 			
-			// If the intervals is an array, i.e. standard list of colour stops, loop until found
+			// If the intervals is an array, i.e. standard list of colour stops, loop until found; see: https://docs.mapbox.com/style-spec/reference/expressions/#step and https://docs.mapbox.com/mapbox-gl-js/example/cluster/
 			if (intervals[0]) {		// Simple, quick check
 				
-				// Compare as float, except in intervals mode
-				if (!_settings.intervalsMode) {
-					value = parseFloat (value);
-				}
-				
-				// Last interval
-				const lastInterval = intervals.length - 1;
-				
-				// Loop through until found
-				let interval;
-				let colourStop;
-				let matches;
-				let i;
-				for (i = 0; i < intervals.length; i++) {
-					interval = intervals[i];
-					colourStop = _settings.colourStops[i];
-					
-					// Check for the value being explicitly unknown
-					if (_settings.valueUnknownString) {
-						if (value == _settings.valueUnknownString) {
-							return _settings.colourUnknown;
-						}
+				// Create a step expression, based on the current field, starting with the zero value then the threshold,colour pairs
+				tokens.push ('step');
+				tokens.push (['get', field]);
+				$.each (_settings.fields[field].intervals, function (index, label) {
+					// #!# Is being cast to integer
+					const value = (label.charAt (0) == '<' ? 0 : Number.parseFloat (label.match (/([\.0-9]+)/) [0]));	// Not /g so only first found
+					const skipIfFirst = (index == 0 && value == 0);		// The zero (first) item should be skipped
+					if (!skipIfFirst) {
+						tokens.push (value);
 					}
-					
-					// In intervals mode, match exact value
-					if (_settings.intervalsMode) {
-						if (value == interval) {
-							return colourStop;
-						}
-					} else {
-						
-						// Exact value, e.g. '0'
-						matches = interval.match (/^([.0-9]+)$/);
-						if (matches) {
-							if (value == parseFloat(matches[1])) {
-								return colourStop;
-							}
-						}
-						
-						// Up-to range, e.g. '<10'
-						matches = interval.match (/^<([.0-9]+)$/);
-						if (matches) {
-							if (value < parseFloat(matches[1])) {
-								return colourStop;
-							}
-						}
-						
-						// Range, e.g. '5-10' or '5 - <10'
-						matches = interval.match (/^([.0-9]+)(-| - <)([.0-9]+)$/);
-						if (matches) {
-							if ((value >= parseFloat(matches[1])) && (value < parseFloat(matches[3]))) {	// 10 treated as matching in 10-20, not 5-10
-								return colourStop;
-							}
-							
-							// Deal with last, where (e.g.) 90-100 is implied to include 100
-							if (i == lastInterval) {
-								if (value == parseFloat(matches[2])) {
-									return colourStop;
-								}
-							}
-						}
-						
-						// Excess value, e.g. '100+' or '≥100'
-						matches = interval.match (/^([.0-9]+)\+$/);
-						if (matches) {
-							if (value >= parseFloat(matches[1])) {
-								return colourStop;
-							}
-						}
-						matches = interval.match (/^≥([.0-9]+)$/);
-						if (matches) {
-							if (value >= parseFloat(matches[1])) {
-								return colourStop;
-							}
-						}
-					}
-				}
+					tokens.push (_settings.colourStops[index]);
+				});
 				
-				// Unknown/other, if other checks have not matched
-				console.log ('Unmatched value in layer ' + field + ': ' + value);
-				return _settings.colourUnknown;
+				// Wrap the step expression within a check for NULL values, to show the unknown colour (default transparent); see: https://github.com/mapbox/mapbox-gl-js/issues/5761#issuecomment-2506485665
+				tokens = [
+					'case',
+						['has', field],
+							tokens,
+						colourUnknown
+				];
 				
-			// For pure key-value pair definition objects, read the value off
-			} else {
-				return intervals[value];
+				// Return the result
+				return tokens;
 			}
+			
+			// Otherwise is key-value pairs; see: https://docs.mapbox.com/style-spec/reference/expressions/#case and https://docs.mapbox.com/mapbox-gl-js/example/cluster-html/
+			tokens.push ('case');
+			$.each (_settings.fields[field].intervals, function (value, colour) {
+				tokens.push (['==', ['get', field], value]);
+				tokens.push (colour);
+			});
+			tokens.push (colourUnknown);
+			return tokens;
 		},
 		
 		
 		// Function to define popup content
-		popupHtml: function (feature /*, dataset */)
+		popupHtml: function (feature, currentField)
 		{
 			// Determine list of areas present in the data, to be shown in the title in hierarchical order
 			const availableAreaFields = ['PARISH', 'SUBDIST', 'REGDIST', 'REGCNTY'];	// More specific first, so that listing is e.g. "Kingston, Surrey, London"
@@ -1492,13 +1626,21 @@ const onlineatlas = (function ($) {
 			});
 			
 			// Start with the title
-			let html = '<p><strong>Displayed data for ' + areaHierarchy.join (', ') + /* ' in ' + _settings.datasets[dataset].name + */ ':</strong></p>';
+			let html = '<p><strong>Displayed data for ' + areaHierarchy.join (', ') + /* ' in ' + _settings.years[year].name + */ ':</strong></p>';
 			
 			// Add table
 			html += '<table id="chart" class="lines compressed">';
 			$.each (feature.properties, function (field, value) {
+				
+				// Show only general fields and the current data field
+				if (!_settings.availableGeneralFields.includes (field) && (field != currentField)) {return; /* i.e. continue */}
+				
+				// Show the value, cleaned
 				if (typeof value == 'string') {
 					value = onlineatlas.htmlspecialchars (value);
+					value = value.replaceAll ('/', ' / ');
+				} else if (typeof value == 'number' && !Number.isInteger (value)) {	// i.e. if float
+					value = onlineatlas.numberFormat (value, _settings.popupsRoundingDP);
 				} else if (value == null) {
 					value = '<span class="faded">' + _settings['nullDataMessage'] + '</span>';
 				}
@@ -1526,8 +1668,40 @@ const onlineatlas = (function ($) {
 		},
 		
 		
+		// Number formatting; see: http://phpjs.org/functions/number_format/
+		numberFormat: function (number, decimals, dec_point, thousands_sep)
+		{
+			// End if not actually numeric
+			if (number == null || !isFinite (number)) {
+				return number;
+			}
+			
+			// Strip all characters but numerical ones
+			number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+			var n = !isFinite(+number) ? 0 : +number;
+			var prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
+			var sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep;
+			var dec = (typeof dec_point === 'undefined') ? '.' : dec_point;
+			var s = '';
+			var toFixedFix = function (n, prec) {
+				var k = Math.pow(10, prec);
+				return '' + Math.round(n * k) / k;
+			};
+			// Fix for IE parseFloat(0.55).toFixed(0) = 0;
+			s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+			if (s[0].length > 3) {
+				s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+			}
+			if ((s[1] || '').length < prec) {
+				s[1] = s[1] || '';
+				s[1] += new Array(prec - s[1].length + 1).join('0');
+			}
+			return s.join(dec);
+		},
+		
+		
 		// Function to define summary box content
-		summaryHtml: function (field, feature, currentZoom)
+		summaryHtml: function (field, year, feature)
 		{
 			// If the field is the null field, show nothing
 			if (_settings.nullField) {
@@ -1536,27 +1710,25 @@ const onlineatlas = (function ($) {
 				}
 			}
 			
-			// Determine the field to use, and a suffix
-			let geographicField = _settings.farField;
-			if (_settings.closeZoom && _settings.closeField) {
-				if (currentZoom >= _settings.closeZoom) {
-					geographicField = _settings.closeField;
-				}
-			}
+			// Determine the area name
+			let areaName = feature.properties[_settings.areaNameField] || feature.properties[_settings.areaNameFallbackField];
 			
 			// If there is no name for the geographic field, set a generic label
-			if (feature.properties[geographicField] == null) {
-				feature.properties[geographicField] = '[Unknown place name]';
+			if (areaName == null) {
+				areaName = '[Unknown place name]';
 			}
 			
+			// Split long unspaced placenames with slashes
+			areaName = areaName.replaceAll ('/', ' / ');
+			
 			// Set the value, rewriting NULL to the specified message
-			let value = '<strong>' + feature.properties[field] + '</strong>';
+			let value = '<strong>' + onlineatlas.numberFormat (feature.properties[field], _settings.popupsRoundingDP) + '</strong>';
 			if (feature.properties[field] == null) {
 				value = _settings['nullDataMessage'];
 			}
 			
 			// Assemble the HTML
-			const html = '<p>' + onlineatlas.htmlspecialchars (feature.properties[geographicField]) + ', in ' + feature.properties.year + ': ' + value + '</p>';
+			const html = '<p>' + onlineatlas.htmlspecialchars (areaName) + ', in ' + year + ': ' + value + '</p>';
 			
 			// Return the HTML
 			return html;
@@ -1566,19 +1738,12 @@ const onlineatlas = (function ($) {
 		// Function to create and update the legend
 		createLegend: function (mapUi)
 		{
-			// Affix the legend
-			const legend = L.control({position: 'bottomleft'});
+			// Create the control
+			const containerId = 'legend' + mapUi.index;
+			onlineatlas.createControl (mapUi.map, containerId, 'bottom-left', 'info legend');
 			
-			// Define its contents
-			legend.onAdd = function () {
-				const panelDiv = L.DomUtil.create ('div', 'info legend');
-				L.DomEvent.disableClickPropagation (panelDiv);		// Prevent drag/click propagating to the map; see: https://stackoverflow.com/a/37629102/
-				$(panelDiv).append ('<div id="legendcontainer"></div>');
-				return panelDiv;
-			};
-			
-			// Add to the map
-			legend.addTo(mapUi.map);
+			// Add a div to contain the legend
+			$('#' + containerId).append ('<div id="legendcontainer"></div>');
 			
 			// Set the initial value
 			onlineatlas.setLegend (mapUi);
@@ -1643,32 +1808,31 @@ const onlineatlas = (function ($) {
 		summaryControl: function (mapUi)
 		{
 			// Create the control
-			mapUi.summary = L.control({position: 'topleft'});
+			const containerId = 'summary' + mapUi.index;
+			onlineatlas.createControl (mapUi.map, containerId, 'top-left', 'info summary');
 			
-			// Define its contents
-			const map = mapUi.map;
-			mapUi.summary.onAdd = function () {
-			    this._div = L.DomUtil.create('div', 'info summary'); // create a div with a classes 'info' and 'summary'
-				L.DomEvent.disableClickPropagation (this._div);		// Prevent drag/click propagating to the map; see: https://stackoverflow.com/a/37629102/
-			    this.update(mapUi.field, null, mapUi.currentZoom);
-			    return this._div;
-			};
+			// Set initial status
+			this.updateSummary (mapUi.index, mapUi.field, mapUi.year, null);
+		},
+		
+		
+		// Function to set the summary box
+		updateSummary: function (mapUiIndex, field, year, feature)
+		{
+			// Title
+			let html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + '</h4>';
 			
-			// Register a method to update the control based on feature properties passed
-			mapUi.summary.update = function (field, feature, currentZoom) {
-				let html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + '</h4>';
-				if (_settings.fields[field].hasOwnProperty ('static')) {
-					html += '';
-				} else {
-					html += (feature ?
-						onlineatlas.summaryHtml (field, feature, currentZoom)
-						: 'Hover over an area to view details.');
-				}
-				this._div.innerHTML = html;
-			};
+			// Status
+			if (_settings.fields[field].hasOwnProperty ('static')) {
+				html += '';
+			} else {
+				html += (feature ?
+					onlineatlas.summaryHtml (field, year, feature)
+					: 'Hover over an area to view details.');
+			}
 			
-			// Add to the map
-			mapUi.summary.addTo(map);
+			// Set the value
+			$('#summary' + mapUiIndex).html (html);
 		},
 		
 		
