@@ -12,10 +12,8 @@ class onlineAtlas extends frontControllerApplication
 		# Specify available arguments as defaults or as NULL (to represent a required argument)
 		$defaults = array (
 			'applicationName' => 'Online atlas',
-			'pageHeader' => 'Online atlas',
 			'div' => 'onlineatlas',
-			'database' => false,
-			'table' => false,
+			'useDatabase' => false,
 			'administrators' => true,
 			'geocoderApiKey' => NULL,
 			'defaultLocation' => array (
