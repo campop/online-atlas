@@ -223,7 +223,7 @@ class onlineAtlas extends frontControllerApplication
 			<script type="text/javascript" src="' . $this->baseUrl . '/js/geocoder.js"></script>
 			
 			<!-- Cookie support -->
-			<script src="' . $this->baseUrl . '/js/lib/js-cookie/src/js.cookie.js"></script>
+			<script src="' . $this->baseUrl . '/js/lib/js-cookie/dist/js.cookie.min.js"></script>
 			
 			<!-- Vex dialogs; see: http://github.hubspot.com/vex/ -->
 			<script src="' . $this->baseUrl . '/js/lib/vex-js/dist/js/vex.combined.min.js"></script>
