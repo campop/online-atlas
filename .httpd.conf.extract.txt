@@ -31,8 +31,6 @@
 	# Application directives
 	RewriteRule ^$baseUrl/(import)/$ $baseUrl/index.html?action=$1 [L,QSA]
 	RewriteRule ^$baseUrl/(import)$ $baseUrl/$1/ [R]
-	RewriteRule ^$baseUrl/data.csv$ $baseUrl/index.html?action=exportcsv [L,QSA]
-	RewriteRule ^$baseUrl/data.geojson$ $baseUrl/index.html?action=exportgeojson [L,QSA]
 	
 	# Route all virtual requests arising from HTML5 pushState URLs to main page
 	RewriteCond %{REQUEST_FILENAME} !-f
