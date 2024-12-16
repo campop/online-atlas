@@ -230,6 +230,9 @@ class onlineAtlas extends frontControllerApplication
 			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/vex-js/dist/css/vex.css" />
 			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/vex-js/dist/css/vex-theme-plain.css" />
 			
+			<!-- Icons -->
+			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/font-awesome/css/font-awesome.min.css">
+			
 			<!-- Side-by-side sync -->
 			<script>const module = {};</script>
 			<script src="' . $this->baseUrl . '/js/lib/@mapbox/mapbox-gl-sync-move/index.js"></script>
