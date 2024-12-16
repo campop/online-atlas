@@ -5,8 +5,8 @@
     "license": "GPL-3.0-only",
     "minimum-stability": "stable",
     "require": {
-        "libpurecontent/frontcontrollerapplication": "^1.13.4",
-        "libpurecontent/application": "^1.9"
+        "libpurecontent/application": "^1.9",
+        "libpurecontent/frontcontrollerapplication": "^1.13"
     },
     "autoload": {
         "files": ["onlineAtlas.php"]
