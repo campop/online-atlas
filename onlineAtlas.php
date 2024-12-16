@@ -23,7 +23,7 @@ class onlineAtlas extends frontControllerApplication
 				'longitude' => -1.53,
 				'zoom' => 5.8,
 			),
-			'datasets' => NULL,	// Must supply an array of datasets
+			'years' => NULL,	// Must supply an array of datasets
 			'areaNameField' => 'SUBDIST',
 			'areaNameFallbackField' => 'REGDIST',
 			'downloadFilenameBase' => 'onlineatlas',	// Or false to disable
@@ -243,7 +243,7 @@ class onlineAtlas extends frontControllerApplication
 					areaNameField: ' . ($this->settings['areaNameField'] ? "'{$this->settings['areaNameField']}'" : 'false') . ',
 					areaNameFallbackField: ' . ($this->settings['areaNameFallbackField'] ? "'{$this->settings['areaNameFallbackField']}'" : 'false') . ',
 					availableGeneralFields: ' . json_encode ($this->availableGeneralFields) . ',
-					years: ' . json_encode ($this->settings['datasets']) . ',
+					years: ' . json_encode ($this->settings['years']) . ',
 					defaultDataset: ' . ($this->settings['defaultDataset'] ? (is_numeric ($this->settings['defaultDataset']) ? $this->settings['defaultDataset'] : "'{$this->settings['defaultDataset']}'") : 'false') . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
 					expandableHeadings: ' . ($this->settings['expandableHeadings'] ? 'true' : 'false') . ',
@@ -305,7 +305,7 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Create the list of import files
 		$importFiles = array ();
-		foreach ($this->settings['datasets'] as $dataset) {
+		foreach ($this->settings['years'] as $dataset) {
 			$importFiles[] = sprintf ('dataset_%s', $dataset);
 		}
 		
