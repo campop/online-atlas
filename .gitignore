@@ -9,5 +9,4 @@
 
 # JS package management
 /js/lib/*
-!/js/lib/geocoder/
 /yarn-error.log

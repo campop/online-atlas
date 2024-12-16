@@ -220,7 +220,7 @@ class onlineAtlas extends frontControllerApplication
 			<script src="' . $this->baseUrl . '/js/lib/maplibre-gl/dist/maplibre-gl.js"></script>
 			<link rel="stylesheet" href="' . $this->baseUrl . '/js/lib/maplibre-gl/dist/maplibre-gl.css" />
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/geocoder.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/src/geocoder.js"></script>
 			
 			<!-- Cookie support -->
 			<script src="' . $this->baseUrl . '/js/lib/js-cookie/dist/js.cookie.min.js"></script>
@@ -234,7 +234,7 @@ class onlineAtlas extends frontControllerApplication
 			<script>const module = {};</script>
 			<script src="' . $this->baseUrl . '/js/lib/@mapbox/mapbox-gl-sync-move/index.js"></script>
 			
-			<script type="text/javascript" src="' . $this->baseUrl . '/js/onlineatlas.js"></script>
+			<script type="text/javascript" src="' . $this->baseUrl . '/src/onlineatlas.js"></script>
 			<script type="text/javascript">
 				
 				var config = {
