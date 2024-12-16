@@ -9,7 +9,8 @@
 
 <Macro MacroOnlineAtlas $baseUrl $repoPath $name>
 	
-	# Local assets
+	# Local assets; datasets are served from the immediate implementation repo, not from within online-atlas
+	Alias $baseUrl/datasets/ $repoPath/datasets/
 	Alias $baseUrl/images/preview.png $repoPath/images/preview.png
 	
 	# Central assets
