@@ -44,9 +44,9 @@
 	</Location>
 	
 	# Data tiles
-	<FilesMatch "\.pbf$">
-		Header append  Content-Encoding gzip
-	</FilesMatch>
+	<LocationMatch "^/datasets/.+\.pbf$">
+		Header set Content-Encoding gzip
+	</LocationMatch>
 	
 	# Large file uploads for import page
 	<Location $baseUrl/import/>
