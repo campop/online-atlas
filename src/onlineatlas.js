@@ -901,7 +901,7 @@ const onlineatlas = (function ($) {
 					}
 					
 					// Create a popup and set its co-ordinates based on the feature found
-					const popupHtml = onlineatlas.popupHtml (feature, mapUi.field);
+					const popupHtml = onlineatlas.popupHtml (feature, mapUi.field, mapUi.year);
 					popup.setLngLat (coordinates).setHTML (popupHtml).addTo (mapUi.map);
 					*/
 					
@@ -924,7 +924,7 @@ const onlineatlas = (function ($) {
 			mapUi.map.on ('click', polygonLayerId, function (e) {
 				const feature = e.features[0];
 				const coordinates = e.lngLat;
-				const popupHtml = onlineatlas.popupHtml (feature, mapUi.field);
+				const popupHtml = onlineatlas.popupHtml (feature, mapUi.field, mapUi.year);
 				_popup.setLngLat (coordinates).setHTML (popupHtml).addTo (mapUi.map);
 			});
 		},
@@ -1614,7 +1614,7 @@ const onlineatlas = (function ($) {
 		
 		
 		// Function to define popup content
-		popupHtml: function (feature, currentField)
+		popupHtml: function (feature, currentField, currentYear)
 		{
 			// Determine list of areas present in the data, to be shown in the title in hierarchical order
 			const availableAreaFields = ['PARISH', 'SUBDIST', 'REGDIST', 'REGCNTY'];	// More specific first, so that listing is e.g. "Kingston, Surrey, London"
@@ -1626,7 +1626,7 @@ const onlineatlas = (function ($) {
 			});
 			
 			// Start with the title
-			let html = '<p><strong>Displayed data for ' + areaHierarchy.join (', ') + /* ' in ' + _settings.years[year].name + */ ':</strong></p>';
+			let html = '<p><strong>Displayed data for ' + areaHierarchy.join (', ') + ' in ' + currentYear + ':</strong></p>';
 			
 			// Add table
 			html += '<table id="chart" class="lines compressed">';
