@@ -44,7 +44,7 @@
 	</Location>
 	
 	# Data tiles
-	<LocationMatch "^/datasets/.+\.pbf$">
+	<LocationMatch "^$baseUrl/datasets/.+\.pbf$">
 		Header set Content-Encoding gzip
 	</LocationMatch>
 	
