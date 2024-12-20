@@ -1568,9 +1568,19 @@ const onlineatlas = (function ($) {
 			// If no intervals, return the string token of transparent
 			if (intervals.length == '') {return 'transparent';}
 			
-			// For a wildcard, return the wildcard colour
+			// For a wildcard, return either the wildcard colour if there is a value, or the unknown value if not
+			/* Example structure - note that the second value (NULL) is ignored, but NULL will then be styled in the legend as a dashed transparent box
+				'intervalsWildcard' => 'Town (by name)',
+				'intervals' => array (
+					'Town (by name)'	=> 'blue',
+					'Other areas'		=> NULL,
+				),
+			*/
 			if (_settings.fields[field].hasOwnProperty ('intervalsWildcard')) {
+				tokens.push ('case');
+				tokens.push (['to-boolean', ['get', field]]);
 				tokens.push (intervals[_settings.fields[field].intervalsWildcard]);
+				tokens.push (colourUnknown);
 				return tokens;
 			}
 			
