@@ -1519,8 +1519,7 @@ const onlineatlas = (function ($) {
 			let urlSlug = '/' + field.toLowerCase() + '/' + year + '/';
 			if (Object.keys (_settings.variations).length) {
 				$.each (_settings.variations, function (variationLabel, variationOptions) {
-					// #!# Not yet correct - variation is not yet in the mapUi
-					urlSlug += mapUi[variationLabel.toLowerCase ()].toLowerCase () + '/';	// E.g. 'female/'
+					urlSlug += mapUi.variations[variationLabel.toLowerCase ()].toLowerCase () + '/';	// E.g. 'female/'
 				});
 			}
 			
