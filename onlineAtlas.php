@@ -379,8 +379,8 @@ class onlineAtlas extends frontControllerApplication
 			}
 			
 			# Remove the unpacked shapefile files and containing directory
-			array_map ('unlink', glob ("{$tempDir}/*.*"));	// http://php.net/unlink#109971
-			array_map ('unlink', glob ("{$tempDir}/.*.*"));	// E.g. .esri.gz file
+			array_map ('unlink', array_filter (glob ("{$tempDir}/*.*" ), 'is_file'));	// http://php.net/unlink#109971
+			array_map ('unlink', array_filter (glob ("{$tempDir}/.*.*"), 'is_file'));	// E.g. .esri.gz file
 			rmdir ($tempDir);
 			
 			# Convert the GeoJSON to vector tiles
