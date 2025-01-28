@@ -1484,7 +1484,7 @@ const onlineatlas = (function ($) {
 		showData: function (mapUi, year)
 		{
 			// Set the colouring
-			const styleDefinition = onlineatlas.getColours (mapUi.field);
+			const styleDefinition = onlineatlas.getColours (mapUi.field, mapUi.variations);
 			mapUi.map.setPaintProperty (mapUi.sourceId['data' + year] + '-fill', 'fill-color', styleDefinition);
 			
 			// Set the line style for the outline, to deal with NULL values (shown as transparent with a dashed line)
@@ -1519,7 +1519,7 @@ const onlineatlas = (function ($) {
 			let urlSlug = '/' + field.toLowerCase() + '/' + year + '/';
 			if (Object.keys (_settings.variations).length) {
 				$.each (_settings.variations, function (variationLabel, variationOptions) {
-					urlSlug += mapUi.variations[variationLabel.toLowerCase ()].toLowerCase () + '/';	// E.g. 'female/'
+					urlSlug += mapUi.variations[variationLabel.toLowerCase ()].toLowerCase () + '/';	// E.g. 'f/'
 				});
 			}
 			
@@ -1547,7 +1547,7 @@ const onlineatlas = (function ($) {
 		
 		
 		// Assign colour from lookup table
-		getColours: function (field)
+		getColours: function (field, variations)
 		{
 			// Start a list of tokens
 			let tokens = [];
@@ -1567,6 +1567,14 @@ const onlineatlas = (function ($) {
 			// If no intervals, return the string token of transparent
 			if (intervals.length == '') {return 'transparent';}
 			
+			// Determine variations extension to field if required, enabling colours defined for field (e.g.) 'Foo' to be used for a variations-based field (e.g.) 'Foo_M_A' in the data
+			let variationsExtension = '';
+			if (Object.keys (_settings.variations).length) {
+				$.each (_settings.variations, function (variationLabel, variationOptions) {
+					variationsExtension += '_' + variations[variationLabel.toLowerCase ()];	// E.g. '_M' then '_M_A'
+				});
+			}
+			
 			// For a wildcard, return either the wildcard colour if there is a value, or the unknown value if not
 			/* Example structure - note that the second value (NULL) is ignored, but NULL will then be styled in the legend as a dashed transparent box
 				'intervalsWildcard' => 'Town (by name)',
@@ -1577,7 +1585,7 @@ const onlineatlas = (function ($) {
 			*/
 			if (_settings.fields[field].hasOwnProperty ('intervalsWildcard')) {
 				tokens.push ('case');
-				tokens.push (['to-boolean', ['get', field]]);
+				tokens.push (['to-boolean', ['get', field + variationsExtension]]);
 				tokens.push (intervals[_settings.fields[field].intervalsWildcard]);
 				tokens.push (colourUnknown);
 				return tokens;
@@ -1588,7 +1596,7 @@ const onlineatlas = (function ($) {
 				
 				// Create a step expression, based on the current field, starting with the zero value then the threshold,colour pairs
 				tokens.push ('step');
-				tokens.push (['get', field]);
+				tokens.push (['get', field + variationsExtension]);
 				$.each (_settings.fields[field].intervals, function (index, label) {
 					// #!# Is being cast to integer
 					const value = (label.charAt (0) == '<' ? 0 : Number.parseFloat (label.match (/([\.0-9]+)/) [0]));	// Not /g so only first found
@@ -1602,7 +1610,7 @@ const onlineatlas = (function ($) {
 				// Wrap the step expression within a check for NULL values, to show the unknown colour (default transparent); see: https://github.com/mapbox/mapbox-gl-js/issues/5761#issuecomment-2506485665
 				tokens = [
 					'case',
-						['has', field],
+						['has', field + variationsExtension],
 							tokens,
 						colourUnknown
 				];
@@ -1614,7 +1622,7 @@ const onlineatlas = (function ($) {
 			// Otherwise is key-value pairs; see: https://docs.mapbox.com/style-spec/reference/expressions/#case and https://docs.mapbox.com/mapbox-gl-js/example/cluster-html/
 			tokens.push ('case');
 			$.each (_settings.fields[field].intervals, function (value, colour) {
-				tokens.push (['==', ['get', field], value]);
+				tokens.push (['==', ['get', field + variationsExtension], value]);
 				tokens.push (colour);
 			});
 			tokens.push (colourUnknown);
