@@ -333,7 +333,7 @@ class onlineAtlas extends frontControllerApplication
 		# Ensure the temp directory is writable
 		$exportsTmpDir = "{$this->applicationRoot}/exports-tmp";
 		if (!is_writable ($exportsTmpDir)) {
-			$html = "\n<p class=\"warning\">ERROR: the temporary directory {$exportsTmpDir}/ does not exist or is not writable.</p>";
+			$html = "\n<p class=\"warning\">ERROR: the temporary directory {$exportsTmpDir}/ does not exist or is not writable. Please ensure that the client code defines a post-update-cmd in composer.json to set writability of this directory by the webserver.</p>";
 			return false;
 		}
 		
