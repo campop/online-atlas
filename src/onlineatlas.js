@@ -1570,12 +1570,7 @@ const onlineatlas = (function ($) {
 			if (intervals.length == '') {return 'transparent';}
 			
 			// Determine variations extension to field if required, enabling colours defined for field (e.g.) 'Foo' to be used for a variations-based field (e.g.) 'Foo_M_A' in the data
-			let variationsExtension = '';
-			if (Object.keys (_settings.variations).length) {
-				$.each (_settings.variations, function (variationLabel, variationOptions) {
-					variationsExtension += '_' + variations[variationLabel.toLowerCase ()];	// E.g. '_M' then '_M_A'
-				});
-			}
+			const fieldnameWithVariations = onlineatlas.fieldnameWithVariations (field, variations);
 			
 			// For a wildcard, return either the wildcard colour if there is a value, or the unknown value if not
 			/* Example structure - note that the second value (NULL) is ignored, but NULL will then be styled in the legend as a dashed transparent box
@@ -1587,7 +1582,7 @@ const onlineatlas = (function ($) {
 			*/
 			if (_settings.fields[field].hasOwnProperty ('intervalsWildcard')) {
 				tokens.push ('case');
-				tokens.push (['to-boolean', ['get', field + variationsExtension]]);
+				tokens.push (['to-boolean', ['get', fieldnameWithVariations]]);
 				tokens.push (intervals[_settings.fields[field].intervalsWildcard]);
 				tokens.push (colourUnknown);
 				return tokens;
@@ -1598,7 +1593,7 @@ const onlineatlas = (function ($) {
 				
 				// Create a step expression, based on the current field, starting with the zero value then the threshold,colour pairs
 				tokens.push ('step');
-				tokens.push (['get', field + variationsExtension]);
+				tokens.push (['get', fieldnameWithVariations]);
 				$.each (_settings.fields[field].intervals, function (index, label) {
 					// #!# Is being cast to integer
 					const value = (label.charAt (0) == '<' ? 0 : Number.parseFloat (label.match (/([\.0-9]+)/) [0]));	// Not /g so only first found
@@ -1612,9 +1607,9 @@ const onlineatlas = (function ($) {
 				// Wrap the step expression within a check for valueUnknown/NULL values, to show the unknown colour (default transparent); see: https://github.com/mapbox/mapbox-gl-js/issues/5761#issuecomment-2506485665
 				let testNormalValueExpression;
 				if (_settings.valueUnknown === null) {
-					testNormalValueExpression = ['has', field + variationsExtension];	// I.e. there is a value, not NULL
+					testNormalValueExpression = ['has', fieldnameWithVariations];	// I.e. there is a value, not NULL
 				} else {
-					testNormalValueExpression = ['!=', ['get', field + variationsExtension], _settings.valueUnknown];	// I.e. value is a normal one, not the unknown value
+					testNormalValueExpression = ['!=', ['get', fieldnameWithVariations], _settings.valueUnknown];	// I.e. value is a normal one, not the unknown value
 				}
 				tokens = [
 					'case',
@@ -1635,6 +1630,22 @@ const onlineatlas = (function ($) {
 			});
 			tokens.push (colourUnknown);
 			return tokens;
+		},
+		
+		
+		// Function to compile the name of a field with variations
+		fieldnameWithVariations: function (field, variations)
+		{
+			// If variations supported, add the variation value for each supported variation
+			let variationsExtension = '';
+			if (Object.keys (_settings.variations).length) {
+				$.each (_settings.variations, function (variationLabel, variationOptions) {
+					variationsExtension += '_' + variations[variationLabel.toLowerCase ()];	// E.g. '_M' then '_M_A'
+				});
+			}
+			
+			// Compile the fieldname and return the value
+			return field + variationsExtension;
 		},
 		
 		
