@@ -1677,7 +1677,7 @@ const onlineatlas = (function ($) {
 					value = value.replaceAll ('/', ' / ');
 				} else if (typeof value == 'number' && !Number.isInteger (value)) {	// i.e. if float
 					value = onlineatlas.numberFormat (value, _settings.popupsRoundingDP);
-				} else if (value == null) {
+				} else if (value == _settings.valueUnknown) {
 					value = '<span class="faded">' + _settings['nullDataMessage'] + '</span>';
 				}
 				html += '<tr class="' + field + '"><td>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + ':</td><td><strong>' + value + '</strong></td></tr>';
@@ -1762,7 +1762,7 @@ const onlineatlas = (function ($) {
 			
 			// Set the value, rewriting NULL to the specified message
 			let value = '<strong>' + onlineatlas.numberFormat (feature.properties[fieldnameWithVariations], _settings.popupsRoundingDP) + '</strong>';
-			if (feature.properties[fieldnameWithVariations] == null) {
+			if (feature.properties[fieldnameWithVariations] == _settings.valueUnknown) {
 				value = _settings['nullDataMessage'];
 			}
 			
