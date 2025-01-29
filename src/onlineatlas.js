@@ -91,9 +91,10 @@ const onlineatlas = (function ($) {
 		// Full descriptions
 		enableFullDescriptions: true,
 		
-		// Map geometry colours; colour scales can be created at http://www.colorbrewer.org/
+		// Map geometry colours; colour scales can be created at https://www.colorbrewer.org/
 		colourStops: [],		// Will be supplied
 		colourUnknown: false,	// Will be supplied
+		valueUnknown: null,	// May be supplied, else assumed to be NULL
 		valueUnknownString: false,	// Will be supplied
 		intervalsMode: false,
 		
@@ -1452,6 +1453,7 @@ const onlineatlas = (function ($) {
 				
 				// Obtain the content; see: https://stackoverflow.com/a/14744011/ and https://stackoverflow.com/a/25183183/
 				const templateHtml = $('template#aboutfields')[0].content;
+				
 				let dialogBoxContentHtml = $(templateHtml).find('h3.' + field).nextUntil('h3, h2').addBack().map(function() {
 					return this.outerHTML;
 				}).get().join('');
@@ -1607,10 +1609,16 @@ const onlineatlas = (function ($) {
 					tokens.push (_settings.colourStops[index]);
 				});
 				
-				// Wrap the step expression within a check for NULL values, to show the unknown colour (default transparent); see: https://github.com/mapbox/mapbox-gl-js/issues/5761#issuecomment-2506485665
+				// Wrap the step expression within a check for valueUnknown/NULL values, to show the unknown colour (default transparent); see: https://github.com/mapbox/mapbox-gl-js/issues/5761#issuecomment-2506485665
+				let testNormalValueExpression;
+				if (_settings.valueUnknown === null) {
+					testNormalValueExpression = ['has', field + variationsExtension];	// I.e. there is a value, not NULL
+				} else {
+					testNormalValueExpression = ['!=', ['get', field + variationsExtension], _settings.valueUnknown];	// I.e. value is a normal one, not the unknown value
+				}
 				tokens = [
 					'case',
-						['has', field + variationsExtension],
+						testNormalValueExpression,
 							tokens,
 						colourUnknown
 				];
