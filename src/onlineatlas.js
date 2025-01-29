@@ -470,10 +470,10 @@ const onlineatlas = (function ($) {
 				// Register a summary box control
 				onlineatlas.summaryControl (mapUi);
 				$('#' + mapUi.navDivId + ' form input[name="field"]').on ('change', function() {
-					onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, null);
+					onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, mapUi.variations, null);
 				});
 				mapUi.map.on ('zoomend', function () {
-					onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, null);	// Feature as null resets the status
+					onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, mapUi.variations, null);	// Feature as null resets the status
 				});
 				
 				// Clone form values; this must be done before the first call to get data
@@ -907,7 +907,7 @@ const onlineatlas = (function ($) {
 					*/
 					
 					// Update the summary box
-					onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, feature);
+					onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, mapUi.variations, feature);
 				}
 			});
 			mapUi.map.on ('mouseleave', polygonLayerId, function (e) {
@@ -917,7 +917,7 @@ const onlineatlas = (function ($) {
 				}
 				
 				// Update the summary box
-				onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, null);
+				onlineatlas.updateSummary (mapUi.index, mapUi.field, mapUi.year, mapUi.variations, null);
 			});
 			
 			// Add popup on click
@@ -1737,7 +1737,7 @@ const onlineatlas = (function ($) {
 		
 		
 		// Function to define summary box content
-		summaryHtml: function (field, year, feature)
+		summaryHtml: function (field, year, variations, feature)
 		{
 			// If the field is the null field, show nothing
 			if (_settings.nullField) {
@@ -1757,9 +1757,12 @@ const onlineatlas = (function ($) {
 			// Split long unspaced placenames with slashes
 			areaName = areaName.replaceAll ('/', ' / ');
 			
+			// Determine fieldname with variations
+			const fieldnameWithVariations = onlineatlas.fieldnameWithVariations (field, variations);
+			
 			// Set the value, rewriting NULL to the specified message
-			let value = '<strong>' + onlineatlas.numberFormat (feature.properties[field], _settings.popupsRoundingDP) + '</strong>';
-			if (feature.properties[field] == null) {
+			let value = '<strong>' + onlineatlas.numberFormat (feature.properties[fieldnameWithVariations], _settings.popupsRoundingDP) + '</strong>';
+			if (feature.properties[fieldnameWithVariations] == null) {
 				value = _settings['nullDataMessage'];
 			}
 			
@@ -1848,12 +1851,12 @@ const onlineatlas = (function ($) {
 			onlineatlas.createControl (mapUi.map, containerId, 'top-left', 'info summary');
 			
 			// Set initial status
-			this.updateSummary (mapUi.index, mapUi.field, mapUi.year, null);
+			this.updateSummary (mapUi.index, mapUi.field, mapUi.year, mapUi.variations, null);
 		},
 		
 		
 		// Function to set the summary box
-		updateSummary: function (mapUiIndex, field, year, feature)
+		updateSummary: function (mapUiIndex, field, year, variations, feature)
 		{
 			// Title
 			let html = '<h4>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + '</h4>';
@@ -1863,7 +1866,7 @@ const onlineatlas = (function ($) {
 				html += '';
 			} else {
 				html += (feature ?
-					onlineatlas.summaryHtml (field, year, feature)
+					onlineatlas.summaryHtml (field, year, variations, feature)
 					: 'Hover over an area to view details.');
 			}
 			
