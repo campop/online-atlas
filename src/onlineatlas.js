@@ -902,7 +902,7 @@ const onlineatlas = (function ($) {
 					}
 					
 					// Create a popup and set its co-ordinates based on the feature found
-					const popupHtml = onlineatlas.popupHtml (feature, mapUi.field, mapUi.year);
+					const popupHtml = onlineatlas.popupHtml (feature, mapUi.field, mapUi.year, mapUi.variations);
 					popup.setLngLat (coordinates).setHTML (popupHtml).addTo (mapUi.map);
 					*/
 					
@@ -925,7 +925,7 @@ const onlineatlas = (function ($) {
 			mapUi.map.on ('click', polygonLayerId, function (e) {
 				const feature = e.features[0];
 				const coordinates = e.lngLat;
-				const popupHtml = onlineatlas.popupHtml (feature, mapUi.field, mapUi.year);
+				const popupHtml = onlineatlas.popupHtml (feature, mapUi.field, mapUi.year, mapUi.variations);
 				_popup.setLngLat (coordinates).setHTML (popupHtml).addTo (mapUi.map);
 			});
 		},
@@ -1650,7 +1650,7 @@ const onlineatlas = (function ($) {
 		
 		
 		// Function to define popup content
-		popupHtml: function (feature, currentField, currentYear)
+		popupHtml: function (feature, currentField, currentYear, variations)
 		{
 			// Determine list of areas present in the data, to be shown in the title in hierarchical order
 			const availableAreaFields = ['PARISH', 'SUBDIST', 'REGDIST', 'REGCNTY'];	// More specific first, so that listing is e.g. "Kingston, Surrey, London"
@@ -1662,14 +1662,28 @@ const onlineatlas = (function ($) {
 			});
 			
 			// Start with the title
-			let html = '<p><strong>Displayed data for ' + areaHierarchy.join (', ') + ' in ' + currentYear + ':</strong></p>';
+			let html = '<p><strong>Displayed data for ' + onlineatlas.htmlspecialchars (areaHierarchy.join (', ')) + ' in ' + currentYear + ':</strong></p>';
+			
+			// Add in fixed fields
+			feature.properties.year = currentYear;
 			
 			// Add table
 			html += '<table id="chart" class="lines compressed">';
-			$.each (feature.properties, function (field, value) {
+			$.each (_settings.fields, function (field, attributes) {
 				
 				// Show only general fields and the current data field
 				if (!_settings.availableGeneralFields.includes (field) && (field != currentField)) {return; /* i.e. continue */}
+				
+				// If the field is an area type field but not enabled, give it an unknown placename marker
+				if (availableAreaFields.includes (field) && !feature.properties[field]) {return; /* i.e. continue */}
+				
+				// Convert fieldname to variation
+				if (!_settings.availableGeneralFields.includes (field)) {
+					field = onlineatlas.fieldnameWithVariations (field, variations);
+				}
+				
+				// Get the value from the data
+				let value = feature.properties[field];
 				
 				// Show the value, cleaned
 				if (typeof value == 'string') {
@@ -1680,7 +1694,7 @@ const onlineatlas = (function ($) {
 				} else if (value == _settings.valueUnknown) {
 					value = '<span class="faded">' + _settings['nullDataMessage'] + '</span>';
 				}
-				html += '<tr class="' + field + '"><td>' + onlineatlas.htmlspecialchars (_settings.fields[field].label) + ':</td><td><strong>' + value + '</strong></td></tr>';
+				html += '<tr class="' + field + '"><td>' + onlineatlas.htmlspecialchars (attributes.label) + ':</td><td><strong>' + value + '</strong></td></tr>';
 			});
 			html += '</table>';
 			
