@@ -27,7 +27,7 @@ class onlineAtlas extends frontControllerApplication
 			'downloadFilenameBase' => 'onlineatlas',	// Or false to disable
 			'pdfLink' => false,
 			'pdfBaseUrl' => '%baseUrl/resources/',		// %baseUrl supported
-			'downloadInitialNotice' => false,		// Must not contain double-quotes
+			'downloadInitialNotice' => false,		// Must not contain double-quotes; this is only used when importing the data, not dynamically
 			'bodyClass' => '',
 			'disableTabs' => true,
 			'authLinkVisibility' => false,
