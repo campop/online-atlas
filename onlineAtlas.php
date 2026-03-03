@@ -238,7 +238,7 @@ class onlineAtlas extends frontControllerApplication
 			<script type="text/javascript" src="' . $this->baseUrl . '/src/onlineatlas.js"></script>
 			<script type="text/javascript">
 				
-				var config = {
+				const config = {
 					defaultLocation: ' . json_encode ($this->settings['defaultLocation']) . ',
 					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
 					areaNameField: ' . ($this->settings['areaNameField'] ? "'{$this->settings['areaNameField']}'" : 'false') . ',
