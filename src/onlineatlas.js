@@ -1351,13 +1351,12 @@ const onlineatlas = (function ($) {
 		{
 			// Group fields, either by explicit grouping (which will have fold-out headings) or virtual grouping (which not have headings)
 			const groupings = {};
-			let virtualGroupingIndex = 0;
-			let orderingIndex = 0;
+			let groupingIndex = 0;
+			let groupOrderingIndex = 0;
 			$.each (fields, function (id, field) {
-				const grouping = (field.grouping || '_' + virtualGroupingIndex++);	// E.g. _0, _1, etc., and increment after
-				if (!groupings[grouping]) {		// Initialise container if not already present
-					groupings[grouping] = {ordering: orderingIndex, fields: []};
-					orderingIndex++;
+				const grouping = (field.grouping || '_' + groupingIndex++);	// E.g. _0, _1, etc., and increment after
+				if (!groupings[grouping]) {		// Initialise grouping container if not already present
+					groupings[grouping] = {ordering: groupOrderingIndex++, fieldsByGroup: []};
 				}
 				groupings[grouping]['fields'].push (id);
 			});
