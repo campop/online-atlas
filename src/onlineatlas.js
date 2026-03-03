@@ -1354,13 +1354,7 @@ const onlineatlas = (function ($) {
 			let virtualGroupingIndex = 0;
 			let orderingIndex = 0;
 			$.each (fields, function (id, field) {
-				let grouping;
-				if (field.grouping) {
-					grouping = field.grouping;
-				} else {
-					grouping = '_' + virtualGroupingIndex;	// E.g. _0, _1, etc.
-					virtualGroupingIndex++;
-				}
+				const grouping = (field.grouping || '_' + virtualGroupingIndex++);	// E.g. _0, _1, etc., and increment after
 				if (!groupings[grouping]) {		// Initialise container if not already present
 					groupings[grouping] = {ordering: orderingIndex, fields: []};
 					orderingIndex++;
