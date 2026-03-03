@@ -1179,7 +1179,7 @@ const onlineatlas = (function ($) {
 			$.each (fieldGroups, function (i, fieldGroup) {
 				
 				// Determine the heading, if any
-				const heading = (fieldGroup.name.match(/^_[0-9]+$/) ? false : fieldGroup.name);	// Virtual fields use _<number>, as per virtualGroupingIndex below
+				const heading = (fieldGroup.name.match (/^_[0-9]+$/) ? false : fieldGroup.name);	// Virtual fields use _<number>, as per virtualGroupingIndex below
 				
 				// Add heading for this group if required
 				if (heading) {
@@ -1195,32 +1195,43 @@ const onlineatlas = (function ($) {
 					hasGroups = true;
 				}
 				
-				// Add each field
-				$.each (fieldGroup.fields, function (j, id) {
-					const field = _settings.fields[id];
+				// Loop through each subgroup
+				$.each (fieldGroup.fieldsBySubgroup, function (subgroupName, fieldsBySubgroup) {
 					
-					// Skip general fields, like year
-					if (field.general) {return /* i.e. continue */;}
-					
-					// Determine if this is the null field, if enabled
-					const isNullField = (_settings.nullField && (id == _settings.nullField));
-					
-					// Construct the radiobutton list (for full mode)
-					const fieldId = 'field' + mapUiIndex + '_' + onlineatlas.htmlspecialchars (id);
-					radiobuttonsHtml += '<div class="field" title="' + onlineatlas.htmlspecialchars (field.description) + '">';
-					radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldId + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
-					radiobuttonsHtml += '<label for="' + fieldId + '">';
-					radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
-					if (_settings.enableFullDescriptions) {
-						if (!isNullField) {
-							radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars ((field.description ? field.description : field.label)) + '">(?)</a>';
-						}
+					// Determine the subheading, if any
+					const subheading = (subgroupName.match (/^_[0-9]+$/) ? false : subgroupName);	// Virtual fields use _<number>, as per virtualGroupingIndex below
+					if (subheading) {
+						radiobuttonsHtml += '<h5>&mdash; ' + subheading + ':</h5>';
 					}
-					radiobuttonsHtml += '</label>';
-					radiobuttonsHtml += '</div>';
 					
-					// Select widget (for side-by-side mode)
-					selectHtml += '<option value="' + onlineatlas.htmlspecialchars (id) + '"' + (id == _settings.defaultField ? ' selected="selected"' : '') + '>' + onlineatlas.htmlspecialchars (field.label) + '</option>';
+					// Loop through each field in this subgroup
+					$.each (fieldsBySubgroup.fields, function (k, id) {
+						
+						const field = _settings.fields[id];
+						
+						// Skip general fields, like year
+						if (field.general) {return /* i.e. continue */;}
+						
+						// Determine if this is the null field, if enabled
+						const isNullField = (_settings.nullField && (id == _settings.nullField));
+						
+						// Construct the radiobutton list (for full mode)
+						const fieldId = 'field' + mapUiIndex + '_' + onlineatlas.htmlspecialchars (id);
+						radiobuttonsHtml += '<div class="field" title="' + onlineatlas.htmlspecialchars (field.description) + '">';
+						radiobuttonsHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldId + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
+						radiobuttonsHtml += '<label for="' + fieldId + '">';
+						radiobuttonsHtml += onlineatlas.htmlspecialchars (field.label);
+						if (_settings.enableFullDescriptions) {
+							if (!isNullField) {
+								radiobuttonsHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars ((field.description ? field.description : field.label)) + '">(?)</a>';
+							}
+						}
+						radiobuttonsHtml += '</label>';
+						radiobuttonsHtml += '</div>';
+						
+						// Select widget (for side-by-side mode)
+						selectHtml += '<option value="' + onlineatlas.htmlspecialchars (id) + '"' + (id == _settings.defaultField ? ' selected="selected"' : '') + '>' + onlineatlas.htmlspecialchars (field.label) + '</option>';
+					});
 				});
 				
 				// End heading container for this group
@@ -1352,19 +1363,25 @@ const onlineatlas = (function ($) {
 			// Group fields, either by explicit grouping (which will have fold-out headings) or virtual grouping (which not have headings)
 			const groupings = {};
 			let groupingIndex = 0;
+			let subgroupIndex = 0;
 			let groupOrderingIndex = 0;
+			let subgroupOrderingIndex = 0;
 			$.each (fields, function (id, field) {
 				const grouping = (field.grouping || '_' + groupingIndex++);	// E.g. _0, _1, etc., and increment after
+				const subgroup = (field.subgroup || '_' + subgroupIndex++);	// E.g. _0, _1, etc., and increment after
 				if (!groupings[grouping]) {		// Initialise grouping container if not already present
-					groupings[grouping] = {ordering: groupOrderingIndex++, fieldsByGroup: []};
+					groupings[grouping] = {ordering: groupOrderingIndex++, fieldsBySubgroup: {}};
 				}
-				groupings[grouping]['fields'].push (id);
+				if (!groupings[grouping]['fieldsBySubgroup'][subgroup]) {		// Initialise subgroup container if not already present
+					groupings[grouping]['fieldsBySubgroup'][subgroup] = {ordering: subgroupOrderingIndex++, fields: []};
+				}
+				groupings[grouping]['fieldsBySubgroup'][subgroup]['fields'].push (id);
 			});
 			
 			// Order the groupings
 			const fieldGroups = [];
 			$.each (groupings, function (name, grouping) {
-				fieldGroups[grouping.ordering] = {name: name, fields: grouping.fields};
+				fieldGroups[grouping.ordering] = {name: name, fieldsBySubgroup: grouping.fieldsBySubgroup};
 			});
 			
 			// Return the field groups
