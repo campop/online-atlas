@@ -1120,8 +1120,8 @@ const onlineatlas = (function ($) {
 				if (_settings.defaultField) {
 					if (_settings.fields[_settings.defaultField].grouping) {
 						const radiobuttonId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (_settings.defaultField);
-						$('#' + radiobuttonId).parent().parent().slideToggle();
-						$('#' + radiobuttonId).parent().parent().prev('h4').find('i').css('transform', 'rotate(90deg)');
+						$('#' + radiobuttonId).closest ('div.fieldgroup').slideToggle ();
+						$('#' + radiobuttonId).closest ('h4').find ('i').css ('transform', 'rotate(90deg)');
 					}
 				}
 			}
