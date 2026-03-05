@@ -1622,7 +1622,7 @@ const onlineatlas = (function ($) {
 				tokens.push (['get', fieldnameWithVariations]);
 				$.each (_settings.fields[field].intervals, function (index, label) {
 					// #!# Is being cast to integer
-					const value = (label.charAt (0) == '<' ? 0 : Number.parseFloat (label.match (/([\.0-9]+)/) [0]));	// Not /g so only first found
+					const value = (label.charAt (0) == '<' ? 0 : Number.parseFloat (label.match (/([-\.0-9]+)/) [0]));	// Not /g so only first found
 					const skipIfFirst = (index == 0 && value == 0);		// The zero (first) item should be skipped
 					if (!skipIfFirst) {
 						tokens.push (value);
