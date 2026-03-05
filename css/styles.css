@@ -83,9 +83,9 @@ body .campl-main-content .ui-autocomplete, body .campl-main-content .ui-autocomp
 #onlineatlas #mapcontainers nav form div.radiobuttons h4 {margin-top: 0.6em; margin-bottom: 0.4em;}
 #onlineatlas #mapcontainers nav form div.radiobuttons.expandable h4 {margin-top: 1.2em; cursor: pointer;}
 #onlineatlas #mapcontainers nav form div.radiobuttons h4 i {margin-left: 2px; transition-duration: 0.4s;}
-
-/* Subgroups */
-#onlineatlas #mapcontainers nav form div.radiobuttons h5 {margin: 12px 0 5px;}
+#onlineatlas #mapcontainers nav form div.radiobuttons details summary {margin-top: 6px;}
+#onlineatlas #mapcontainers nav form div.radiobuttons details summary span {color: #ccc;}
+#onlineatlas #mapcontainers nav form div.radiobuttons details summary + * {margin-top: 6px;}
 
 /* Year range */
 #onlineatlas #mapcontainers nav form input[type="range"] {display: block; margin: 0 auto; /* width calculated in JS/CSS */}
