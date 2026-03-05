@@ -1122,6 +1122,7 @@ const onlineatlas = (function ($) {
 						const radiobuttonId = 'field' + mapUi.index + '_' + onlineatlas.htmlspecialchars (_settings.defaultField);
 						$('#' + radiobuttonId).closest ('div.fieldgroup').slideToggle ();
 						$('#' + radiobuttonId).closest ('h4').find ('i').css ('transform', 'rotate(90deg)');
+						document.getElementById (radiobuttonId).scrollIntoView ({container: 'nearest'});
 					}
 				}
 			}
