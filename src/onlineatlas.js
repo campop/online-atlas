@@ -1225,7 +1225,7 @@ const onlineatlas = (function ($) {
 						subgroupHtml += '<div class="field" title="' + onlineatlas.htmlspecialchars (field.description) + '">';
 						subgroupHtml += '<input type="radio" name="field" value="' + onlineatlas.htmlspecialchars (id) + '" id="' + fieldId + '"' + (id == _settings.defaultField ? ' checked="checked"' : '') + ' />';
 						subgroupHtml += '<label for="' + fieldId + '">';
-						subgroupHtml += onlineatlas.htmlspecialchars (field.label);
+						subgroupHtml += onlineatlas.htmlspecialchars (field.labelShort || field.label);
 						if (_settings.enableFullDescriptions) {
 							if (!isNullField) {
 								subgroupHtml += ' <a class="moredetails" data-field="' + id + '" href="#" title="Click to read FULL DESCRIPTION for:\n' + onlineatlas.htmlspecialchars ((field.description ? field.description : field.label)) + '">(?)</a>';
