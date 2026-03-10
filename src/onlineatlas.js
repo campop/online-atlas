@@ -1511,17 +1511,20 @@ const onlineatlas = (function ($) {
 		// Function to show the map data
 		showData: function (mapUi, year)
 		{
+			// Determine the source ID
+			let sourceId = 'data' + year;
+			
 			// Set the colouring
 			const styleDefinition = onlineatlas.getColours (mapUi.field, mapUi.variations);
-			mapUi.map.setPaintProperty (mapUi.sourceId['data' + year] + '-fill', 'fill-color', styleDefinition);
+			mapUi.map.setPaintProperty (mapUi.sourceId[sourceId] + '-fill', 'fill-color', styleDefinition);
 			
 			// Set the line style for the outline, to deal with NULL values (shown as transparent with a dashed line)
-			//mapUi.map.setPaintProperty (mapUi.sourceId['data' + year] + '-outline', 'line-dasharray', ['case', ['has', mapUi.field], ['literal', [3, 1]], ['literal', [1]]]);		// #!# Support pending; see: https://github.com/maplibre/maplibre-gl-js/issues/1235 and https://maplibre.org/maplibre-style-spec/layers/#line-dasharray
+			//mapUi.map.setPaintProperty (mapUi.sourceId[sourceId] + '-outline', 'line-dasharray', ['case', ['has', mapUi.field], ['literal', [3, 1]], ['literal', [1]]]);		// #!# Support pending; see: https://github.com/maplibre/maplibre-gl-js/issues/1235 and https://maplibre.org/maplibre-style-spec/layers/#line-dasharray
 			
 			// Set the visibility, based on match of the current year
 			const visibility = (mapUi.year == year ? 'visible' : 'none');
-			mapUi.map.setLayoutProperty (mapUi.sourceId['data' + year] + '-fill',    'visibility', visibility);
-			mapUi.map.setLayoutProperty (mapUi.sourceId['data' + year] + '-outline', 'visibility', visibility);
+			mapUi.map.setLayoutProperty (mapUi.sourceId[sourceId] + '-fill',    'visibility', visibility);
+			mapUi.map.setLayoutProperty (mapUi.sourceId[sourceId] + '-outline', 'visibility', visibility);
 			
 			// Set the export values to the selected year
 			if (mapUi.year == year) {
