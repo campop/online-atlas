@@ -22,6 +22,7 @@ class onlineAtlas extends frontControllerApplication
 				'zoom' => 5.8,
 			),
 			'years' => NULL,	// Must supply an array of datasets
+			'sources' => 1,		// Number of sets of sources per year, enabling different geometries to be loaded; NB more sources increase browser memory load
 			'areaNameField' => 'SUBDIST',
 			'areaNameFallbackField' => 'REGDIST',
 			'downloadFilenameBase' => 'onlineatlas',	// Or false to disable
@@ -244,6 +245,7 @@ class onlineAtlas extends frontControllerApplication
 					areaNameField: ' . ($this->settings['areaNameField'] ? "'{$this->settings['areaNameField']}'" : 'false') . ',
 					areaNameFallbackField: ' . ($this->settings['areaNameFallbackField'] ? "'{$this->settings['areaNameFallbackField']}'" : 'false') . ',
 					availableGeneralFields: ' . json_encode ($this->availableGeneralFields) . ',
+					sources: ' . json_encode ($this->settings['sources']) . ',
 					years: ' . json_encode ($this->settings['years']) . ',
 					defaultYear: ' . ($this->settings['defaultYear'] ? (is_numeric ($this->settings['defaultYear']) ? $this->settings['defaultYear'] : "'{$this->settings['defaultYear']}'") : 'false') . ',
 					defaultField: \'' . $this->settings['defaultField'] . '\',
@@ -307,8 +309,11 @@ class onlineAtlas extends frontControllerApplication
 		
 		# Create the list of import files
 		$importFiles = array ();
-		foreach ($this->settings['years'] as $dataset) {
-			$importFiles[] = sprintf ('dataset_%s', $dataset);
+		for ($source = 0; $source < $this->settings['sources']; $source++) {
+			foreach ($this->settings['years'] as $dataset) {
+				$sourceExtension = ($this->settings['sources'] > 1 ? "_{$source}" : '');		// E.g. foo_0, foo_1
+				$importFiles[] = sprintf ('dataset_%s' . $sourceExtension, $dataset);
+			}
 		}
 		
 		# Define the introduction HTML
@@ -342,12 +347,21 @@ class onlineAtlas extends frontControllerApplication
 		foreach ($exportFiles as $dataset => $file) {
 			
 			# Extract the year
-			preg_match ('/([0-9]{4})/', $dataset, $matches);
+			preg_match ('/_([0-9]{4})/', $dataset, $matches);
 			$year = $matches[1];
+			
+			# Extract the source number if relevant
+			$source = 0;
+			$sourceExtension = '';
+			if ($this->settings['sources'] > 1) {
+				preg_match ('/_([0-9]+)$/', $dataset, $matches);
+				$source = $matches[1];
+				$sourceExtension = '_' . $source;
+			}
 			
 			# Remove existing data file if present
 			$outputDirectory = $this->extendedApplicationRoot . '/datasets/';
-			$geojsonFile = "data{$year}.geojson";
+			$geojsonFile = "data{$year}{$sourceExtension}.geojson";
 			$geojsonFilename = "{$outputDirectory}/{$geojsonFile}";
 			if (is_file ($geojsonFilename)) {
 				unlink ($geojsonFilename);
@@ -370,7 +384,7 @@ class onlineAtlas extends frontControllerApplication
 			
 			# Convert to CSV
 			if ($this->settings['downloadFilenameBase']) {
-				$csvFile = "data{$year}.csv";
+				$csvFile = "data{$year}{$sourceExtension}.csv";
 				$csvFilename = "{$outputDirectory}/{$csvFile}";
 				$command = "ogr2ogr -f 'CSV' {$csvFilename} {$geojsonFilename} -dialect sqlite -sql 'SELECT AsGeoJSON(geometry) AS location, * FROM data{$year}'";
 				exec ($command, $output);
@@ -385,7 +399,7 @@ class onlineAtlas extends frontControllerApplication
 			rmdir ($tempDir);
 			
 			# Convert the GeoJSON to vector tiles
-			if (!$this->geojsonToVectorTiles ($geojsonFile, $year, $outputDirectory, $errorHtml /* returned by reference */)) {
+			if (!$this->geojsonToVectorTiles ($geojsonFile, $year, $source, $sourceExtension, $outputDirectory, $errorHtml /* returned by reference */)) {
 				$html = "\n<p class=\"warning\">{$errorHtml}</p>";
 				return false;
 			}
@@ -402,7 +416,7 @@ class onlineAtlas extends frontControllerApplication
 	
 	
 	# Function to convert GeoJSON to MVT vector tiles
-	private function geojsonToVectorTiles ($geojsonFile, $year, $outputDirectory, &$errorHtml = false)
+	private function geojsonToVectorTiles ($geojsonFile, $year, $source, $sourceExtension, $outputDirectory, &$errorHtml = false)
 	{
 		# Work in the output directory
 		$currentDirectory = getcwd ();
@@ -423,8 +437,11 @@ class onlineAtlas extends frontControllerApplication
 		$geojson = $this->filterGeojsonProperties ($geojson, $year);
 		file_put_contents ($geojsonFile, json_encode ($geojson));
 		
+		# Determine source description
+		$sourceDescription = ($this->settings['sources'] > 1 ? " (source {$source})" : '');
+		
 		# Convert to MVT
-		$command = "tippecanoe --name='Data for {$year}' --description='Data for {$year}' --no-tile-size-limit --output-to-directory=data{$year}/ --attribution='{$this->settings['datasetsAttribution']}' --maximum-zoom=11 --minimum-zoom=0 --detect-shared-borders --generate-ids --base-zoom=0 --force " . $geojsonFile;
+		$command = "tippecanoe --name='Data for {$year}{$sourceDescription}' --description='Data for {$year}{$sourceDescription}' --no-tile-size-limit --output-to-directory=data{$year}{$sourceExtension}/ --attribution='{$this->settings['datasetsAttribution']}' --maximum-zoom=11 --minimum-zoom=0 --detect-shared-borders --generate-ids --base-zoom=0 --force " . $geojsonFile;
 		exec ($command, $output);
 		//application::dumpData ($output);
 		

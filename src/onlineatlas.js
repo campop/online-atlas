@@ -74,6 +74,9 @@ const onlineatlas = (function ($) {
 		geocoderApiKey: 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
 		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924',
 		
+		// Dataset sources
+		sources: 1,	// Will be supplied
+		
 		// Dataset years
 		years: [],	// Will be supplied
 		defaultYear: false,
@@ -413,16 +416,18 @@ const onlineatlas = (function ($) {
 			// Set up the layers when the map load is ready
 			mapUi.map.on ('load', function () {
 				
-				// Initialise the data layers on map load and on style change
+				// Initialise the data layers on map load and on style change; if multiple sources, all are loaded up-front
 				mapUi.sourceId = [];
-				_settings.years.forEach (function (year) {
-					onlineatlas.initialiseDataLayer (mapUi, year);
-				});
-				$(document).on ('style-changed-' + mapUiIndex, function () {
+				for (let datasetSource = 0; datasetSource < _settings.sources; datasetSource++) {
 					_settings.years.forEach (function (year) {
-						onlineatlas.initialiseDataLayer (mapUi, year);
+						onlineatlas.initialiseDataLayer (mapUi, year, datasetSource);
 					});
-				});
+					$(document).on ('style-changed-' + mapUiIndex, function () {
+						_settings.years.forEach (function (year) {
+							onlineatlas.initialiseDataLayer (mapUi, year, datasetSource);
+						});
+					});
+				}
 				
 				// Create the nav UI
 				onlineatlas.createNav (mapUi);
@@ -810,17 +815,20 @@ const onlineatlas = (function ($) {
 		
 		
 		// Function to initalise the data layer for a dataset year
-		initialiseDataLayer: function (mapUi, year)
+		initialiseDataLayer: function (mapUi, year, datasetSource)
 		{
+			// Define an extension for the dataset source, if needed
+			const datasetSourceExtension = (_settings.sources > 1 ? '_' + datasetSource : '');
+			
 			// Initialise the data source
-			const sourceLayer = 'data' + year;	// String prefix used, to avoid "source-layer: string expected, number found" error
+			const sourceLayer = 'data' + year + datasetSourceExtension;	// String prefix used, to avoid "source-layer: string expected, number found" error
 			mapUi.sourceId[sourceLayer] = sourceLayer + '-' + mapUi.index;
 			
 			// Add vector source
 			mapUi.map.addSource (mapUi.sourceId[sourceLayer], {
 				type: 'vector',
 				tiles: [
-					window.location.origin + _baseUrl + `/datasets/data${year}/{z}/{x}/{y}.pbf`
+					window.location.origin + _baseUrl + `/datasets/data${year}${datasetSourceExtension}/{z}/{x}/{y}.pbf`
 				]
 			});
 			
@@ -1509,14 +1517,16 @@ const onlineatlas = (function ($) {
 		showData: function (mapUi)
 		{
 			// Clear any existing (previous) layer visibility for this map UI, to avoid compounding datasets
-			_settings.years.forEach (function (datasetYear) {
-				const clearSourceId = onlineatlas.getSourceId (datasetYear, mapUi);
-				mapUi.map.setLayoutProperty (clearSourceId + '-fill',    'visibility', 'none');
-				mapUi.map.setLayoutProperty (clearSourceId + '-outline', 'visibility', 'none');
-			});
+			for (let datasetSource = 0; datasetSource < _settings.sources; datasetSource++) {
+				_settings.years.forEach (function (datasetYear) {
+					const clearSourceId = onlineatlas.getSourceId (datasetYear, datasetSource, mapUi);
+					mapUi.map.setLayoutProperty (clearSourceId + '-fill',    'visibility', 'none');
+					mapUi.map.setLayoutProperty (clearSourceId + '-outline', 'visibility', 'none');
+				});
+			};
 			
 			// Determine the source ID, adding datasetSource extension in multi-source mode
-			const sourceId = onlineatlas.getSourceId (mapUi.year, mapUi);
+			const sourceId = onlineatlas.getSourceId (mapUi.year, _settings.fields[mapUi.field].source, mapUi);
 			
 			// Set the colouring
 			const styleDefinition = onlineatlas.getColours (mapUi.field, mapUi.variations);
@@ -1539,10 +1549,13 @@ const onlineatlas = (function ($) {
 		
 		
 		// Function to convert a year and source to a sourceId
-		getSourceId: function (year, mapUi)
+		getSourceId: function (year, datasetSource, mapUi)
 		{
 			// Get the layer ID; format is data<year> or data<year>_<sourceIndex>
 			let layerId = 'data' + year;
+			if (_settings.sources > 1) {
+				layerId += '_' + (datasetSource || 0);
+			}
 			
 			// Convert to source ID
 			const sourceId = mapUi.sourceId[layerId];
