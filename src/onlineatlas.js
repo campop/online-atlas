@@ -1540,8 +1540,9 @@ const onlineatlas = (function ($) {
 			mapUi.map.setLayoutProperty (sourceId + '-outline', 'visibility', 'visible');
 			
 			// Set the export URLs to the selected year
-			$('#' + mapUi.navDivId + ' p.export a.exportcsv'    ).attr ('href', _baseUrl + '/datasets/data' + mapUi.year + '.csv');
-			$('#' + mapUi.navDivId + ' p.export a.exportgeojson').attr ('href', _baseUrl + '/datasets/data' + mapUi.year + '.geojson');
+			const datasetSourceExtension = (_settings.sources > 1 ? '_' + (_settings.fields[mapUi.field].source || 0) : '');
+			$('#' + mapUi.navDivId + ' p.export a.exportcsv'    ).attr ('href', _baseUrl + '/datasets/data' + mapUi.year + datasetSourceExtension + '.csv');
+			$('#' + mapUi.navDivId + ' p.export a.exportgeojson').attr ('href', _baseUrl + '/datasets/data' + mapUi.year + datasetSourceExtension + '.geojson');
 			
 			// Set the URL
 			onlineatlas.updateUrl (mapUi);
