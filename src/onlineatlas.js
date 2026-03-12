@@ -482,20 +482,16 @@ const onlineatlas = (function ($) {
 				}
 				
 				// Initial view
-				_settings.years.forEach (function (year) {
-					onlineatlas.showData (mapUi, year);
-				});
+				onlineatlas.showData (mapUi);
+				
+				// Register to refresh data layer on background map style change
 				$(document).on ('style-changed-' + mapUiIndex, function () {
-					_settings.years.forEach (function (year) {
-						onlineatlas.showData (mapUi, year);
-					});
+					onlineatlas.showData (mapUi);
 				});
 				
-				// Register to refresh data on any form field change
+				// Register to refresh data layer on any form field change
 				$('#' + mapUi.navDivId + ' form :input').not ('[name*="_proxy"]').on ('change', function () {		// _proxy excluded
-					_settings.years.forEach (function (year) {
-						onlineatlas.showData (mapUi, year);
-					});
+					onlineatlas.showData (mapUi);
 				});
 				
 				// Add tooltips to the forms
@@ -1510,31 +1506,49 @@ const onlineatlas = (function ($) {
 		
 		
 		// Function to show the map data
-		showData: function (mapUi, year)
+		showData: function (mapUi)
 		{
-			// Determine the source ID
-			let sourceId = 'data' + year;
+			// Clear any existing (previous) layer visibility for this map UI, to avoid compounding datasets
+			_settings.years.forEach (function (datasetYear) {
+				const clearSourceId = onlineatlas.getSourceId (datasetYear, mapUi);
+				mapUi.map.setLayoutProperty (clearSourceId + '-fill',    'visibility', 'none');
+				mapUi.map.setLayoutProperty (clearSourceId + '-outline', 'visibility', 'none');
+			});
+			
+			// Determine the source ID, adding datasetSource extension in multi-source mode
+			const sourceId = onlineatlas.getSourceId (mapUi.year, mapUi);
 			
 			// Set the colouring
 			const styleDefinition = onlineatlas.getColours (mapUi.field, mapUi.variations);
-			mapUi.map.setPaintProperty (mapUi.sourceId[sourceId] + '-fill', 'fill-color', styleDefinition);
+			mapUi.map.setPaintProperty (sourceId + '-fill', 'fill-color', styleDefinition);
 			
 			// Set the line style for the outline, to deal with NULL values (shown as transparent with a dashed line)
-			//mapUi.map.setPaintProperty (mapUi.sourceId[sourceId] + '-outline', 'line-dasharray', ['case', ['has', mapUi.field], ['literal', [3, 1]], ['literal', [1]]]);		// #!# Support pending; see: https://github.com/maplibre/maplibre-gl-js/issues/1235 and https://maplibre.org/maplibre-style-spec/layers/#line-dasharray
+			//mapUi.map.setPaintProperty (sourceId + '-outline', 'line-dasharray', ['case', ['has', mapUi.field], ['literal', [3, 1]], ['literal', [1]]]);		// #!# Support pending; see: https://github.com/maplibre/maplibre-gl-js/issues/1235 and https://maplibre.org/maplibre-style-spec/layers/#line-dasharray
 			
-			// Set the visibility, based on match of the current year
-			const visibility = (mapUi.year == year ? 'visible' : 'none');
-			mapUi.map.setLayoutProperty (mapUi.sourceId[sourceId] + '-fill',    'visibility', visibility);
-			mapUi.map.setLayoutProperty (mapUi.sourceId[sourceId] + '-outline', 'visibility', visibility);
+			// Set the visibility
+			mapUi.map.setLayoutProperty (sourceId + '-fill',    'visibility', 'visible');
+			mapUi.map.setLayoutProperty (sourceId + '-outline', 'visibility', 'visible');
 			
-			// Set the export values to the selected year
-			if (mapUi.year == year) {
-				$('#' + mapUi.navDivId + ' p.export a.exportcsv'    ).attr ('href', _baseUrl + '/datasets/data' + year + '.csv');
-				$('#' + mapUi.navDivId + ' p.export a.exportgeojson').attr ('href', _baseUrl + '/datasets/data' + year + '.geojson');
-			}
+			// Set the export URLs to the selected year
+			$('#' + mapUi.navDivId + ' p.export a.exportcsv'    ).attr ('href', _baseUrl + '/datasets/data' + mapUi.year + '.csv');
+			$('#' + mapUi.navDivId + ' p.export a.exportgeojson').attr ('href', _baseUrl + '/datasets/data' + mapUi.year + '.geojson');
 			
 			// Set the URL
 			onlineatlas.updateUrl (mapUi);
+		},
+		
+		
+		// Function to convert a year and source to a sourceId
+		getSourceId: function (year, mapUi)
+		{
+			// Get the layer ID; format is data<year> or data<year>_<sourceIndex>
+			let layerId = 'data' + year;
+			
+			// Convert to source ID
+			const sourceId = mapUi.sourceId[layerId];
+			
+			// Return the source
+			return sourceId;
 		},
 		
 		
