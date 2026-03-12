@@ -1682,7 +1682,7 @@ const onlineatlas = (function ($) {
 			// Otherwise is key-value pairs; see: https://docs.mapbox.com/style-spec/reference/expressions/#case and https://docs.mapbox.com/mapbox-gl-js/example/cluster-html/
 			tokens.push ('case');
 			$.each (_settings.fields[field].intervals, function (value, colour) {
-				tokens.push (['==', ['get', field + variationsExtension], value]);
+				tokens.push (['==', ['get', fieldnameWithVariations], value]);
 				tokens.push (colour);
 			});
 			tokens.push (colourUnknown);
