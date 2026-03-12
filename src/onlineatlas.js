@@ -847,8 +847,9 @@ const onlineatlas = (function ($) {
 				},
 				'source-layer': sourceLayer
 			});
+			const outlineLayerId = mapUi.sourceId[sourceLayer] + '-outline';	// Use same value for simplicity
 			mapUi.map.addLayer ({
-				id: mapUi.sourceId[sourceLayer] + '-outline',		// Use same value for simplicity
+				id: outlineLayerId,		// Use same value for simplicity
 				source: mapUi.sourceId[sourceLayer],
 				type: 'line',
 				layout: {visibility: 'none'},	// Will be enabled later, based on current year
