@@ -484,13 +484,13 @@ const onlineatlas = (function ($) {
 				// Initial view
 				onlineatlas.showData (mapUi);
 				
-				// Register to refresh data layer on background map style change
-				$(document).on ('style-changed-' + mapUiIndex, function () {
+				// Register to refresh data layer on any form field change
+				$('#' + mapUi.navDivId + ' form :input').not ('[name*="_proxy"]').on ('change', function () {		// _proxy excluded
 					onlineatlas.showData (mapUi);
 				});
 				
-				// Register to refresh data layer on any form field change
-				$('#' + mapUi.navDivId + ' form :input').not ('[name*="_proxy"]').on ('change', function () {		// _proxy excluded
+				// Register to refresh data layer on background map style change
+				$(document).on ('style-changed-' + mapUiIndex, function () {
 					onlineatlas.showData (mapUi);
 				});
 				
