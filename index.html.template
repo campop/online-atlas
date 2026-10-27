@@ -9,6 +9,9 @@ $settings = array (
 	// Geocoder
 	'geocoderApiKey' => 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
 	
+	// Locations (names) overlay
+	'locationsOverlayApiKey' => 'YOUR_API_KEY',		// Obtain at https://carto.com/basemaps/apikey/
+	
 	// Datasets
 	'datasets' => array (),	// Must supply an array of datasets
 	

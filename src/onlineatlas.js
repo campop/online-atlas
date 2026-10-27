@@ -74,6 +74,9 @@ const onlineatlas = (function ($) {
 		geocoderApiKey: 'YOUR_API_KEY',		// Obtain at https://www.cyclestreets.net/api/apply/
 		autocompleteBbox: '-6.6577,49.9370,1.7797,57.6924',
 		
+		// Locations (names) overlay
+		locationsOverlayApiKey: false,		// Obtain at https://carto.com/basemaps/apikey/
+		
 		// Dataset sources
 		sources: 1,	// Will be supplied
 		
@@ -1419,7 +1422,7 @@ const onlineatlas = (function ($) {
 				type: 'raster',
 				source: {
 					type: 'raster',
-					tiles: ['https://cartodb-basemaps-a.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png'],
+					tiles: ['https://basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png' + (_settings.locationsOverlayApiKey ? '?key=' + _settings.locationsOverlayApiKey : '')],
 					tileSize: 256,
 					attribution: 'CartoDB'
 				},

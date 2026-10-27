@@ -16,6 +16,7 @@ class onlineAtlas extends frontControllerApplication
 			'useDatabase' => false,
 			'administrators' => true,
 			'geocoderApiKey' => NULL,
+			'locationsOverlayApiKey' => false,		// Obtain at https://carto.com/basemaps/apikey/
 			'defaultLocation' => array (
 				'latitude' => 53.615,
 				'longitude' => -1.53,
@@ -262,6 +263,7 @@ class onlineAtlas extends frontControllerApplication
 				const config = {
 					defaultLocation: ' . json_encode ($this->settings['defaultLocation']) . ',
 					geocoderApiKey: \'' . $this->settings['geocoderApiKey'] . '\',
+					locationsOverlayApiKey: ' . ($this->settings['locationsOverlayApiKey'] ? "'{$this->settings['locationsOverlayApiKey']}'" : 'false') . ',
 					areaNameField: ' . ($this->settings['areaNameField'] ? "'{$this->settings['areaNameField']}'" : 'false') . ',
 					areaNameFallbackField: ' . ($this->settings['areaNameFallbackField'] ? "'{$this->settings['areaNameFallbackField']}'" : 'false') . ',
 					availableGeneralFields: ' . json_encode ($this->availableGeneralFields) . ',
