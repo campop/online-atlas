@@ -4,6 +4,12 @@
 class onlineAtlas extends frontControllerApplication
 {
 	# Class properties
+	private $clientApplicationDirectory;
+	private $fieldsExpanded;
+	public $extendedApplicationRoot;
+	
+	
+	# Class properties
 	private $availableGeneralFields = array ('REGCNTY', 'REGDIST', 'SUBDIST', 'PARISH', 'TOWN', 'year', 'POP', 'ACRES');	// Specified in sort order for export
 	
 	# Function to assign defaults additional to the general application defaults
